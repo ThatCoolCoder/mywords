@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="global.css" />
+        <link rel="stylesheet" href="MyWords.styles.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@latest/dist/css/bootstrap.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@latest/dist/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="d-flex flex-column h-100">
+            <nav class="top-row p-3 border-bottom navbar shadow">
+                <div class="container-fluid d-flex gap-3">
+                    <a class="navbar-brand nav-link text-dark" href="/">MyWords</a>
+                    <div class="flex-grow-1"></div>
+                    <a class="nav-link text-dark" href="login">Login</a>
+                    <a class="nav-link text-dark" href="signup">Sign Up</a>
+                </div>
+            </nav>
+            <main class="flex-grow-1">
+                @RenderBody()
+            </main>
+            <div class="footer p-3">
+                copyright, it's ours I swear
+            </div>
+        </div>
+    </body>
+
+    @if (IsSectionDefined("Scripts")) RenderSection("Scripts");
+</html>
