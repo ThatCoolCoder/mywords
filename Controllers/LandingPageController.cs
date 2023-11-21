@@ -17,7 +17,7 @@ public class LandingPageController : Controller
     [Route("/")]
     public IActionResult Index()
     {
-        if (User.Claims.Count() == 0) return View("Views/LandingPage.cshtml");
+        if (User.Claims.Count() == 0 && false) return View("Views/LandingPage.cshtml");
         else return File("host.html", "text/html");
     }
 }
