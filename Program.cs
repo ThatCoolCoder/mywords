@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 using Data;
 
-void ConfigureServices(IServiceCollection services, ConfigurationManager configuration)
+void ConfigureServices(IServiceCollection services, ConfigurationManager configuration, bool IsDevelopment)
 {
     services.AddCors();
     services.AddControllersWithViews();
@@ -25,26 +25,27 @@ void ConfigureServices(IServiceCollection services, ConfigurationManager configu
         // .AddDefaultUI()
         .AddEntityFrameworkStores<ApplicationDbContext>();
 
-    // services.Configure<IdentityOptions>(options =>
-    // {
-    //     // Password settings.
-    //     options.Password.RequireDigit = true;
-    //     options.Password.RequireLowercase = true;
-    //     options.Password.RequireNonAlphanumeric = true;
-    //     options.Password.RequireUppercase = true;
-    //     options.Password.RequiredLength = 6;
-    //     options.Password.RequiredUniqueChars = 1;
+    // todo: make this less
+    services.Configure<IdentityOptions>(options =>
+    {
+        // Password settings.
+        options.Password.RequireDigit = IsDevelopment ? false : true;
+        options.Password.RequireLowercase = IsDevelopment ? false : true;
+        options.Password.RequireNonAlphanumeric = IsDevelopment ? false : true;
+        options.Password.RequireUppercase = IsDevelopment ? false : true;
+        options.Password.RequiredLength = IsDevelopment ? 1 : 6;
+        options.Password.RequiredUniqueChars = 1;
 
-    //     // Lockout settings.
-    //     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-    //     options.Lockout.MaxFailedAccessAttempts = 5;
-    //     options.Lockout.AllowedForNewUsers = true;
+        // Lockout settings.
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.AllowedForNewUsers = true;
 
-    //     // User settings.
-    //     options.User.AllowedUserNameCharacters =
-    //     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-    //     options.User.RequireUniqueEmail = false;
-    // });
+        // User settings.
+        options.User.AllowedUserNameCharacters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+        options.User.RequireUniqueEmail = true;
+    });
 
     // services.ConfigureApplicationCookie(options =>
     // {
@@ -64,7 +65,7 @@ void ConfigureServices(IServiceCollection services, ConfigurationManager configu
 var builder = WebApplication.CreateBuilder(args);
 
 
-ConfigureServices(builder.Services, builder.Configuration);
+ConfigureServices(builder.Services, builder.Configuration, builder.Environment.IsDevelopment());
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

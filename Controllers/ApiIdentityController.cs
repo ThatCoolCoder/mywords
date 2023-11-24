@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
+
 using Data;
-using Views.Identity.Models;
 
 namespace Controllers;
 
+[StandardApiController("Identity")]
 public class IdentityController : Controller
 {
     private readonly ILogger<LandingPageController> _logger;
@@ -18,15 +20,8 @@ public class IdentityController : Controller
         _signInManager = signInManager;
     }
 
-    [Route("/Login")]
-    public IActionResult Login()
-    {
-        return View();
-    }
-
     [HttpPost]
-    [Route("/Login")]
-    public async Task<IActionResult> LoginPost([Bind] LoginModel model)
+    public async Task<IActionResult> Login([Bind] LoginModel model)
     {
         if (ModelState.IsValid)
         {
@@ -41,17 +36,22 @@ public class IdentityController : Controller
         }
     }
 
-
-    [Route("/Signup")]
+    [HttpPost]
     public IActionResult Signup()
     {
         return View();
     }
 
-    [Route("/Logout")]
+    [HttpPost]
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
         return Redirect("/");
     }
+}
+
+public class LoginModel
+{
+    [Required] public string Username { get; set; } = "";
+    public string Password { get; set; } = "";
 }
