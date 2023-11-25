@@ -27,6 +27,7 @@ create table Term (
 create table Label (
     Id bigserial primary key,
     Name text not null,
+    Color text not null,
     TermSetId bigint not null,
 
     constraint fk_TermSet foreign key (TermSetId) references TermSet(Id) on delete cascade

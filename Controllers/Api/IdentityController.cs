@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 using Data;
 
-namespace Controllers;
+namespace Controllers.Api;
 
 [StandardApiController("Identity")]
 public class IdentityController : Controller

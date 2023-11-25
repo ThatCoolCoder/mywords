@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Controllers;
+namespace Controllers.Api;
 
 public class StandardApiControllerAttribute : RouteAttribute
 {
