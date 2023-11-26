@@ -41,21 +41,21 @@ input, button, select, textarea {
 	padding: 0.4em;
 	margin: 0 0 0.5em 0;
 	box-sizing: border-box;
-	border: 1px solid #ccc;
-	border-radius: 2px;
+	border: 1px solid #444;
+	border-radius: 5px;
 }
 
 input:disabled {
 	color: #ccc;
 }
 
-button {
+/* button {
 	color: #333;
 	background-color: #f4f4f4;
 	outline: none;
-}
+} */
 
-button:disabled {
+/* button:disabled {
 	color: #999;
 }
 
@@ -65,7 +65,7 @@ button:not(:disabled):active {
 
 button:focus {
 	border-color: #666;
-}
+} */
 
 .form-box {
     border: 1px solid #888;

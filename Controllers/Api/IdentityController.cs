@@ -27,8 +27,8 @@ public class IdentityController : Controller
         {
             var user = _context.ApplicationUser.Where(x => x.UserName == model.Username).First();
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
-            if (result.Succeeded) return Redirect("/");
-            else return Redirect("/");
+            if (result.Succeeded) return Ok();
+            else return Unauthorized();
         }
         else
         {
