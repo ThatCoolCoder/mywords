@@ -2,14 +2,11 @@
 
 <script>
     import { setContext, onMount } from 'svelte';
-    import api from '../services/api';
     import ErrorPopup from '../shared/errorPopup.svelte';
     
     function goToAccount() {
         history.pushState({}, null, '/account');
     }
-
-    var errorPopup;
 
     var user = null;
     setContext('user', {
@@ -26,7 +23,6 @@
     }
     
     onMount(fetchAccountInfo);
-    onMount(() => api.onError = errorPopup.open);
 
 </script>
 
@@ -54,7 +50,7 @@
     <main class="flex-shrink-0 px-4 py-4">
         <slot />
     </main>
-    <ErrorPopup bind:this={errorPopup} />
+    <ErrorPopup />
     <!-- <div class="footer p-3">
     </div> -->
 </div>

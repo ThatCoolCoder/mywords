@@ -1,10 +1,9 @@
-var onError = (message, details) => alert(message + '\n' + details);
+import { display } from "./errorService";
 
 async function get() {
-    onError('oh no');
+    display('We were unable to get datas', 'Some very technical reasons yes');
 }
 
 export default {
-    onError,
     get
 }
