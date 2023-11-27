@@ -40,7 +40,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li><button class="dropdown-item" on:click={() => util.navigate('/account')}>My Account</button></li>
-                  <li><button class="dropdown-item" on:click={() => util.navigate('/api/identity/logout')}>Logout</button></li>
+                  <li><button class="dropdown-item" on:click={() => util.navigateBackend('/api/identity/logout')}>Logout</button></li>
                 </ul>
               </div>
         </div>

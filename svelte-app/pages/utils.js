@@ -5,6 +5,11 @@ function navigate(url) {
     history.pushState({}, null, url);
 }
 
+function navigateBackend(url) {
+    document.location.href = url;
+}
+
 export default {
     navigate,
+    navigateBackend
 };

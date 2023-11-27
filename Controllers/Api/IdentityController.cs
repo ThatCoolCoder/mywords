@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
 using System.ComponentModel.DataAnnotations;
 
 using Data;
@@ -42,11 +43,11 @@ public class IdentityController : Controller
         return View();
     }
 
-    [Route("Logout")]
-    public async Task<IActionResult> Logout()
+    [HttpGet]
+    [Route("logout")]
+    public async Task Logout()
     {
-        await _signInManager.SignOutAsync();
-        return Redirect("/");
+        // todo: how?
     }
 }
 
