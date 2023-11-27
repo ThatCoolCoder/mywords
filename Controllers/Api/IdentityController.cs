@@ -42,7 +42,7 @@ public class IdentityController : Controller
         return View();
     }
 
-    [HttpPost]
+    [Route("Logout")]
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();

@@ -1,0 +1,1 @@
+alter table term add column termlist int default 0 not null; -- todo: not sure if int (=int4) is ok or we need some other size

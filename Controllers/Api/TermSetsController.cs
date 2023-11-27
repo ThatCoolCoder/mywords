@@ -5,6 +5,7 @@ using Data;
 namespace Controllers.Api;
 
 [StandardApiController("TermSets")]
+[Authorize]
 public class TermSetsController : Controller
 {
     private readonly ILogger<TermsController> _logger;

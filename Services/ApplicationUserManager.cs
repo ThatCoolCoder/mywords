@@ -20,4 +20,9 @@ public class ApplicationUserManager : UserManager<ApplicationUser>
     {
         _logger = logger;
     }
+
+    public ApplicationUser? GetLoggedInUser(HttpContext context)
+    {
+        return Users.FirstOrDefault(x => x.Email == context.User.Identity!.Name);
+    }
 }

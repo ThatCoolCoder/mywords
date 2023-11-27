@@ -2,11 +2,8 @@
 
 <script>
     import { setContext, onMount } from 'svelte';
+    import util from './utils';
     import ErrorPopup from '../shared/errorPopup.svelte';
-    
-    function goToAccount() {
-        history.pushState({}, null, '/account');
-    }
 
     var user = null;
     setContext('user', {
@@ -15,7 +12,7 @@
     });
 
     async function fetchAccountInfo() {
-        const response = await fetch('api/users/me', {
+        const response = await fetch('/api/users/me', {
             credentials: 'include'
         });
         user = await response.json();
@@ -42,7 +39,8 @@
                   { (user?.givenName ?? "") } { (user?.familyName ?? "") }
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                  <li><button class="dropdown-item" href="#" on:click={goToAccount}>My Account</button></li>
+                  <li><button class="dropdown-item" on:click={() => util.navigate('/account')}>My Account</button></li>
+                  <li><button class="dropdown-item" on:click={() => util.navigate('/api/identity/logout')}>Logout</button></li>
                 </ul>
               </div>
         </div>

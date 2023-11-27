@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Data;
 
 public class Label
@@ -8,4 +10,5 @@ public class Label
     public long TermSetId { get; set; }
 
     public TermSet? TermSet { get; set; }
+    public ICollection<Term> Terms { get; set; } = new List<Term>();
 }

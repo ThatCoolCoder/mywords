@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.DataAnnotations;
 
 using Data;
+using Services;
 
 namespace Controllers.Api;
 
@@ -14,9 +15,9 @@ public class UsersController : Controller
 {
     private readonly ILogger<LandingPageController> _logger;
     private readonly ApplicationDbContext _context;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly ApplicationUserManager _userManager;
 
-    public UsersController(ILogger<LandingPageController> logger, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    public UsersController(ILogger<LandingPageController> logger, ApplicationDbContext context, ApplicationUserManager userManager)
     {
         _logger = logger;
         _context = context;
@@ -27,7 +28,7 @@ public class UsersController : Controller
     [Route("me")]
     public IActionResult GetMe()
     {
-        var user = _context.Users.Where(x => x.Email == User.Identity!.Name).FirstOrDefault();
+        var user = _userManager.GetLoggedInUser(HttpContext);
         if (user == null) return NotFound();
 
         return Json(new
@@ -37,5 +38,20 @@ public class UsersController : Controller
             FamilyName = user.FamilyName,
             Email = user.Email ?? "",
         });
+    }
+
+    [HttpPost]
+    [Route("me/password")]
+    public async Task<IActionResult> UpdatePassword([FromBody] (string password, string confirmPassword) passwords)
+    {
+        var user = _userManager.GetLoggedInUser(HttpContext);
+        if (user == null) return NotFound();
+
+        if (passwords.password != passwords.confirmPassword) return BadRequest("Passwords do not match");
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        await _userManager.ResetPasswordAsync(user, token, passwords.password);
+
+        return Ok();
     }
 }

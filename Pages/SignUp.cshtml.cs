@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +34,11 @@ public class SignUpModel : PageModel
 
     public class InputModel
     {
+        [Required(ErrorMessage = "You must enter a first name")]
+        public string GivenName { get; set; }
+
+        public string FamilyName { get; set; }
+
         [Required]
         [EmailAddress]
         public string Email { get; set; }
@@ -70,11 +74,10 @@ public class SignUpModel : PageModel
 
         if (ModelState.IsValid)
         {
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-
             var user = new ApplicationUser()
             {
+                GivenName = Input.GivenName,
+                FamilyName = Input.FamilyName,
                 UserName = Input.Email,
                 Email = Input.Email,
             };

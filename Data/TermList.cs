@@ -1,6 +1,6 @@
 namespace Data;
 
-public enum TermLists
+public enum TermList
 {
     Backlog = 0,
     Learning = 1,
