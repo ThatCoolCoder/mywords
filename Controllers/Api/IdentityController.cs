@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.AspNetCore.ResponseCaching;
 using System.ComponentModel.DataAnnotations;
 
 using Data;
@@ -43,11 +46,13 @@ public class IdentityController : Controller
         return View();
     }
 
-    [HttpGet]
+    // [HttpGet]
     [Route("logout")]
-    public async Task Logout()
+    public async Task<IActionResult> Logout()
     {
-        // todo: how?
+        Response.Cookies.Delete(".AspNetCore.Identity.Application");
+
+        return LocalRedirect("/");
     }
 }
 

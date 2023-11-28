@@ -12,8 +12,7 @@ public class LandingPageRedirector
         if (context.User.Claims.Count() == 0 && !context.Request.Path.Equals("/")) context.Response.Redirect("/");
         else if (context.User.Claims.Count() != 0)
         {
-            await context.Response.SendFileAsync("wwwroot/host.html");
-            await context.Response.CompleteAsync();
+            await Controllers.LandingPageController.ServeSpaHost(context);
         }
     }
 }
