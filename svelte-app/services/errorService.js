@@ -10,3 +10,7 @@ handler.subscribe(val => {
 export function display(message, details) {
     _handler(message, details);
 }
+
+export default {
+    display,
+}

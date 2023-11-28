@@ -24,6 +24,15 @@ public class UsersController : Controller
         _userManager = userManager;
     }
 
+    public record UserApiModel(string Id, string GivenName, string FamilyName, string Email);
+    // public class UserApiModel
+    // {
+    //     public string Id { get; set; } = "";
+    //     public string GivenName { get; set; } = "";
+    //     public string FamilyName { get; set; } = "";
+    //     public string Email { get; set; } = "";
+    // }
+
     [HttpGet]
     [Route("me")]
     public IActionResult GetMe()
@@ -31,13 +40,34 @@ public class UsersController : Controller
         var user = _userManager.GetLoggedInUser(HttpContext);
         if (user == null) return NotFound();
 
-        return Json(new
-        {
-            Id = user.Id,
-            GivenName = user.GivenName,
-            FamilyName = user.FamilyName,
-            Email = user.Email ?? "",
-        });
+        return Json(new UserApiModel(user.Id, user.GivenName, user.FamilyName, user.Email ?? ""));
+        // return Json(new UserApiModel()
+        // {
+        //     Id = user.Id,
+        //     GivenName = user.GivenName,
+        //     FamilyName = user.FamilyName,
+        //     Email = user.Email,
+        // });
+    }
+
+    [HttpPut]
+    [Route("me")]
+    public async Task<IActionResult> PutMe([FromBody] UserApiModel model)
+    {
+        if (!ModelState.IsValid) return BadRequest("Model state invalid");
+
+        var user = _userManager.GetLoggedInUser(HttpContext);
+        if (user == null) return NotFound();
+
+        // (no setting id as it would be dumb to change it)
+        user.GivenName = model.GivenName;
+        user.FamilyName = model.FamilyName;
+        // user.Email = model.Email; // todo: for now we're not allowing to change this either
+
+        _context.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Ok();
     }
 
     [HttpPost]
