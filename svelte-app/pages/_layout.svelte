@@ -25,9 +25,6 @@
         <div class="container-fluid d-flex gap-3">
             <a class="navbar-brand nav-link text-dark" href="/">MyWords</a>
             <div class="flex-grow-1"></div>
-            <!-- <a class="nav-link text-dark" href="login">Login</a>
-            <a class="nav-link text-dark" href="signup">Sign Up</a> -->
-            <!-- <button on:click={goToAccount}>Account</button> -->
 
             <ApiDependent ready={user != null}>
                 <!-- <div slot="loading"></div> -->
@@ -36,7 +33,8 @@
                         { (user?.givenName ?? "") } { (user?.familyName ?? "") }
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><button class="dropdown-item" on:click={() => util.navigate('/account')}>My Account</button></li>
+                        <li><button class="dropdown-item" on:click={() => util.navigate('/')}>Collections</button></li>
+                        <li><button class="dropdown-item" on:click={() => util.navigate('/account')}>Account</button></li>
                         <li><button class="dropdown-item" on:click={() => util.navigateBackend('/api/identity/logout')}>Logout</button></li>
                     </ul>
                 </div>

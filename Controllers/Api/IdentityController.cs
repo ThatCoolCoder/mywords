@@ -46,9 +46,8 @@ public class IdentityController : Controller
         return View();
     }
 
-    // [HttpGet]
     [Route("logout")]
-    public async Task<IActionResult> Logout()
+    public IActionResult Logout()
     {
         Response.Cookies.Delete(".AspNetCore.Identity.Application");
 

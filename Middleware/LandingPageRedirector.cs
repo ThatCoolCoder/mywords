@@ -8,12 +8,16 @@ public class LandingPageRedirector
     {
         // if logged out - redirect to / which has a controller with a landing page
         // if logged in - just serve the spa when not found
-        //                  (unless looking for the api, then they actually want a 404 so don't give them anything in that case)
+        //                  (unless looking for the api, then they actually want a 404 so don't give them any in that case)
 
         if (context.User.Claims.Count() == 0 && !context.Request.Path.Equals("/")) context.Response.Redirect("/");
-        else if (context.User.Claims.Count() != 0 && !context.Request.Path.StartsWithSegments("/Api"))
+        else if (context.User.Claims.Count() != 0 && !context.Request.Path.StartsWithSegments("/api"))
         {
             await Controllers.LandingPageController.ServeSpaHost(context);
+        }
+        else
+        {
+            context.Response.StatusCode = 404;
         }
     }
 }

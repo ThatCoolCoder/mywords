@@ -16,4 +16,5 @@ public class Term
 
     public TermSet? TermSet { get; set; }
     public ICollection<Label> Labels { get; set; } = new List<Label>();
+
 }

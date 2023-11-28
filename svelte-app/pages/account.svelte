@@ -25,9 +25,10 @@
 
 <title>Account | MyWords</title>
 <h2>Your Account</h2>
+<hr />
 
 <div style="max-width: 400px">
-    <div class="row">
+    <div class="row mb-1">
         <div class="col-6">
             <label for="givenName">First name</label>
         </div>
@@ -36,7 +37,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-1">
         <div class="col-6">
             <label for="FamilyName">Last name</label>
         </div>

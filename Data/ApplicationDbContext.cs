@@ -31,4 +31,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public virtual DbSet<Term> Term { get; set; } = null!;
     public virtual DbSet<Label> Label { get; set; } = null!;
     public virtual DbSet<TermLabel> TermLabel { get; set; } = null!;
+
+    public ApplicationUser? GetLoggedInUser(HttpContext context)
+    {
+        return ApplicationUser.FirstOrDefault(x => x.Email == context.User.Identity!.Name);
+    }
 }

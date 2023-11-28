@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+
 using Data;
 
 namespace Controllers.Api;
@@ -17,9 +20,64 @@ public class TermSetsController : Controller
         _context = context;
     }
 
+    public record TermSetApiModel(long Id, string Name, string Description);
+
+    public record TermApiModel(long Id, long TermSetId, string Value, string Definition, string Notes, int CurrentStreak, DateTime MovedToCurrentListUtc, List<string> Labels);
+
     [HttpGet]
-    public IActionResult Index()
+    public IActionResult GetIndex()
     {
-        return new JsonResult(_context.TermSet.ToList());
+        var user = _context.GetLoggedInUser(HttpContext);
+        _context.Entry(user!).Collection(x => x.TermSets).Load(); // todo: make this null ignore not needed
+        return Json(user.TermSets.Select(x => new TermSetApiModel(x.Id, x.Name, x.Description)));
+    }
+
+    [HttpGet]
+    [Route("{id}")]
+    public IActionResult GetById(long id)
+    {
+        var user = _context.GetLoggedInUser(HttpContext);
+        var termSet = _context.TermSet.Where(x => x.Id == id).FirstOrDefault();
+        if (termSet == null || termSet?.ApplicationUserId != user!.Id) return NotFound();
+
+        return Json(new TermSetApiModel(termSet!.Id, termSet.Name, termSet.Description));
+    }
+
+    [HttpGet]
+    [Route("{id}/terms")]
+    public IActionResult GetTermsById(long id)
+    {
+        var user = _context.GetLoggedInUser(HttpContext);
+        var termSet = _context.TermSet
+            .Include(x => x.Terms)
+            .ThenInclude(x => x.Labels)
+            .Where(x => x.Id == id).FirstOrDefault();
+        if (termSet == null || termSet?.ApplicationUserId != user!.Id) return NotFound();
+
+        return Json(termSet.Terms.Select(x => new TermApiModel(
+            x.Id, x.TermSetId,
+            x.Value, x.Definition, x.Notes,
+            x.CurrentStreak, x.MovedToCurrentListUtc,
+            x.Labels.Select(x => x.Name).ToList())));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> PostIndex([FromBody] TermSetApiModel model)
+    {
+        if (!ModelState.IsValid) return BadRequest("Model state invalid");
+
+        var user = _context.GetLoggedInUser(HttpContext);
+
+        _context.TermSet.Add(new()
+        {
+            ApplicationUser = user,
+            Id = model.Id,
+            Name = model.Name,
+            Description = model.Description
+        });
+        await _context.SaveChangesAsync();
+
+
+        return Ok();
     }
 }
