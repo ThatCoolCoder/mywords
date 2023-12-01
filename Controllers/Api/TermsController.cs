@@ -4,6 +4,8 @@ using Data;
 
 namespace Controllers.Api;
 
+public record TermApiModel(long Id, long TermSetId, string Value, string Definition, string Notes, int CurrentStreak, DateTime MovedToCurrentListUtc, List<long> LabelIds);
+
 [StandardApiController("Terms")]
 public class TermsController : Controller
 {

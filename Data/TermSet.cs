@@ -11,4 +11,5 @@ public class TermSet
 
     public ApplicationUser? ApplicationUser { get; set; }
     public ICollection<Term> Terms { get; set; } = new List<Term>();
+    public ICollection<Label> Labels { get; set; } = new List<Label>();
 }

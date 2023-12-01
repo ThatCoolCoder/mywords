@@ -8,5 +8,5 @@
 		}
 	}
 </script>
-  
+
 <Router {config} {routes} />

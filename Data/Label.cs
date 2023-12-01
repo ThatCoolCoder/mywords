@@ -9,6 +9,6 @@ public class Label
     public string Color { get; set; } = "";
     public long TermSetId { get; set; }
 
-    public TermSet? TermSet { get; set; }
-    public ICollection<Term> Terms { get; set; } = new List<Term>();
+    public TermSet TermSet { get; set; } = null!;
+    public List<LabelTerm> LabelTerms { get; set; } = new();
 }

@@ -22,8 +22,6 @@ public class TermSetsController : Controller
 
     public record TermSetApiModel(long Id, string Name, string Description);
 
-    public record TermApiModel(long Id, long TermSetId, string Value, string Definition, string Notes, int CurrentStreak, DateTime MovedToCurrentListUtc, List<string> Labels);
-
     [HttpGet]
     public IActionResult GetIndex()
     {
@@ -50,15 +48,31 @@ public class TermSetsController : Controller
         var user = _context.GetLoggedInUser(HttpContext);
         var termSet = _context.TermSet
             .Include(x => x.Terms)
-            .ThenInclude(x => x.Labels)
+                .ThenInclude(x => x.LabelTerms)
+                    .ThenInclude(x => x.Label)
             .Where(x => x.Id == id).FirstOrDefault();
+
         if (termSet == null || termSet?.ApplicationUserId != user!.Id) return NotFound();
 
         return Json(termSet.Terms.Select(x => new TermApiModel(
             x.Id, x.TermSetId,
             x.Value, x.Definition, x.Notes,
             x.CurrentStreak, x.MovedToCurrentListUtc,
-            x.Labels.Select(x => x.Name).ToList())));
+            x.LabelTerms.Select(x => x.Label.Id).ToList())));
+    }
+
+    [HttpGet]
+    [Route("{id}/labels")]
+    public IActionResult GetLabelsById(long id)
+    {
+        var user = _context.GetLoggedInUser(HttpContext);
+        var termSet = _context.TermSet
+            .Include(x => x.Labels)
+            .Where(x => x.Id == id).FirstOrDefault();
+
+        if (termSet == null || termSet?.ApplicationUserId != user!.Id) return NotFound();
+
+        return Json(termSet.Labels.Select(x => new LabelApiModel(x.Id, x.Name, x.Color, x.TermSetId)));
     }
 
     [HttpPost]
