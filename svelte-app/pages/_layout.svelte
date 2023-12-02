@@ -4,10 +4,10 @@
     import { setContext, onMount } from 'svelte';
     import Modal from 'svelte-simple-modal';
     import util from './utils';
-    import api from '../services/api';
+    import api from 'services/api';
 
-    import ErrorPopup from '../shared/ErrorPopup.svelte';
-    import ApiDependent from '../shared/ApiDependent.svelte';
+    import ErrorPopup from 'shared/ErrorPopup.svelte';
+    import ApiDependent from 'shared/ApiDependent.svelte';
 
     var user = null;
     setContext('user', {

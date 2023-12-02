@@ -1,9 +1,10 @@
 <script>
     import { onMount, getContext } from 'svelte';
-    import api from '../../services/api.js';
-    import TermSetMetadataEditor from '../../shared/TermSetMetadataEditor.svelte';
     import { writable } from 'svelte/store';
-    import ApiDependent from '../../shared/ApiDependent.svelte';
+    import api from 'services/api.js';
+    import { navigate } from 'pages/utils';
+    import TermSetMetadataEditor from 'shared/TermSetMetadataEditor.svelte';
+    import ApiDependent from 'shared/ApiDependent.svelte';
 
     export let id;
     let set;
@@ -24,7 +25,7 @@
 
 </script>
 
-<title>{set?.name ?? 'Collection'} | MyWords</title>
+<title>{$set?.name ?? 'Collection'} | MyWords</title>
 
 <div class="d-flex gap-4">
     <div>
@@ -38,6 +39,8 @@
 <hr />
 
 <h4>Terms</h4>
+
+<button class="btn btn-primary" on:click={() => navigate(`/collections/${id}/addterms`)}><i class="bi-plus-lg" />&ensp;Add terms</button>
 
 <hr />
 

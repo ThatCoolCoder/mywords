@@ -30,6 +30,26 @@ public class TermSetsController : Controller
         return Json(user.TermSets.Select(x => new TermSetApiModel(x.Id, x.Name, x.Description)));
     }
 
+    [HttpPost]
+    public async Task<IActionResult> PostIndex([FromBody] TermSetApiModel model)
+    {
+        if (!ModelState.IsValid) return BadRequest("Model state invalid");
+
+        var user = _context.GetLoggedInUser(HttpContext);
+
+        _context.TermSet.Add(new()
+        {
+            ApplicationUser = user,
+            Id = model.Id,
+            Name = model.Name,
+            Description = model.Description
+        });
+        await _context.SaveChangesAsync();
+
+
+        return Ok();
+    }
+
     [HttpGet]
     [Route("{id}")]
     public IActionResult GetById(long id)
@@ -91,25 +111,5 @@ public class TermSetsController : Controller
         if (termSet == null || termSet?.ApplicationUserId != user!.Id) return NotFound();
 
         return Json(termSet.Labels.Select(x => new LabelApiModel(x.Id, x.Name, x.Color, x.TermSetId)));
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> PostIndex([FromBody] TermSetApiModel model)
-    {
-        if (!ModelState.IsValid) return BadRequest("Model state invalid");
-
-        var user = _context.GetLoggedInUser(HttpContext);
-
-        _context.TermSet.Add(new()
-        {
-            ApplicationUser = user,
-            Id = model.Id,
-            Name = model.Name,
-            Description = model.Description
-        });
-        await _context.SaveChangesAsync();
-
-
-        return Ok();
     }
 }

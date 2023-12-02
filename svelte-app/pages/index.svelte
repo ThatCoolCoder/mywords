@@ -1,11 +1,11 @@
 <script>
     import { onMount } from 'svelte';
     
-    import api from '../services/api.js';
+    import api from 'services/api.js';
     import { navigate } from './utils.js';
     
-    import ApiDependent from '../shared/ApiDependent.svelte';
-    import TermSetCard from "../shared/TermSetCard.svelte";
+    import ApiDependent from 'shared/ApiDependent.svelte';
+    import TermSetCard from "shared/TermSetCard.svelte";
 
     let termSets = null;
     onMount(async () => termSets = await api.get('termsets', 'Failed getting collections'));

@@ -1,7 +1,7 @@
 <script>
     import { getContext, onMount } from 'svelte';
 
-    import api from '../services/api';
+    import api from 'services/api';
 
     const { get, set } = getContext('user');
     let user = get();

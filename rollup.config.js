@@ -5,6 +5,8 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
 import json from '@rollup/plugin-json';
+import includePaths from 'rollup-plugin-includepaths';
+import alias from '@rollup/plugin-alias';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -69,7 +71,17 @@ export default {
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
-		production && terser()
+		production && terser(),
+		alias({
+			resolve: ['.svelte', '.js'], //optional, by default this will just look for .js files or folders
+			entries: [
+				{ find: 'services', replacement: './svelte-app/services' },
+				{ find: 'pages', replacement: './svelte-app/pages' },
+				{ find: 'shared', replacement: './svelte-app/shared' },
+				{ find: 'data', replacement: './svelte-app/data' },
+			]
+		}),
+		includePaths({ paths: ["./"] })
 	],
 	watch: {
 		clearScreen: false

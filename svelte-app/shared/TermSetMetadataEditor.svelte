@@ -1,7 +1,7 @@
 <script>
     import { getContext } from "svelte";
     import { get } from "svelte/store";
-    import api from "../services/api";
+    import api from "services/api";
     export let termSetWritable;
 
     let name = '';
@@ -23,6 +23,12 @@
         close();
         var ts = get(termSetWritable);
         api.put(`termsets/${ts.id}`, ts, 'Failed saving collection changes');
+    }
+    
+    function cancel() {
+        var ts = get(termSetWritable);
+        name = ts.name;
+        description = ts.description;
     }
 </script>
 
@@ -49,6 +55,6 @@
 </div>
 
 <div class="d-flex justify-content-center gap-3">
-    <button class="btn btn-secondary">Cancel</button>
+    <button class="btn btn-secondary" on:click={cancel}>Cancel</button>
     <button class="btn btn-primary" on:click={saveChanges}>Save changes</button>
 </div>

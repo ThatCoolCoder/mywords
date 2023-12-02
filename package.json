@@ -15,6 +15,7 @@
     "dynamicImports": false
   },
   "devDependencies": {
+    "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
@@ -30,6 +31,7 @@
     "svelte": "^3.59.2"
   },
   "dependencies": {
+    "rollup-plugin-includepaths": "^0.2.4",
     "spnr": "^1.8.1",
     "svelte-simple-modal": "1.5.1"
   }
