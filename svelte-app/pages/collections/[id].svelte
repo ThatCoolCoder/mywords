@@ -1,6 +1,9 @@
 <script>
     import { onMount, getContext } from 'svelte';
     import api from '../../services/api.js';
+    import TermSetMetadataEditor from '../../shared/TermSetMetadataEditor.svelte';
+    import { writable } from 'svelte/store';
+    import ApiDependent from '../../shared/ApiDependent.svelte';
 
     export let id;
     let set;
@@ -10,13 +13,13 @@
     const { open, close } = getContext('simple-modal');
 
     async function openEditSetInfo() {
-        open();
+        open(TermSetMetadataEditor, { termSetWritable : set });
     }
 
     onMount(async () => {
-        set = await api.get(`termsets/${id}`);
-        terms = await api.get(`termsets/${id}/terms`);
-        labels = await api.get(`termsets/${id}/labels`);
+        set = writable(await api.get(`termsets/${id}`));
+        terms = writable(await api.get(`termsets/${id}/terms`));
+        labels = writable(await api.get(`termsets/${id}/labels`));
     });
 
 </script>
@@ -25,8 +28,10 @@
 
 <div class="d-flex gap-4">
     <div>
-        <h2>{set?.name ?? ''}</h2>
-        <p>{set?.description ?? ''}</p>
+        <ApiDependent ready={set != null}>
+            <h2>{ $set.name }</h2>
+            <p>{ $set.description }</p>
+        </ApiDependent>
     </div>
     <button class="btn align-self-end" aria-label="Edit details" on:click={openEditSetInfo}><i class="bi-pencil" /></button>
     </div>

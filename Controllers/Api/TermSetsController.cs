@@ -41,6 +41,24 @@ public class TermSetsController : Controller
         return Json(new TermSetApiModel(termSet!.Id, termSet.Name, termSet.Description));
     }
 
+    [HttpPut]
+    [Route("{id}")]
+    public IActionResult PutById(long id, [FromBody] TermSetApiModel model)
+    {
+        if (!ModelState.IsValid) return BadRequest("Model state invalid");
+        var user = _context.GetLoggedInUser(HttpContext);
+        var termSet = _context.TermSet.Where(x => x.Id == id).FirstOrDefault();
+        if (termSet == null || termSet?.ApplicationUserId != user!.Id) return NotFound();
+
+        termSet.Name = model.Name;
+        termSet.Description = model.Description;
+
+        _context.Update(termSet);
+        _context.SaveChanges();
+
+        return Ok();
+    }
+
     [HttpGet]
     [Route("{id}/terms")]
     public IActionResult GetTermsById(long id)
