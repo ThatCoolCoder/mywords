@@ -6,6 +6,7 @@
     import TermSetMetadataEditor from 'shared/TermSetMetadataEditor.svelte';
     import ApiDependent from 'shared/ApiDependent.svelte';
     import LabelCard from 'shared/LabelCard.svelte';
+    import DataList from '../../../shared/DataList.svelte';
 
     export let scoped;
     $: ({id, set} = scoped);
@@ -51,11 +52,10 @@
 
 <h4>Labels</h4>
 <ApiDependent ready={labels != null}>
-    {#each $labels as label}
-        <LabelCard label={writable(label)} />
-    {:else}
-        <span>This collection doesn't have any labels yet</span><br />
-    {/each}
+    <DataList itemsWritable={labels} let:item let:del let:editing>
+        <LabelCard label={item} {del} {editing} /> 
+        <!-- todo: improve datalist so that we can either directly pass it a component or store state without modifying our object -->
+    </DataList>
 </ApiDependent>
 
 <button class="btn" aria-label="add label" on:click={addLabel}><i class="bi-plus-lg"/></button>
