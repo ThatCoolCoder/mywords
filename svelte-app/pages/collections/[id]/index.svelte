@@ -5,9 +5,10 @@
     import { navigate } from 'pages/utils';
     import TermSetMetadataEditor from 'shared/TermSetMetadataEditor.svelte';
     import ApiDependent from 'shared/ApiDependent.svelte';
+    import LabelCard from 'shared/LabelCard.svelte';
 
-    export let id;
-    let set;
+    export let scoped;
+    $: ({id, set} = scoped);
     let terms;
     let labels;
 
@@ -17,8 +18,12 @@
         open(TermSetMetadataEditor, { termSetWritable : set });
     }
 
+    function addLabel() {
+        var l = {name: '', color: ''};
+        labels.update(x => x.concat([l]));
+    }
+
     onMount(async () => {
-        set = writable(await api.get(`termsets/${id}`));
         terms = writable(await api.get(`termsets/${id}/terms`));
         labels = writable(await api.get(`termsets/${id}/labels`));
     });
@@ -45,6 +50,15 @@
 <hr />
 
 <h4>Labels</h4>
+<ApiDependent ready={labels != null}>
+    {#each $labels as label}
+        <LabelCard label={writable(label)} />
+    {:else}
+        <span>This collection doesn't have any labels yet</span><br />
+    {/each}
+</ApiDependent>
+
+<button class="btn" aria-label="add label" on:click={addLabel}><i class="bi-plus-lg"/></button>
 
 <!-- <div>
     <button class="btn btn-primary" on:click={create}>Add</button>

@@ -5,18 +5,11 @@
     import TermSetMetadataEditor from 'shared/TermSetMetadataEditor.svelte';
     import ApiDependent from 'shared/ApiDependent.svelte';
 
-    export let id;
-    let set;
+    export let scoped;
+    $: ({set} = scoped);
 
     // const { open, close } = getContext('simple-modal');
 
-    // async function openEditSetInfo() {
-    //     open(TermSetMetadataEditor, { termSetWritable : set });
-    // }
-
-    onMount(async () => {
-        set = writable(await api.get(`termsets/${id}`));
-    });
 
 </script>
 
