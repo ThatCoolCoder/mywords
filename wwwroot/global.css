@@ -82,3 +82,10 @@ button:focus {
     width: 50%;
     min-width: 300px;
 }
+
+.btn.bi-btn {
+	/* vertical-align: -.125em;
+	width: 1em;
+	height: 1em; */
+	/* vertical-align: ; */
+}

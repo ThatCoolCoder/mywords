@@ -29,11 +29,12 @@ public class LabelsController : Controller
     // }
 
     [HttpPost]
-    [Route("{id}")]
+    [Route("")]
     public async Task<IActionResult> Create([FromBody] LabelApiModel model)
     {
+        Console.WriteLine("screw you");
         var loggedInUserId = _context.GetLoggedInUser(HttpContext).Id;
-        var termSet = _context.TermSet.First(x => x.ApplicationUserId == loggedInUserId && x.Id == model.TermSetId);
+        var termSet = _context.TermSet.FirstOrDefault(x => x.ApplicationUserId == loggedInUserId && x.Id == model.TermSetId);
         if (termSet == null) return NotFound($"Term set with id={model.TermSetId} not found");
 
         var created = new Label()
@@ -51,10 +52,10 @@ public class LabelsController : Controller
 
     [HttpPost]
     [Route("{id}/delete")]
-    public async Task<IActionResult> Delete(long id)
+    public async Task<IActionResult> Delete([FromRoute] long id)
     {
         var loggedInUserId = _context.GetLoggedInUser(HttpContext).Id;
-        var existing = _context.Label.Include(x => x.TermSet).First(x => x.Id == id && x.TermSet.ApplicationUserId == loggedInUserId);
+        var existing = _context.Label.Include(x => x.TermSet).FirstOrDefault(x => x.Id == id && x.TermSet.ApplicationUserId == loggedInUserId);
         if (existing == null) return NotFound();
 
         _context.Remove(existing);
@@ -67,11 +68,11 @@ public class LabelsController : Controller
     [Route("{id}")]
     public async Task<IActionResult> UpdateById([FromBody] LabelApiModel model)
     {
-        if (ModelState.IsValid) return BadRequest();
+        // if (ModelState.IsValid) return BadRequest();
         var loggedInUserId = _context.GetLoggedInUser(HttpContext).Id;
         var existing = _context.Label
             .Where(x => x.TermSet.ApplicationUserId == loggedInUserId)
-            .First(x => x.Id == model.Id);
+            .FirstOrDefault(x => x.Id == model.Id);
         if (existing == null) return NotFound();
 
         existing.Name = model.Name;

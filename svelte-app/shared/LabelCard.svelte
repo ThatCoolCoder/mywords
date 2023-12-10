@@ -43,7 +43,7 @@
         <button class="btn btn-sm p-0" aria-label="delete" on:click={del}><i class="bi-trash3"/></button>
         <button class="btn btn-sm p-0" aria-label="edit" on:click={save}><i class="bi-check2"/></button>
     {:else}
-        <p style={`background-color: ${$label.color}`}>{$label.name}</p>
+        <p style={`background-color: ${label.color}`}>{label.name}</p>
         <button class="btn" aria-label="edit" on:click={edit}><i class="bi-pencil"/></button>
     {/if}
 </div>
