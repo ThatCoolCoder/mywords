@@ -6,8 +6,8 @@
     import util from './utils';
     import api from 'services/api';
 
-    import ErrorPopup from 'shared/ErrorPopup.svelte';
-    import ApiDependent from 'shared/ApiDependent.svelte';
+    import ErrorPopup from 'shared/misc/ErrorPopup.svelte';
+    import ApiDependent from 'shared/misc/ApiDependent.svelte';
 
     var user = null;
     setContext('user', {

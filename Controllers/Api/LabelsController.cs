@@ -32,7 +32,7 @@ public class LabelsController : Controller
     [Route("")]
     public async Task<IActionResult> Create([FromBody] LabelApiModel model)
     {
-        Console.WriteLine("screw you");
+        if (!ModelState.IsValid) return BadRequest();
         var loggedInUserId = _context.GetLoggedInUser(HttpContext).Id;
         var termSet = _context.TermSet.FirstOrDefault(x => x.ApplicationUserId == loggedInUserId && x.Id == model.TermSetId);
         if (termSet == null) return NotFound($"Term set with id={model.TermSetId} not found");

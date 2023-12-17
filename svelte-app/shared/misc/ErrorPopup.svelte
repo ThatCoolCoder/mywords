@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import { handler } from '../services/errorService';
+    import { handler } from 'services/errorService';
      
     
     var isOpen = false;

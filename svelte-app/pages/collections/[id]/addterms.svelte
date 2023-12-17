@@ -2,8 +2,7 @@
     import { onMount, getContext } from 'svelte';
     import { writable } from 'svelte/store';
     import api from 'services/api.js';
-    import TermSetMetadataEditor from 'shared/TermSetMetadataEditor.svelte';
-    import ApiDependent from 'shared/ApiDependent.svelte';
+    import ApiDependent from 'shared/misc/ApiDependent.svelte';
 
     export let scoped;
     $: ({set} = scoped);

@@ -28,7 +28,7 @@
         if (label.id !== undefined) api.post(`labels/${label.id}/delete`);
         closeEdit();
         editIdx = -1;
-        labels.update(x => x.splice(editIdx, 1));
+        labels.update(x => x.delete(editIdx));
     }
 
     function save() {
@@ -36,9 +36,6 @@
 
         label.name = name;
         label.color = color;
-
-
-        console.log(label);
 
         if (label.id === undefined) api.post(`labels/`, label);
         else api.put(`labels/${label.id}`, label);
@@ -48,7 +45,7 @@
     }
 
     function create() {
-        var l = {id: undefined, termSetId: termSetId, name: '', color: ''};
+        var l = {id: undefined, termSetId: termSetId, name: '', color: 'black'};
         editIdx = get(labels).length;
         labels.update(x => x.concat([l]));
     }

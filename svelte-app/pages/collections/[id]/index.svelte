@@ -6,7 +6,7 @@
     import { navigate } from 'pages/utils';
 
     import TermSetMetadataEditor from 'shared/TermSetMetadataEditor.svelte';
-    import ApiDependent from 'shared/ApiDependent.svelte';
+    import ApiDependent from 'shared/misc/ApiDependent.svelte';
     import LabelCard from 'shared/LabelCard.svelte';
     import LabelList from '../../../shared/LabelList.svelte';
 

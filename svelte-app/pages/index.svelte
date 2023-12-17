@@ -4,7 +4,7 @@
     import api from 'services/api.js';
     import { navigate } from './utils.js';
     
-    import ApiDependent from 'shared/ApiDependent.svelte';
+    import ApiDependent from 'shared/misc/ApiDependent.svelte';
     import TermSetCard from "shared/TermSetCard.svelte";
 
     let termSets = null;
