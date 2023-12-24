@@ -1,77 +1,60 @@
 <script>
-    import { get } from "svelte/store";
+    import { get, writable } from "svelte/store";
 
     import api from "services/api";
+    import DataList from "shared/misc/DataList.svelte";
 
     export let labels;
     export let termSetId;
-    let editIdx = -1;
+    let editData;
+    let dataList;
 
-    let name;
-    let color;
-
-    function edit(idx) {
-        editIdx = idx;
-        var label = get(labels)[idx];
-        name = label.name;
-        color = label.color;
+    function onItemEdit(label) {
+        return {name: label.name, color: label.color};
     }
 
-    function closeEdit() {
-        name = '';
-        color = '';
-        editIdx = -1;
-    }
-
-    function del() {
-        var label = get(labels)[editIdx];
-        if (label.id !== undefined) api.post(`labels/${label.id}/delete`);
-        closeEdit();
-        editIdx = -1;
-        labels.update(x => x.delete(editIdx));
-    }
-
-    function save() {
-        var label = get(labels)[editIdx];
-
-        label.name = name;
-        label.color = color;
+    function onItemUpdate(label, editData) {
+        label.name = editData.name;
+        label.color = editData.color;
 
         if (label.id === undefined) api.post(`labels/`, label);
         else api.put(`labels/${label.id}`, label);
+    }
 
-        labels.update(x => x);
-        closeEdit();
+    function onItemDelete(label) {
+        if (label.id !== undefined) api.post(`labels/${label.id}/delete`);
     }
 
     function create() {
-        var l = {id: undefined, termSetId: termSetId, name: '', color: 'black'};
-        editIdx = get(labels).length;
-        labels.update(x => x.concat([l]));
+        var l = {id: undefined, termSetId: termSetId, name: '', color: '#ffaaaa'};
+        labels.update(x => x.pushed(l));
+        dataList.edit(l);
     }
 </script>
 
 <div class="d-flex flex-column align-items-start">
-    {#each $labels as label, idx}
-        {#if idx == editIdx}
-            <div class="d-flex align-items-center gap-2">
-                <input bind:value={name}  placeholder="name" />
-                <input type="color" bind:value={color}/>
-                <div class="vr"></div> 
+<DataList itemsWritable={labels} bind:editData={editData} bind:this={dataList}
+    {onItemEdit} {onItemUpdate} {onItemDelete}
+    let:editing let:item={label} let:idx
+    let:actions>
+    {#if editing}
+        <div class="d-flex align-items-center gap-2">
+            <input bind:value={$editData[idx].name} placeholder="name" />
+            <input type="color" bind:value={$editData[idx].color}/>
+            <div class="vr"></div> 
 
-                <button class="btn btn-sm p-0" aria-label="edit" on:click={closeEdit}><i class="bi-arrow-counterclockwise"/></button>
-                <button class="btn btn-sm p-0" aria-label="delete" on:click={del}><i class="bi-trash3"/></button>
-                <button class="btn btn-sm p-0" aria-label="edit" on:click={save}><i class="bi-check2"/></button>
-            </div>
-        {:else}
-            <div class="d-flex align-items-center gap-2 px-2 py-0 rounded" style={`background-color: ${label.color}`} >
-                <span>{label.name}</span>
-                <a class="btn px-0" role="button" aria-label="edit" on:click={() => edit(idx)}><i class="bi-pencil" /></a>
-            </div>
-        {/if}
+            <button class="btn btn-sm p-0" aria-label="edit" on:click={() => actions.cancelEdit(label)}><i class="bi-arrow-counterclockwise"/></button>
+            <button class="btn btn-sm p-0" aria-label="delete" on:click={() => actions.del(label)}><i class="bi-trash3"/></button>
+            <button class="btn btn-sm p-0" aria-label="save" on:click={() => actions.update(label)}><i class="bi-check2"/></button>
+        </div>
     {:else}
-        <span>No labels</span>
-    {/each}
+        <div class="d-flex align-items-center gap-2 px-2 py-0 rounded" style={`background-color: ${label.color}`} >
+            <span>{label.name}</span>
+            <a class="btn px-0" role="button" aria-label="edit" on:click={() => actions.edit(label)}><i class="bi-pencil" /></a>
+        </div>
+    {/if}
+</DataList>
 </div>
+
 
 <button class="btn" aria-label="add label" on:click={create}><i class="bi-plus-lg"/></button>

@@ -1,35 +1,51 @@
 <script>
-    export let itemsWritable;
-    export let onItemEdit;
-    export let onItemUpdated;
-    export let onItemDeleted;
+    import { writable, get } from "svelte/store";
 
-    let editingItems = [];
+    export let itemsWritable;
+    
+    export let onItemEdit;
+    export let onItemUpdate;
+    export let onItemDelete;
+
+    let editingItems = writable([]);
+    export let editData = writable([]);
 
     export function edit(item) {
-        editingItems.push(item);
-        onItemEdit(item);
+        var thisItemData = {};
+        if (onItemEdit) thisItemData = onItemEdit(item);
+        
+        editData.update(l => {l[indexOf(item)] = thisItemData; return l; });
+        editingItems.update(l => l.pushed(item));
     }
 
     export function del(item) {
-        nevermind();
-        itemsWritable.update(x => x.filter(i => i != item));
-        if (onItemDeleted) onItemDeleted(item);
+        stopEditingItem(item);
+        itemsWritable.update(l => l.deleteItem(item));
+        if (onItemDelete) onItemDelete(item);
     }
 
-    export function nevermind(item) {
-        editingItems = editingItems.filter(x => x != item);
+    function stopEditingItem(item) {
+        editData.update(l => l.deleteIdx(indexOf(item)));
+        editingItems.update(l => l.deleteItem(item));
+    }
+
+    export function cancelEdit(item) {
+        stopEditingItem(item);
     }
 
     export function update(item) {
-        nevermind();
-        // itemsWritable.update(x => x.filter(i => i != item));
-        if (onItemUpdated) onItemUpdated(item);
+        if (onItemUpdate) onItemUpdate(item, $editData[indexOf(item)]);
+        stopEditingItem(item);
+    }
+
+    function indexOf(item) {
+        return get(itemsWritable).indexOf(item);
     }
 </script>
 
-{#each $itemsWritable as item}
-    <slot {item} {edit} {del} {nevermind} {update} editing={editingItems.includes(item)} />
+{#each $itemsWritable as item, idx}
+    <slot {item} {idx} editing={$editingItems.includes(item)}
+        actions={{edit, cancelEdit, del, update}} />
 {:else}
     <span>No items in list</span>
 {/each}

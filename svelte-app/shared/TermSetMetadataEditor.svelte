@@ -26,6 +26,7 @@
     }
     
     function cancel() {
+        close();
         var ts = get(termSetWritable);
         name = ts.name;
         description = ts.description;

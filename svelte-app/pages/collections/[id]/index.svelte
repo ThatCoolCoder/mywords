@@ -8,7 +8,7 @@
     import TermSetMetadataEditor from 'shared/TermSetMetadataEditor.svelte';
     import ApiDependent from 'shared/misc/ApiDependent.svelte';
     import LabelCard from 'shared/LabelCard.svelte';
-    import LabelList from '../../../shared/LabelList.svelte';
+    import LabelList from 'shared/LabelList.svelte';
 
     export let scoped;
     $: ({id, set} = scoped);
