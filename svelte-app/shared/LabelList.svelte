@@ -2,7 +2,9 @@
     import { get, writable } from "svelte/store";
 
     import api from "services/api";
+    
     import DataList from "shared/misc/DataList.svelte";
+    import StandardEditorButtons from "shared/misc/StandardEditorButtons.svelte";
 
     export let labels;
     export let termSetId;
@@ -14,6 +16,8 @@
     }
 
     function onItemUpdate(label, editData) {
+        if (editData.name.trim().length == 0) return false;
+
         label.name = editData.name;
         label.color = editData.color;
 
@@ -32,20 +36,18 @@
     }
 </script>
 
-<div class="d-flex flex-column align-items-start">
+<div class="d-flex flex-row align-items-start gap-2">
 <DataList itemsWritable={labels} bind:editData={editData} bind:this={dataList}
     {onItemEdit} {onItemUpdate} {onItemDelete}
     let:editing let:item={label} let:idx
     let:actions>
     {#if editing}
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 rounded px-2 py-0 children-no-margin" style="border: 1px solid black">
             <input bind:value={$editData[idx].name} placeholder="name" />
             <input type="color" bind:value={$editData[idx].color}/>
             <div class="vr"></div> 
 
-            <button class="btn btn-sm p-0" aria-label="edit" on:click={() => actions.cancelEdit(label)}><i class="bi-arrow-counterclockwise"/></button>
-            <button class="btn btn-sm p-0" aria-label="delete" on:click={() => actions.del(label)}><i class="bi-trash3"/></button>
-            <button class="btn btn-sm p-0" aria-label="save" on:click={() => actions.update(label)}><i class="bi-check2"/></button>
+            <StandardEditorButtons {actions} item={label} />
         </div>
     {:else}
         <div class="d-flex align-items-center gap-2 px-2 py-0 rounded" style={`background-color: ${label.color}`} >
@@ -54,7 +56,6 @@
         </div>
     {/if}
 </DataList>
+<button class="btn" aria-label="add label" on:click={create}><i class="bi-plus-lg"/></button>
 </div>
 
-
-<button class="btn" aria-label="add label" on:click={create}><i class="bi-plus-lg"/></button>

@@ -89,3 +89,8 @@ button:focus {
 	height: 1em; */
 	/* vertical-align: ; */
 }
+
+.children-no-margin > * {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}

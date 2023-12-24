@@ -1,28 +1,35 @@
 <script>
+    import { writable } from "svelte/store";
+
+    import api from "services/api";
+
+    import DataList from "shared/misc/DataList.svelte";
+    import StandardEditorButtons from "shared/misc/StandardEditorButtons.svelte";
+
     export let title = 'Terms';
-    export let terms = [];
+    export let terms = writable([]);
+
+    let editData;
+    let dataList;
+
+    function onItemEdit(term) {
+        return {value: term.value, definition: term.definition, description: term.description};
+    }
+
+    function onItemUpdate(term) {
+
+    }
+
+    function onItemDelete(term) {
+        if (label.id !== undefined) api.post(`terms/${term.id}/delete`);
+    }
+
 </script>
 
-<div class="d-flex flex-column align-items-start">
-    <h4>{{title}}</h4>
-    {#each $terms as term}
-        {#if idx == editIdx}
-            <div class="d-flex align-items-center gap-2">
-                <!-- <input bind:value={name}  placeholder="name" /> -->
-                <!-- <input type="color" bind:value={color}/> -->
-                <div class="vr"></div> 
+<p>{title}</p>
+<DataList itemsWritable={terms} bind:editData={editData} bind:this={dataList}
+    {onItemEdit} {onItemUpdate} {onItemDelete}
+    let:editing let:item={label} let:idx
+    let:actions>
 
-                <button class="btn btn-sm p-0" aria-label="edit" on:click={closeEdit}><i class="bi-arrow-counterclockwise"/></button>
-                <button class="btn btn-sm p-0" aria-label="delete" on:click={del}><i class="bi-trash3"/></button>
-                <button class="btn btn-sm p-0" aria-label="edit" on:click={save}><i class="bi-check2"/></button>
-            </div>
-        {:else}
-            <div class="d-flex align-items-center gap-2 px-2 py-0 rounded" style={`background-color: ${label.color}`} >
-                <span>{label.name}</span>
-                <a class="btn px-0" role="button" aria-label="edit" on:click={() => edit(idx)}><i class="bi-pencil" /></a>
-            </div>
-        {/if}
-    {:else}
-        <span>No terms</span>
-    {/each}
-</div>
+</DataList>

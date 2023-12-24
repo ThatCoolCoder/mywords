@@ -3,9 +3,9 @@
 
     export let itemsWritable;
     
-    export let onItemEdit;
-    export let onItemUpdate;
-    export let onItemDelete;
+    export let onItemEdit; // has item passed to it and can return some edit data which is then accessible through editData[itemIdx]
+    export let onItemUpdate; // has item and associated editData passed to it, if it returns false then the item is not valid and it won't be updated
+    export let onItemDelete; // has item passed to it
 
     let editingItems = writable([]);
     export let editData = writable([]);
@@ -34,8 +34,9 @@
     }
 
     export function update(item) {
-        if (onItemUpdate) onItemUpdate(item, $editData[indexOf(item)]);
-        stopEditingItem(item);
+        var isValid = true;
+        if (onItemUpdate) isValid = onItemUpdate(item, $editData[indexOf(item)]) ?? true;
+        if (isValid) stopEditingItem(item);
     }
 
     function indexOf(item) {
