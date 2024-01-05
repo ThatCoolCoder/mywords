@@ -11,10 +11,10 @@ namespace Controllers.Api;
 [Authorize]
 public class TermSetsController : Controller
 {
-    private readonly ILogger<TermsController> _logger;
+    private readonly ILogger<TermSetsController> _logger;
     private readonly ApplicationDbContext _context;
 
-    public TermSetsController(ILogger<TermsController> logger, ApplicationDbContext context)
+    public TermSetsController(ILogger<TermSetsController> logger, ApplicationDbContext context)
     {
         _logger = logger;
         _context = context;

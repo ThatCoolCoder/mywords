@@ -17,21 +17,25 @@ public class LandingPageController : Controller
     [Route("/")]
     public async Task<IActionResult> Index()
     {
-        if (User.Claims.Count() == 0) return View("Views/LandingPage.cshtml");
+        if (! User.Claims.Any()) return View("Views/LandingPage.cshtml");
         else
         {
-            await ServeSpaHost(HttpContext);
-            return Ok();
+            SetSpaHeaders(HttpContext);
+            return File("/host.html", "text/html");
         }
     }
 
     public static async Task ServeSpaHost(HttpContext context)
     {
+        SetSpaHeaders(context);
+        await context.Response.SendFileAsync("wwwroot/host.html");
+        await context.Response.CompleteAsync();
+    }
+
+    private static void SetSpaHeaders(HttpContext context)
+    {
         context.Response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate");
         context.Response.Headers.Add("Pragma", "no-cache");
         context.Response.Headers.Add("Expires", "0");
-
-        await context.Response.SendFileAsync("wwwroot/host.html");
-        await context.Response.CompleteAsync();
     }
 }

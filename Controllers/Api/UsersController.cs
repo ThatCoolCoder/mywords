@@ -13,11 +13,11 @@ namespace Controllers.Api;
 [Authorize]
 public class UsersController : Controller
 {
-    private readonly ILogger<LandingPageController> _logger;
+    private readonly ILogger<UsersController> _logger;
     private readonly ApplicationDbContext _context;
     private readonly ApplicationUserManager _userManager;
 
-    public UsersController(ILogger<LandingPageController> logger, ApplicationDbContext context, ApplicationUserManager userManager)
+    public UsersController(ILogger<UsersController> logger, ApplicationDbContext context, ApplicationUserManager userManager)
     {
         _logger = logger;
         _context = context;

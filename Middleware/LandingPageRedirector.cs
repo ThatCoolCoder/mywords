@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Middleware;
@@ -6,18 +7,24 @@ public class LandingPageRedirector
 {
     public static async Task Main(HttpContext context)
     {
-        // if logged out - redirect to / which has a controller with a landing page
+        // if logged out - redirect to / which has a controller with a landing page (but obviously don't do anything if )
         // if logged in - just serve the spa when not found
         //                  (unless looking for the api, then they actually want a 404 so don't give them any in that case)
 
-        if (context.User.Claims.Count() == 0 && !context.Request.Path.Equals("/")) context.Response.Redirect("/");
-        else if (context.User.Claims.Count() != 0 && !context.Request.Path.StartsWithSegments("/api"))
+        if (! context.User.Claims.Any() && !context.Request.Path.Equals("/")) 
         {
-            await Controllers.LandingPageController.ServeSpaHost(context);
+            context.Response.Redirect("/");
         }
         else
         {
-            context.Response.StatusCode = 404;
+            if (context.User.Claims.Any() && !context.Request.Path.StartsWithSegments("/api"))
+            {
+                await Controllers.LandingPageController.ServeSpaHost(context);
+            }
+            else
+            {
+                context.Response.StatusCode = 404;
+            }
         }
     }
 }

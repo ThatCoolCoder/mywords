@@ -13,11 +13,11 @@ namespace Controllers.Api;
 [StandardApiController("Identity")]
 public class IdentityController : Controller
 {
-    private readonly ILogger<LandingPageController> _logger;
+    private readonly ILogger<IdentityController> _logger;
     private readonly ApplicationDbContext _context;
     private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public IdentityController(ILogger<LandingPageController> logger, ApplicationDbContext context, SignInManager<ApplicationUser> signInManager)
+    public IdentityController(ILogger<IdentityController> logger, ApplicationDbContext context, SignInManager<ApplicationUser> signInManager)
     {
         _logger = logger;
         _context = context;

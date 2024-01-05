@@ -5,7 +5,6 @@
 
     import api from 'services/api.js';
     
-    import Dropdown from '@sveltestrap/sveltestrap';
     import ApiDependent from 'shared/misc/ApiDependent.svelte';
 
     let id = $params.id;
