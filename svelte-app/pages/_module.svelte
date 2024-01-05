@@ -9,13 +9,15 @@
     import ErrorPopup from 'shared/misc/ErrorPopup.svelte';
     import ApiDependent from 'shared/misc/ApiDependent.svelte';
 
-    var user = null;
+    var user = null; 
     setContext('user', {
         get: () => user,
         set: newUser => user = newUser
     });
     
-    onMount(async () => user = await api.get('users/me', 'Failed fetching user data'));
+    onMount(async () => {
+        user = await api.get('users/me', 'Failed fetching user data');
+    });
 
 </script>
 

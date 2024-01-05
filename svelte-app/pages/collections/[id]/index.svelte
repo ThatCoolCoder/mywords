@@ -1,6 +1,7 @@
 <script>
     import { onMount, getContext } from 'svelte';
     import { writable } from 'svelte/store';
+    import { params } from '@roxi/routify';
 
     import api from 'services/api.js';
     import { navigate } from 'pages/utils';
@@ -10,22 +11,22 @@
     import LabelCard from 'shared/LabelCard.svelte';
     import LabelList from 'shared/LabelList.svelte';
 
-    export let getScoped = writable(null);
     // $: ({id, set} = scoped);
-    let id, set;
+    // let id, set;
+    let id = $params.id;
+    let set;
     let terms;
     let labels;
-
+    
     const { open, close } = getContext('simple-modal');
-
+    
     async function openEditSetInfo() {
         open(TermSetMetadataEditor, { termSetWritable : set });
     }
-
+    
     onMount(async () => {
-        getScoped = getContext('scopedSet');
+        set = writable(await api.get(`termsets/${id}`));
         terms = writable(await api.get(`termsets/${id}/terms`));
-        console.log(await api.get(`termsets/${id}/labels`));
         labels = writable(await api.get(`termsets/${id}/labels`));
     });
 
