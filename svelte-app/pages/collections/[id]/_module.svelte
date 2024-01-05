@@ -1,5 +1,5 @@
 <script>
-    import { onMount } from "svelte";
+    import { onMount, setContext } from "svelte";
     import { writable } from "svelte/store";
     import api from 'services/api';
 
@@ -8,7 +8,8 @@
 
     onMount(async () => {
         set = writable(await api.get(`termsets/${id}`, 'Failed fetching collection info'));
+        setContext('scopedTerm', {id, set});
     });
 </script>
 
-<slot scoped={{id, set}} />
+<slot />

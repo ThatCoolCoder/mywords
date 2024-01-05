@@ -10,8 +10,9 @@
     import LabelCard from 'shared/LabelCard.svelte';
     import LabelList from 'shared/LabelList.svelte';
 
-    export let scoped;
-    $: ({id, set} = scoped);
+    export let getScoped = writable(null);
+    // $: ({id, set} = scoped);
+    let id, set;
     let terms;
     let labels;
 
@@ -22,6 +23,7 @@
     }
 
     onMount(async () => {
+        getScoped = getContext('scopedSet');
         terms = writable(await api.get(`termsets/${id}/terms`));
         console.log(await api.get(`termsets/${id}/labels`));
         labels = writable(await api.get(`termsets/${id}/labels`));

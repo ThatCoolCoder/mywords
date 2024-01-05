@@ -26,9 +26,6 @@
     onMount(() => handler.set(open));
 </script>
 
-<script context="module">
-</script>
-
 <div class="footer fixed-bottom p-4 d-flex w-100 error-popup {isOpen ? 'error-popup-open' : 'error-popup-closed'}" aria-hidden={! isOpen}>
     <div class="flex-grow-1">
         <h5><i class="bi-exclamation-triangle"></i> Something went wrong</h5>

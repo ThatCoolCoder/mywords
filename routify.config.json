@@ -1,0 +1,5 @@
+{
+    "routesDir": "./svelte-app/pages",
+    "routifyDir": "./svelte-app/.routify",
+    "dynamicImports": false
+}

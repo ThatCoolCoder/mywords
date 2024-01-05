@@ -1,6 +1,6 @@
 <script>
 	import { Router } from "@roxi/routify";
-	import { routes } from "@roxi/routify/tmp/routes.js";
+	import routes from "./.routify/routes.default.js";
 
 	const config = {
 		urlTransform: {
