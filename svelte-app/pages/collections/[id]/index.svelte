@@ -13,32 +13,27 @@
 
     // $: ({id, set} = scoped);
     // let id, set;
-    let id = $params.id;
-    let set;
-    let terms;
-    let labels;
+    // let id = $params.id;
+    // export let props;
+    export let setCtx;
     
     const { open, close } = getContext('simple-modal');
     
     async function openEditSetInfo() {
-        open(TermSetMetadataEditor, { termSetWritable : set });
+        console.log(setCtx);
+        open(TermSetMetadataEditor, { termSetWritable : setCtx.set });
     }
-    
-    onMount(async () => {
-        set = writable(await api.get(`termsets/${id}`));
-        terms = writable(await api.get(`termsets/${id}/terms`));
-        labels = writable(await api.get(`termsets/${id}/labels`));
-    });
+
 
 </script>
 
-<title>{$set?.name ?? 'Collection'} | MyWords</title>
+<title>{setCtx?.set?.name ?? 'Collection'} | MyWords</title>
 
 <div class="d-flex gap-4">
     <div>
-        <ApiDependent ready={set != null}>
-            <h2>{ $set.name }</h2>
-            <p>{ $set.description }</p>
+        <ApiDependent ready={setCtx?.set != null}>
+            <h2>{ setCtx.set.name }</h2>
+            <p>{ setCtx.set.description }</p>
         </ApiDependent>
     </div>
     <button class="btn align-self-end" aria-label="Edit details" on:click={openEditSetInfo}><i class="bi-pencil" /></button>
@@ -47,13 +42,13 @@
 
 <h4>Terms</h4>
 
-<button class="btn btn-primary" on:click={() => navigate(`/collections/${id}/addterms`)}><i class="bi-plus-lg" />&ensp;Add terms</button>
+<button class="btn btn-primary" on:click={() => navigate(`/collections/${setCtx.id}/addterms`)}><i class="bi-plus-lg" />&ensp;Add terms</button>
 
 <hr />
 
 <h4>Labels</h4>
-<ApiDependent ready={labels != null}>
-    <LabelList {labels} termSetId={id} />
+<ApiDependent ready={setCtx?.labels != null}>
+    <LabelList labels={setCtx.labels} termSetId={setCtx.id} />
 </ApiDependent>
 
 

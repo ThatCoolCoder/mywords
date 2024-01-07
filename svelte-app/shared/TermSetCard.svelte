@@ -2,6 +2,6 @@
     export let click;
 </script>
 
-<div role="button" class="card p-3 col-12 col-sm-6 col-md-4 col-lg-4 col-xxl-2" style="height: 110px" on:click={click}>
+<div role="button" class="card p-3 col-xs-12 col-sm-5 col-xl-4 col-xxl-3" style="height: 110px" on:click={click}>
     <slot />
 </div>
