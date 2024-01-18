@@ -43,7 +43,7 @@
                 </ApiDependent>
             </div>
         </nav>
-        <main class="flex-shrink-0 px-4 py-4 text-start">
+        <main class="flex-grow-1 px-4 py-4 text-start">
             <slot />
         </main>
         <ErrorPopup />

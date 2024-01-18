@@ -95,7 +95,7 @@ public class TermSetsController : Controller
         return Json(termSet.Terms.Select(x => new TermApiModel(
             x.Id, x.TermSetId,
             x.Value, x.Definition, x.Notes,
-            x.CurrentStreak, x.MovedToCurrentListUtc,
+            x.CurrentStreak, (int) x.TermList, x.MovedToCurrentListUtc,
             x.LabelTerms.Select(x => x.Label.Id).ToList())));
     }
 

@@ -15,6 +15,7 @@ body {
 
 main {
 	padding: 8px;
+	overflow: auto;
 }
 
 
@@ -93,4 +94,30 @@ button:focus {
 .children-no-margin > * {
 	margin-top: 0px;
 	margin-bottom: 0px;
+}
+
+/* Restore default fieldset/legend styling since bootstrap has its own opinion  */
+
+legend {
+    display: block;
+    width: auto;
+    padding: 0 5px;
+    margin-bottom: 0;
+    font-size: inherit;
+    line-height: inherit;
+    border: auto;
+    border-bottom: none;
+}
+
+fieldset {
+    border: 2px groove threedface;
+    padding: 5px;
+}
+
+/* Again, why does bootstrap make containers do this */
+.container {
+	padding-left: initial;
+	padding-right: initial;
+	margin-left: initial;
+	margin-right: initial;
 }

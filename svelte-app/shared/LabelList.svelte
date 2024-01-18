@@ -5,8 +5,9 @@
     
     import DataList from "shared/misc/DataList.svelte";
     import StandardEditorButtons from "shared/misc/StandardEditorButtons.svelte";
+    import LabelCard from "shared/LabelCard.svelte";
 
-    export let labels;
+    export let labelsWritable;
     export let termSetId;
     let editData;
     let dataList;
@@ -31,13 +32,13 @@
 
     function create() {
         var l = {id: undefined, termSetId: termSetId, name: '', color: '#ffaaaa'};
-        labels.update(x => x.pushed(l));
+        labelsWritable.update(x => x.pushed(l));
         dataList.edit(l);
     }
 </script>
 
 <div class="d-flex flex-row align-items-start gap-2">
-<DataList itemsWritable={labels} bind:editData={editData} bind:this={dataList}
+<DataList itemsWritable={labelsWritable} bind:editData={editData} bind:this={dataList}
     {onItemEdit} {onItemUpdate} {onItemDelete}
     let:editing let:item={label} let:idx
     let:actions>
@@ -50,10 +51,7 @@
             <StandardEditorButtons {actions} item={label} />
         </div>
     {:else}
-        <div class="d-flex align-items-center gap-2 px-2 py-0 rounded" style={`background-color: ${label.color}`} >
-            <span>{label.name}</span>
-            <a class="btn px-0" role="button" aria-label="edit" on:click={() => actions.edit(label)}><i class="bi-pencil" /></a>
-        </div>
+        <LabelCard {label} editable={true} onEditPressed={() => actions.edit(label)} />
     {/if}
 </DataList>
 <button class="btn" aria-label="add label" on:click={create}><i class="bi-plus-lg"/></button>

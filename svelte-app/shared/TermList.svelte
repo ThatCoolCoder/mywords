@@ -1,35 +1,63 @@
 <script>
-    import { writable } from "svelte/store";
+    import { get, writable } from "svelte/store";
 
     import api from "services/api";
-
+    
     import DataList from "shared/misc/DataList.svelte";
     import StandardEditorButtons from "shared/misc/StandardEditorButtons.svelte";
+    import LabelCard from "shared/LabelCard.svelte";
 
-    export let title = 'Terms';
-    export let terms = writable([]);
-
+    export let termsWritable;
+    export let termSetId;
+    export let termList; // as in which of the user-lists it's in
     let editData;
     let dataList;
 
     function onItemEdit(term) {
-        return {value: term.value, definition: term.definition, description: term.description};
+        return {id: term.id,
+            termSetId: term.termSetId,
+            value: term.value,
+            definition: term.definition,
+            notes: term.notes,
+            termList: term.termList
+        };
     }
 
-    function onItemUpdate(term) {
+    function onItemUpdate(term, editData) {
+        if (editData.name.trim().length == 0) return false;
 
+        
+
+        if (term.id === undefined) api.post(`terms/`, term);
+        else api.put(`terms/${term.id}`, term);
     }
 
     function onItemDelete(term) {
-        if (label.id !== undefined) api.post(`terms/${term.id}/delete`);
+        if (term.id !== undefined) api.post(`terms/${term.id}/delete`);
     }
 
+    // function create() {
+    //     var term = {id: undefined, termSetId: termSetId, name: '', color: '#ffaaaa'};
+    //     termsWritable.update(x => x.pushed(term));
+    //     dataList.edit(term);
+    // }
 </script>
 
-<p>{title}</p>
-<DataList itemsWritable={terms} bind:editData={editData} bind:this={dataList}
-    {onItemEdit} {onItemUpdate} {onItemDelete}
-    let:editing let:item={label} let:idx
-    let:actions>
+<div class="container">
+    <DataList itemsWritable={termsWritable} bind:editData={editData} bind:this={dataList}
+        {onItemEdit} {onItemUpdate} {onItemDelete}
+        let:editing let:item={term} let:idx
+        let:actions>
+        <div class="row">
+            {#if editing}
+                <p>haha nothing to edit</p>
+                <StandardEditorButtons {actions} item={term} />
+            {:else}
+                {#each term.labels as label}
+                    <LabelCard {label} />
+                {/each}
+            {/if}
+        </div>
+    </DataList>
 
-</DataList>
+</div>
