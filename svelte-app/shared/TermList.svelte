@@ -53,6 +53,7 @@
                 <p>haha nothing to edit</p>
                 <StandardEditorButtons {actions} item={term} />
             {:else}
+                {JSON.stringify(term)}
                 {#each term.labels as label}
                     <LabelCard {label} />
                 {/each}

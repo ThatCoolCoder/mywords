@@ -33,7 +33,7 @@
             <label for="givenName">First name</label>
         </div>
         <div class="col-6">
-            <input bind:value={givenName} class="mw-100" id="givenName" />
+            <input bind:value={givenName} class="mw-100 form-control" id="givenName" />
         </div>
     </div>
 
@@ -42,7 +42,7 @@
             <label for="FamilyName">Last name</label>
         </div>
         <div class="col-6">
-            <input bind:value={familyName} class="mw-100" id="familyName" />
+            <input bind:value={familyName} class="mw-100 form-control" id="familyName" />
         </div>
     </div>
 
