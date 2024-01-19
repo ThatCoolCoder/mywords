@@ -8,13 +8,15 @@
     export let onItemDelete; // has item passed to it
 
     let editingItems = writable([]);
-    export let editData = writable([]);
+    export let editData = writable(null);
 
     export function edit(item) {
+        if (get(editingItems).length > 0) return;
+
         var thisItemData = {};
         if (onItemEdit) thisItemData = onItemEdit(item);
         
-        editData.update(l => {l[indexOf(item)] = thisItemData; return l; });
+        editData.set(thisItemData);
         editingItems.update(l => l.pushed(item));
     }
 
@@ -25,7 +27,7 @@
     }
 
     function stopEditingItem(item) {
-        editData.update(l => l.deleteIdx(indexOf(item)));
+        editData.set(null)
         editingItems.update(l => l.deleteItem(item));
     }
 
@@ -35,12 +37,8 @@
 
     export function update(item) {
         var isValid = true;
-        if (onItemUpdate) isValid = onItemUpdate(item, $editData[indexOf(item)]) ?? true;
+        if (onItemUpdate) isValid = onItemUpdate(item, $editData) ?? true;
         if (isValid) stopEditingItem(item);
-    }
-
-    function indexOf(item) {
-        return get(itemsWritable).indexOf(item);
     }
 </script>
 

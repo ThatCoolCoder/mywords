@@ -44,8 +44,8 @@
     let:actions>
     {#if editing}
         <div class="d-flex align-items-center gap-2 rounded px-2 py-0 children-no-margin" style="border: 1px solid black">
-            <input bind:value={$editData[idx].name} placeholder="name" />
-            <input type="color" bind:value={$editData[idx].color}/>
+            <input bind:value={$editData.name} placeholder="name" />
+            <input type="color" bind:value={$editData.color}/>
             <div class="vr"></div> 
 
             <StandardEditorButtons {actions} item={label} />

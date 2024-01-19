@@ -5,16 +5,17 @@
     
     import DataList from "shared/misc/DataList.svelte";
     import StandardEditorButtons from "shared/misc/StandardEditorButtons.svelte";
-    import LabelCard from "shared/LabelCard.svelte";
+    import TermCard from "shared/TermCard.svelte";
 
     export let termsWritable;
     export let termSetId;
-    export let termList; // as in which of the user-lists it's in
+    export let termList = null; // as in which of the user-lists it's in
     let editData;
     let dataList;
 
     function onItemEdit(term) {
-        return {id: term.id,
+        return {
+            id: term.id,
             termSetId: term.termSetId,
             value: term.value,
             definition: term.definition,
@@ -37,13 +38,21 @@
     }
 
     // function create() {
-    //     var term = {id: undefined, termSetId: termSetId, name: '', color: '#ffaaaa'};
+    //     var term = {id: undefined, termSetId: termSetId, value: '', definition: '', labels: [], termList: termList};
     //     termsWritable.update(x => x.pushed(term));
     //     dataList.edit(term);
     // }
 </script>
 
-<div class="container">
+<div class="d-flex flex-column">
+    {#each $termsWritable.filter(x => termList === null || x.termList === termList) as term }
+        <TermCard {term} />
+    {:else}
+        <p class="lead small">No terms yet!</p>
+    {/each}
+</div>
+
+<!-- <div class="container">
     <DataList itemsWritable={termsWritable} bind:editData={editData} bind:this={dataList}
         {onItemEdit} {onItemUpdate} {onItemDelete}
         let:editing let:item={term} let:idx
@@ -53,12 +62,8 @@
                 <p>haha nothing to edit</p>
                 <StandardEditorButtons {actions} item={term} />
             {:else}
-                {JSON.stringify(term)}
-                {#each term.labels as label}
-                    <LabelCard {label} />
-                {/each}
             {/if}
         </div>
     </DataList>
 
-</div>
+</div> -->
