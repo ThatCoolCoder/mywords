@@ -40,7 +40,7 @@ public class LabelsController : Controller
         _context.Add(created);
         await _context.SaveChangesAsync();
 
-        return Ok();
+        return Ok(created.Id);
     }
 
     [HttpPost]

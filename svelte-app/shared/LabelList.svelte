@@ -16,13 +16,13 @@
         return {name: label.name, color: label.color};
     }
 
-    function onItemUpdate(label, editData) {
+    async function onItemUpdate(label, editData) {
         if (editData.name.trim().length == 0) return false;
 
         label.name = editData.name;
         label.color = editData.color;
 
-        if (label.id === undefined) api.post(`labels/`, label);
+        if (label.id === undefined) label.id = Number(await (await api.post(`labels/`, label)).text());
         else api.put(`labels/${label.id}`, label);
     }
 
