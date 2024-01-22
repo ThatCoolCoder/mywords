@@ -3,18 +3,24 @@
     import { writable } from 'svelte/store';
 
     import { TermLists, TermListDisplayNames } from 'data/termLists.js';
+    import api from 'services/api';
     
     import ApiDependent from 'shared/misc/ApiDependent.svelte';
     import TermList from 'shared/TermList.svelte';
     import TermCard from 'shared/TermCard.svelte';
     import EditTermLabels from 'shared/EditTermLabels.svelte';
     import LabelBadge from 'shared/LabelBadge.svelte';
-    import api from 'services/api';
+    import HelpButton from 'shared/misc/HelpButton.svelte';
 
     export let setId;
     export let set;
     export let terms;
     export let labels;
+
+    const termListsHelp = "MyWords offers multiple lists that you can organise your words into.\n" + 
+        "Backlog is for words which you have come across but haven't yet found the meaning of\n" + 
+        "Learning is for words that you have found the meaning of but have not yet memorised this\n" + 
+        "Auto mode will sort newly added words sorted based on whether you have added a definition or not"
 
     const { open, close } = getContext('simple-modal');
 
@@ -94,6 +100,7 @@
                         <option value={TermListModes[modeName]}>{modeName}</option>
                     {/each}
                 </select>
+                <HelpButton topic="Term lists" text={termListsHelp} />
             </div>
 
             <div on:click={openEditLabelsModal} class="form-group d-flex gap-2 justify-content-start align-items-center">

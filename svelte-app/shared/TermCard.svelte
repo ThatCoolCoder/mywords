@@ -51,7 +51,7 @@
             <!-- value/definition plus labels -->
             <div class="row flex-grow-1">
                 <div class="order-2 col-xs-12 col-md-4 col-xxl-3 form-group">
-                    <input on:change={update} bind:value={term.value} class="form-control mb-0" placeholder="Value" />
+                    <input on:change={update} bind:value={term.value} class="form-control mb-0 fw-bold" placeholder="Term" />
                 </div>
                 <div class="order-3 col-xs-12 col-md-4 col-xxl-3 form-group">
                     <input on:change={update} bind:value={term.definition} class="form-control mb-0" placeholder="Definition" />

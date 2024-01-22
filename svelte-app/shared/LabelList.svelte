@@ -1,6 +1,4 @@
 <script>
-    import { get, writable } from "svelte/store";
-
     import api from "services/api";
     
     import DataList from "shared/misc/DataList.svelte";
