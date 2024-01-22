@@ -1,9 +1,8 @@
 <script>
-    import { onMount } from 'svelte';
     import api from 'services/api.js';
 
     async function create() {
-        await api.post('termsets/', {name: 'My new set', description: 'A very amazing set'}, 'Failed creating new set');
+        await api.post('collections/', {name: 'My new collection', description: 'A very amazing collection'}, 'Failed creating new collection');
     }
 
 </script>

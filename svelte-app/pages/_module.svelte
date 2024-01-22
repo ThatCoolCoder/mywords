@@ -1,5 +1,3 @@
-<!-- routify:options preload="proximity" -->
-
 <script>
     import { setContext, onMount } from 'svelte';
     import { writable } from 'svelte/store';

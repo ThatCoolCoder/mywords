@@ -1,6 +1,4 @@
 <script>
-    import api from "services/api";
-    
     import TermCard from "shared/TermCard.svelte";
     import { WidthMode }from "shared/TermCard.svelte";
 

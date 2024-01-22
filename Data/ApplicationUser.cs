@@ -9,5 +9,5 @@ public class ApplicationUser : IdentityUser
     public string GivenName { get; set; } = "";
     public string FamilyName { get; set; } = "";
 
-    public ICollection<TermSet> TermSets { get; set; } = new List<TermSet>();
+    public ICollection<Collection> Collections { get; set; } = new List<Collection>();
 }

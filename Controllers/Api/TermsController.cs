@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Controllers.Api;
 
-public record TermApiModel(long Id, long TermSetId, string Value, string Definition, string Notes, int TermList, int CurrentStreak = 0, DateTime? MovedToCurrentListUtc = null, List<long> Labels = null!)
+public record TermApiModel(long Id, long CollectionId, string Value, string Definition, string Notes, int TermList, int CurrentStreak = 0, DateTime? MovedToCurrentListUtc = null, List<long> Labels = null!)
 {
     public DateTime? MovedToCurrentListUtc { get; init; } = MovedToCurrentListUtc ?? DateTime.UtcNow; // c# records a little goofy with not having a better way of a non-constant default on value type
     public List<long> Labels { get; init; } = Labels ?? new();
@@ -29,12 +29,12 @@ public class TermsController : Controller
     {
         if (!ModelState.IsValid) return BadRequest();
         var loggedInUserId = _context.GetLoggedInUser(HttpContext).Id;
-        var termSet = _context.TermSet.FirstOrDefault(x => x.ApplicationUserId == loggedInUserId && x.Id == model.TermSetId);
-        if (termSet == null) return NotFound($"Term set with id={model.TermSetId} not found");
+        var collection = _context.Collection.FirstOrDefault(x => x.ApplicationUserId == loggedInUserId && x.Id == model.CollectionId);
+        if (collection == null) return NotFound($"Collection with id={model.CollectionId} not found");
 
         var created = new Term()
         {
-            TermSet = termSet,
+            Collection = collection,
             Value = model.Value,
             Definition = model.Definition,
             Notes = model.Notes,
@@ -59,7 +59,7 @@ public class TermsController : Controller
     public async Task<IActionResult> Delete([FromRoute] long id)
     {
         var loggedInUserId = _context.GetLoggedInUser(HttpContext).Id;
-        var existing = _context.Term.FirstOrDefault(x => x.Id == id && x.TermSet.ApplicationUserId == loggedInUserId);
+        var existing = _context.Term.FirstOrDefault(x => x.Id == id && x.Collection.ApplicationUserId == loggedInUserId);
         if (existing == null) return NotFound();
 
         _context.Remove(existing);
@@ -76,7 +76,7 @@ public class TermsController : Controller
         var loggedInUserId = _context.GetLoggedInUser(HttpContext).Id;
         var existing = _context.Term
             .Include(x => x.LabelTerms)
-            .Where(x => x.TermSet.ApplicationUserId == loggedInUserId)
+            .Where(x => x.Collection.ApplicationUserId == loggedInUserId)
             .FirstOrDefault(x => x.Id == model.Id);
         if (existing == null) return NotFound();
 

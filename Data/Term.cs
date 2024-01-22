@@ -5,7 +5,7 @@ namespace Data;
 public class Term
 {
     public long Id { get; set; }
-    public long TermSetId { get; set; }
+    public long CollectionId { get; set; }
 
     public string Value { get; set; } = "";
     public string Definition { get; set; } = "";
@@ -14,6 +14,6 @@ public class Term
     public TermList TermList { get; set; } = TermList.Backlog;
     public DateTime MovedToCurrentListUtc { get; set; }
 
-    public TermSet TermSet { get; set; } = null!;
+    public Collection Collection { get; set; } = null!;
     public List<LabelTerm> LabelTerms { get; set; } = new();
 }

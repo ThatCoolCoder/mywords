@@ -7,37 +7,37 @@ using Data;
 
 namespace Controllers.Api;
 
-[StandardApiController("TermSets")]
+[StandardApiController("Collections")]
 [Authorize]
-public class TermSetsController : Controller
+public class CollectionsController : Controller
 {
-    private readonly ILogger<TermSetsController> _logger;
+    private readonly ILogger<CollectionsController> _logger;
     private readonly ApplicationDbContext _context;
 
-    public TermSetsController(ILogger<TermSetsController> logger, ApplicationDbContext context)
+    public CollectionsController(ILogger<CollectionsController> logger, ApplicationDbContext context)
     {
         _logger = logger;
         _context = context;
     }
 
-    public record TermSetApiModel(long Id, string Name, string Description);
+    public record CollectionApiModel(long Id, string Name, string Description);
 
     [HttpGet]
     public IActionResult GetIndex()
     {
         var user = _context.GetLoggedInUser(HttpContext);
-        _context.Entry(user!).Collection(x => x.TermSets).Load(); // todo: make this null ignore not needed
-        return Json(user.TermSets.Select(x => new TermSetApiModel(x.Id, x.Name, x.Description)));
+        _context.Entry(user!).Collection(x => x.Collections).Load(); // todo: make this null ignore not needed
+        return Json(user.Collections.Select(x => new CollectionApiModel(x.Id, x.Name, x.Description)));
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostIndex([FromBody] TermSetApiModel model)
+    public async Task<IActionResult> PostIndex([FromBody] CollectionApiModel model)
     {
         if (!ModelState.IsValid) return BadRequest("Model state invalid");
 
         var user = _context.GetLoggedInUser(HttpContext);
 
-        _context.TermSet.Add(new()
+        _context.Collection.Add(new()
         {
             ApplicationUser = user,
             Id = model.Id,
@@ -55,25 +55,25 @@ public class TermSetsController : Controller
     public IActionResult GetById(long id)
     {
         var user = _context.GetLoggedInUser(HttpContext);
-        var termSet = _context.TermSet.Where(x => x.Id == id).FirstOrDefault();
-        if (termSet == null || termSet?.ApplicationUserId != user!.Id) return NotFound();
+        var collection = _context.Collection.Where(x => x.Id == id).FirstOrDefault();
+        if (collection == null || collection?.ApplicationUserId != user!.Id) return NotFound();
 
-        return Json(new TermSetApiModel(termSet!.Id, termSet.Name, termSet.Description));
+        return Json(new CollectionApiModel(collection!.Id, collection.Name, collection.Description));
     }
 
     [HttpPut]
     [Route("{id}")]
-    public IActionResult PutById(long id, [FromBody] TermSetApiModel model)
+    public IActionResult PutById(long id, [FromBody] CollectionApiModel model)
     {
         if (!ModelState.IsValid) return BadRequest("Model state invalid");
         var user = _context.GetLoggedInUser(HttpContext);
-        var termSet = _context.TermSet.Where(x => x.Id == id).FirstOrDefault();
-        if (termSet == null || termSet?.ApplicationUserId != user!.Id) return NotFound();
+        var collection = _context.Collection.Where(x => x.Id == id).FirstOrDefault();
+        if (collection == null || collection?.ApplicationUserId != user!.Id) return NotFound();
 
-        termSet.Name = model.Name;
-        termSet.Description = model.Description;
+        collection.Name = model.Name;
+        collection.Description = model.Description;
 
-        _context.Update(termSet);
+        _context.Update(collection);
         _context.SaveChanges();
 
         return Ok();
@@ -84,16 +84,16 @@ public class TermSetsController : Controller
     public IActionResult GetTermsById(long id)
     {
         var user = _context.GetLoggedInUser(HttpContext);
-        var termSet = _context.TermSet
+        var collection = _context.Collection
             .Include(x => x.Terms)
                 .ThenInclude(x => x.LabelTerms)
                     .ThenInclude(x => x.Label)
             .Where(x => x.Id == id).FirstOrDefault();
 
-        if (termSet == null || termSet?.ApplicationUserId != user!.Id) return NotFound();
+        if (collection == null || collection?.ApplicationUserId != user!.Id) return NotFound();
 
-        return Json(termSet.Terms.Select(x => new TermApiModel(
-            x.Id, x.TermSetId,
+        return Json(collection.Terms.Select(x => new TermApiModel(
+            x.Id, x.CollectionId,
             x.Value, x.Definition, x.Notes,
             x.CurrentStreak, (int) x.TermList, x.MovedToCurrentListUtc,
             x.LabelTerms.Select(x => x.Label.Id).ToList())));
@@ -104,12 +104,12 @@ public class TermSetsController : Controller
     public IActionResult GetLabelsById(long id)
     {
         var user = _context.GetLoggedInUser(HttpContext);
-        var termSet = _context.TermSet
+        var collection = _context.Collection
             .Include(x => x.Labels)
             .Where(x => x.Id == id).FirstOrDefault();
 
-        if (termSet == null || termSet?.ApplicationUserId != user!.Id) return NotFound();
+        if (collection == null || collection?.ApplicationUserId != user!.Id) return NotFound();
 
-        return Json(termSet.Labels.Select(x => new LabelApiModel(x.Id, x.Name, x.Color, x.TermSetId)));
+        return Json(collection.Labels.Select(x => new LabelApiModel(x.Id, x.Name, x.Color, x.CollectionId)));
     }
 }

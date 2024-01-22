@@ -6,7 +6,7 @@
     import LabelBadge from "shared/LabelBadge.svelte";
 
     export let labelsWritable;
-    export let termSetId;
+    export let collectionId;
     let editData;
     let dataList;
 
@@ -29,7 +29,7 @@
     }
 
     function create() {
-        let l = {id: undefined, termSetId: termSetId, name: '', color: '#ffaaaa'};
+        let l = {id: undefined, collectionId, name: '', color: '#ffaaaa'};
         labelsWritable.update(x => x.pushed(l));
         dataList.edit(l);
     }

@@ -1,8 +1,8 @@
 <script>
-    import { onMount, getContext } from 'svelte';
+    import { getContext } from 'svelte';
     import { writable } from 'svelte/store';
 
-    import { TermLists, TermListDisplayNames } from 'data/termLists.js';
+    import { TermLists } from 'data/termLists.js';
     import api from 'services/api';
     
     import ApiDependent from 'shared/misc/ApiDependent.svelte';
@@ -12,8 +12,8 @@
     import LabelBadge from 'shared/LabelBadge.svelte';
     import HelpButton from 'shared/misc/HelpButton.svelte';
 
-    export let setId;
-    export let set;
+    export let collectionId;
+    export let collection;
     export let terms;
     export let labels;
 
@@ -58,7 +58,7 @@
     function clearCurrentNewTerm() {
         currentNewTerm = {
             id: -1,
-            termSetId: setId,
+            collectionId,
             value: '',
             definition: '',
             notes: '',
@@ -86,9 +86,9 @@
 
 <title>Add Terms | MyWords</title>
 
-<ApiDependent ready={set != null}>
+<ApiDependent ready={collection != null}>
     <div class="d-flex flex-column gap-2" style="max-width: 1500px">
-        <h2>Add terms - { $set.name }</h2>
+        <h2>Add terms - { $collection.name }</h2>
         
         <fieldset class="border text-start d-flex flex-column gap-3 p-3">
             <legend class="float-none w-auto px-3">General settings</legend>
@@ -125,7 +125,7 @@
         <hr />
 
         <h3>Recently added</h3>
-        <TermList termsWritable={terms} termSetId={setId} showTermLists={true} />
+        <TermList termsWritable={terms} showTermLists={true} />
 
     </div>
     

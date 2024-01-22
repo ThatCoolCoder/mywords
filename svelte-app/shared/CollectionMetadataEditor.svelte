@@ -2,32 +2,32 @@
     import { getContext } from "svelte";
     import { get } from "svelte/store";
     import api from "services/api";
-    export let termSetWritable;
+    export let collectionWritable;
 
     let name = '';
     let description = '';
 
     const { close } = getContext('simple-modal');
 
-    termSetWritable.subscribe(value => {
+    collectionWritable.subscribe(value => {
         name = value.name;
         description = value.description;
     });
 
     function saveChanges() {
-        termSetWritable.update(x => {
+        collectionWritable.update(x => {
             x.name = name;
             x.description = description;
             return x;
         });
         close();
-        let ts = get(termSetWritable);
-        api.put(`termsets/${ts.id}`, ts, 'Failed saving collection changes');
+        let ts = get(collectionWritable);
+        api.put(`collections/${ts.id}`, ts, 'Failed saving collection changes');
     }
     
     function cancel() {
         close();
-        let ts = get(termSetWritable);
+        let ts = get(collectionWritable);
         name = ts.name;
         description = ts.description;
     }
@@ -39,19 +39,19 @@
 
 <div class="row mb-1">
     <div class="col-3">
-        <label for="termSetName">Name</label>
+        <label for="collectionName">Name</label>
     </div>
     <div class="col-9">
-        <input bind:value={name} class="mw-100" id="termSetName" />
+        <input bind:value={name} class="mw-100" id="collectionName" />
     </div>
 </div>
 
 <div class="row mb-1">
     <div class="col-3">
-        <label for="termSetDescription">Description</label>
+        <label for="collectionDescription">Description</label>
     </div>
     <div class="col-9">
-        <textarea bind:value={description} class="w-100" id="termSetDescription" />
+        <textarea bind:value={description} class="w-100" id="collectionDescription" />
     </div>
 </div>
 

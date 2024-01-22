@@ -36,7 +36,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     }
 
     public virtual DbSet<ApplicationUser> ApplicationUser { get; set; } = null!;
-    public virtual DbSet<TermSet> TermSet { get; set; } = null!;
+    public virtual DbSet<Collection> Collection { get; set; } = null!;
     public virtual DbSet<Term> Term { get; set; } = null!;
     public virtual DbSet<Label> Label { get; set; } = null!;
     public virtual DbSet<LabelTerm> LabelTerm { get; set; } = null!;

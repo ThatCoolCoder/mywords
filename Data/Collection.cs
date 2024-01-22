@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Data;
 
-public class TermSet
+public class Collection
 {
     public long Id { get; set; }
     public string Name { get; set; } = "";
