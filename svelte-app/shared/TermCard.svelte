@@ -28,14 +28,14 @@
 
     let primaryInputSizings = {
         [WidthMode.Full] : "col-xs-12 col-md-4 col-xxl-3",
-        [WidthMode.Half] : "col-12 col-xxl-3",
-        [WidthMode.Quarter] : "col-12 col-xxl-3"
+        [WidthMode.Half] : "col-12 col-xl-6",
+        [WidthMode.Quarter] : "col-12 col-xxl-6"
     };
 
     let labelsRowSizings = {
-        [WidthMode.Full] : "col-xl-12 order-xl-1 order-xxl-5 col-xxl-3",
-        [WidthMode.Half] : "col-12 order-1",
-        [WidthMode.Quarter] : "col-12 order-1"
+        [WidthMode.Full] : "col-xl-12 col-xxl-6",
+        [WidthMode.Half] : "col-12",
+        [WidthMode.Quarter] : "col-12"
     };
 
     let sortedTermLabels;
@@ -68,40 +68,37 @@
     <div class="flex-grow-1 d-flex flex-column gap-2">
         <div class="d-flex gap-2">
             <!-- value/definition plus labels -->
-            <div class="row flex-grow-1">
-                <div class={"order-2 form-group " + primaryInputSizings[widthMode]}>
+            <div class="row flex-grow-1 gy-2">
+                <div class={"form-group  " + primaryInputSizings[widthMode]}>
                     <input on:change={update} bind:value={term.value} class="form-control mb-0 fw-bold" placeholder="Term" />
                 </div>
-                <div class={"order-3 form-group " + primaryInputSizings[widthMode]}>
+                <div class={"form-group " + primaryInputSizings[widthMode]}>
                     <input on:change={update} bind:value={term.definition} class="form-control mb-0" placeholder="Definition" />
                 </div>
             
-                <!-- Labels and term list, which collapse to above the main inputs when it gets too small -->
-                {#if showTermList || showLabels}
-                    <div class={"d-flex gap-2 justify-content-start align-items-center mb-2 " + labelsRowSizings[widthMode]}>
-                        {#if showTermList}
-                            <span class="badge rounded-pill h-auto bg-secondary w-auto">
-                                {TermListDisplayNames[term.termList]}
-                            </span>
-                            <div class="vr"></div>
-                        {/if}
-                        {#if showLabels}
-                            <div class="d-flex flex-row gap-2" on:click={openEditLabelsModal} >
-                                {#each sortedTermLabels as label}
-                                    <LabelBadge {label} />
-                                {:else}
-                                    <span class="text-secondary">No labels</span>
-                                {/each}
-                                <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1"><i class={sortedTermLabels.length == 0 ? "bi-plus-lg" : "bi-pencil"}/></button>
-                            </div>
-                        {/if}
-                    </div>
-                {/if}
+                <!-- Labels, term list and delete, which collapse to below the main inputs when it gets too small -->
+                <div class={"d-flex gap-2 justify-content-start align-items-center " + labelsRowSizings[widthMode]}>
+                    {#if showTermList}
+                        <span class="badge rounded-pill h-auto bg-secondary w-auto">
+                            {TermListDisplayNames[term.termList]}
+                        </span>
+                        <div class="vr"></div>
+                    {/if}
+                    {#if showLabels}
+                        <div class="d-flex flex-row gap-2" on:click={openEditLabelsModal} >
+                            {#each sortedTermLabels as label}
+                                <LabelBadge {label} />
+                            {:else}
+                                <span class="text-secondary">No labels</span>
+                            {/each}
+                            <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1"><i class={sortedTermLabels.length == 0 ? "bi-plus-lg" : "bi-pencil"}/></button>
+                        </div>
+                    {/if}
+                    {#if syncWithApi}
+                        <button class="btn btn-outline-danger p-1 mb-auto ms-auto" on:click={askDeleteTerm}><i class="bi-trash mb-0"/></button>
+                    {/if}
+                </div>
             </div>
-            <!-- Close button -->
-            {#if syncWithApi}
-                <button class="btn btn-outline-danger p-1 mb-auto ml-auto" on:click={askDeleteTerm}><i class="bi-trash mb-0"/></button>
-            {/if}
         </div>
         <div class="row">
             <div class="form-group">
