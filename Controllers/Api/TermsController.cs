@@ -27,7 +27,6 @@ public class TermsController : Controller
     [Route("")]
     public async Task<IActionResult> Create([FromBody] TermApiModel model)
     {
-        Console.WriteLine("hldkh;sghlk;zaxdgb");
         if (!ModelState.IsValid) return BadRequest();
         var loggedInUserId = _context.GetLoggedInUser(HttpContext).Id;
         var termSet = _context.TermSet.FirstOrDefault(x => x.ApplicationUserId == loggedInUserId && x.Id == model.TermSetId);
@@ -52,7 +51,7 @@ public class TermsController : Controller
         _context.Add(created);
         await _context.SaveChangesAsync();
 
-        return Ok();
+        return Ok(created.Id);
     }
 
     [HttpPost]

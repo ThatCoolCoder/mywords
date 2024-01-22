@@ -13,7 +13,6 @@
 
     let user = writable(null); 
     setContext('user', user);
-    console.log('set');
     
     onMount(async () => {
         user.set(await api.get('users/me', 'Failed fetching user data'));

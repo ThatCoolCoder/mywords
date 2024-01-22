@@ -37,7 +37,7 @@ export async function post(url, data, failMessage='Failed sending data to server
         errorService.display(failMessage, `Network error: ${response.statusText}. ${await response.text()}`);
         return false;
     }
-    return true;
+    return response;
 }
 
 export async function put(url, data, failMessage='Failed sending data to server') {

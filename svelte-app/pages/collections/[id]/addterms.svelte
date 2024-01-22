@@ -18,8 +18,14 @@
 
     const { open, close } = getContext('simple-modal');
 
+    const TermListModes = {
+        Backlog: 0,
+        Learning: 1,
+        Auto: 2,
+    };
+
     let generalSettings = {
-        termList: 0
+        termListMode: TermListModes.Backlog
     };
 
     let currentNewTerm;
@@ -28,13 +34,19 @@
         .map(labelId => $labels.filter(x => x.id == labelId)[0])
         .toSorted((a, b) => a.name.compareTo(b.name));
 
-    function addCurrentTerm() {
+    async function addCurrentTerm() {
         let term = currentNewTerm;
-        term.termList = generalSettings.termList;
+        
+        if (generalSettings.termListMode == TermListModes.Backlog) term.termList = TermLists.Backlog;
+        else if (generalSettings.termListMode == TermListModes.Learning) term.termList = TermLists.Learning;
+        else if (generalSettings.termListMode == TermListModes.Auto) {
+            term.termList = term.definition.trim() == '' ? TermLists.Backlog : TermLists.Learning;
+        }
+
         term.movedToCurrentListUtc
         clearCurrentNewTerm();
         terms.update(x => x.pushed(term));
-        api.post(`terms/`, term, 'Failed to save term');
+        term.id = Number(await (await api.post(`terms/`, term, 'Failed to save term')).text());
     }
 
     function clearCurrentNewTerm() {
@@ -77,9 +89,9 @@
 
             <div class="form-group d-flex gap-2 align-items-center">
                 <label for="listSelect">List to insert terms into</label>
-                <select id="listSelect" class="mb-0 w-auto form-select" bind:value={generalSettings.termList}>
-                    {#each Object.keys(TermLists) as listName}
-                        <option value={TermLists[listName]}>{TermListDisplayNames[TermLists[listName]]}</option>
+                <select id="listSelect" class="mb-0 w-auto form-select" bind:value={generalSettings.termListMode}>
+                    {#each Object.keys(TermListModes) as modeName}
+                        <option value={TermListModes[modeName]}>{modeName}</option>
                     {/each}
                 </select>
             </div>
