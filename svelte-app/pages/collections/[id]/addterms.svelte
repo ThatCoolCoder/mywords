@@ -8,11 +8,15 @@
     import TermList from 'shared/TermList.svelte';
     import TermCard from 'shared/TermCard.svelte';
     import EditTermLabels from 'shared/EditTermLabels.svelte';
+    import LabelBadge from 'shared/LabelBadge.svelte';
+    import api from 'services/api';
 
     export let setId;
     export let set;
     export let terms;
     export let labels;
+
+    const { open, close } = getContext('simple-modal');
 
     let generalSettings = {
         termList: 0
@@ -20,26 +24,35 @@
 
     let currentNewTerm;
     clearCurrentNewTerm();
-    
-    onMount(async () => {
-
-        
-    });
+    $: sortedNewTermLabels = currentNewTerm.labels
+        .map(labelId => $labels.filter(x => x.id == labelId)[0])
+        .toSorted((a, b) => a.name.compareTo(b.name));
 
     function addCurrentTerm() {
         let term = currentNewTerm;
         term.termList = generalSettings.termList;
+        term.movedToCurrentListUtc
         clearCurrentNewTerm();
         terms.update(x => x.pushed(term));
+        api.post(`terms/`, term, 'Failed to save term');
     }
 
     function clearCurrentNewTerm() {
         currentNewTerm = {
+            id: -1,
+            termSetId: setId,
             value: '',
             definition: '',
             notes: '',
+            currentStreak: 0,
             labels: []
         };
+    }
+
+    function openEditLabelsModal() {
+        let w = writable(currentNewTerm.labels);
+        w.subscribe(newVal => currentNewTerm.labels = newVal);
+        open(EditTermLabels, {availableLabels: labels, labels: w});
     }
 
 </script>
@@ -57,10 +70,10 @@
 <title>Add Terms | MyWords</title>
 
 <ApiDependent ready={set != null}>
-    <div class="d-flex flex-column gap-3" style="max-width: 1500px">
+    <div class="d-flex flex-column gap-2" style="max-width: 1500px">
         <h2>Add terms - { $set.name }</h2>
         
-        <fieldset class="border p-2 text-start">
+        <fieldset class="border text-start d-flex flex-column gap-3 p-3">
             <legend class="float-none w-auto px-3">General settings</legend>
 
             <div class="form-group d-flex gap-2 align-items-center">
@@ -73,15 +86,21 @@
                 </select>
             </div>
 
-            <div>
-                <!-- <EditTermLabels />; -->
+            <div class="form-group d-flex gap-2 justify-content-start align-items-center">
+                {#each sortedNewTermLabels as label}
+                    <LabelBadge {label} />
+                {:else}
+                    <span class="text-secondary">No labels</span>
+                {/each}
+                <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1" on:click={openEditLabelsModal}><i class="bi-plus-lg"/></button>
+            
             </div>
         </fieldset>
 
         <br />
 
         <div>
-            <TermCard bind:term={currentNewTerm} showTermList={false}>
+            <TermCard bind:term={currentNewTerm} showTermList={false} showLabels={false}>
                 <button class="btn btn-outline-secondary h-100 add-term-button" slot="right" on:click={addCurrentTerm}><i class="bi-plus-lg" /></button>
             </TermCard>
         </div>
@@ -89,17 +108,6 @@
         <hr />
 
         <TermList termsWritable={terms} termSetId={setId} showTermLists={true} />
-
-        <!-- obsolete but we probably will want to paste this into somewhere later -->
-        <!-- <div class="row mt-3">
-            {#each Object.keys(TermLists) as listName}
-                <div class="col-xs-1 col-lg-6 col-xl-4 col-xxl-3">
-                    <h4>{TermListDisplayNames[TermLists[listName]]}</h4>
-                    <hr />
-                    <TermList termsWritable={terms} termSetId={setId} termList={TermLists[listName]} />
-                </div>
-            {/each}
-        </div> -->
 
     </div>
     

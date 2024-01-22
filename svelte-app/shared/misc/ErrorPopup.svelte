@@ -3,10 +3,10 @@
     import { handler } from 'services/errorService';
      
     
-    var isOpen = false;
+    let isOpen = false;
     
-    var _message;
-    var _details;
+    let _message;
+    let _details;
     
     export function open(message, details) {
         isOpen = true;
@@ -19,7 +19,7 @@
     }
 
     function showDetails() {
-        var toShow = _details == '' ? 'no further details available' : _details;
+        let toShow = _details == '' ? 'no further details available' : _details;
         alert(`Error details (placeholder popup):\n${toShow}`)
     }
 

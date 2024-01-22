@@ -21,13 +21,6 @@ public class LabelsController : Controller
         _context = context;
     }
 
-
-    // [HttpGet]
-    // public IActionResult Index()
-    // {
-    //     return new JsonResult(_context.Term.ToList());
-    // }
-
     [HttpPost]
     [Route("")]
     public async Task<IActionResult> Create([FromBody] LabelApiModel model)

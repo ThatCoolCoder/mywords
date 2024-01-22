@@ -21,13 +21,13 @@
             return x;
         });
         close();
-        var ts = get(termSetWritable);
+        let ts = get(termSetWritable);
         api.put(`termsets/${ts.id}`, ts, 'Failed saving collection changes');
     }
     
     function cancel() {
         close();
-        var ts = get(termSetWritable);
+        let ts = get(termSetWritable);
         name = ts.name;
         description = ts.description;
     }

@@ -13,7 +13,7 @@
     export function edit(item) {
         if (get(editingItems).length > 0) return;
 
-        var thisItemData = {};
+        let thisItemData = {};
         if (onItemEdit) thisItemData = onItemEdit(item);
         
         editData.set(thisItemData);
@@ -36,7 +36,7 @@
     }
 
     export function update(item) {
-        var isValid = true;
+        let isValid = true;
         if (onItemUpdate) isValid = onItemUpdate(item, $editData) ?? true;
         if (isValid) stopEditingItem(item);
     }

@@ -9,7 +9,7 @@
     import ErrorPopup from 'shared/misc/ErrorPopup.svelte';
     import ApiDependent from 'shared/misc/ApiDependent.svelte';
 
-    var user = null; 
+    let user = null; 
     setContext('user', {
         get: () => user,
         set: newUser => user = newUser

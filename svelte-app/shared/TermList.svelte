@@ -11,6 +11,7 @@
     export let termSetId;
     export let termList = null; // as in which of the user-lists it's in
     export let showTermLists = false;
+    export let syncWithApi = true;
     let editData;
     let dataList;
 
@@ -39,15 +40,15 @@
     }
 
     // function create() {
-    //     var term = {id: undefined, termSetId: termSetId, value: '', definition: '', labels: [], termList: termList};
+    //     let term = {id: undefined, termSetId: termSetId, value: '', definition: '', labels: [], termList: termList};
     //     termsWritable.update(x => x.pushed(term));
     //     dataList.edit(term);
     // }
 </script>
 
-<div class="d-flex flex-column">
+<div class="d-flex flex-column gap-2">
     {#each $termsWritable.filter(x => termList === null || x.termList === termList) as term }
-        <TermCard {term} showTermList={showTermLists}/>
+        <TermCard {term} showTermList={showTermLists} {syncWithApi}/>
     {:else}
         <p class="lead small">No terms yet!</p>
     {/each}

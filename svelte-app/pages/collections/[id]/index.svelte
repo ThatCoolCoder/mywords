@@ -3,10 +3,12 @@
     import { writable } from 'svelte/store';
 
     import { navigate } from 'pages/utils';
+    import { TermListDisplayNames, TermLists } from 'data/termLists';
 
     import TermSetMetadataEditor from 'shared/TermSetMetadataEditor.svelte';
     import ApiDependent from 'shared/misc/ApiDependent.svelte';
     import LabelList from 'shared/LabelList.svelte';
+    import TermList from 'shared/TermList.svelte';
 
     // $: ({id, set} = scoped);
     // let id, set;
@@ -53,3 +55,16 @@
 <div class="flex-1">
     <button class="btn btn-primary" on:click={() => navigate(`/collections/${setId}/addterms`)}><i class="bi-plus-lg" />&ensp;Add terms</button>
 </div>
+
+
+
+<ApiDependent ready={$terms != null}>
+    <div class="row mt-3">
+        {#each Object.keys(TermLists) as listName}
+            <div class="col-xs-1 col-lg-6 col-xl-4 col-xxl-3">
+                <h5>{TermListDisplayNames[TermLists[listName]]}</h5>
+                <TermList termsWritable={terms} termSetId={setId} termList={TermLists[listName]} />
+            </div>
+        {/each}
+    </div>
+</ApiDependent>

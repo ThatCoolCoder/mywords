@@ -31,13 +31,13 @@
     }
 
     function create() {
-        var l = {id: undefined, termSetId: termSetId, name: '', color: '#ffaaaa'};
+        let l = {id: undefined, termSetId: termSetId, name: '', color: '#ffaaaa'};
         labelsWritable.update(x => x.pushed(l));
         dataList.edit(l);
     }
 </script>
 
-<div class="d-flex flex-row align-items-start gap-2">
+<div class="d-flex flex-row align-items-center gap-2">
 <DataList itemsWritable={labelsWritable} bind:editData={editData} bind:this={dataList}
     {onItemEdit} {onItemUpdate} {onItemDelete}
     let:editing let:item={label} let:idx
@@ -54,6 +54,6 @@
         <LabelBadge {label} editable={true} onEditPressed={() => actions.edit(label)} />
     {/if}
 </DataList>
-<button class="btn" aria-label="add label" on:click={create}><i class="bi-plus-lg"/></button>
+<button class="btn mb-0" aria-label="add label" on:click={create}><i class="bi-plus-lg"/></button>
 </div>
 
