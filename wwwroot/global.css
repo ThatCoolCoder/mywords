@@ -121,3 +121,11 @@ fieldset {
 	margin-left: initial;
 	margin-right: initial;
 }
+
+.badge {
+	font-size: .9em;
+}
+
+.badge .badge-btn {
+	margin: -2px 0px;
+}

@@ -7,9 +7,9 @@
     }
 </script>
 
-<div class="d-flex align-items-center gap-2 px-2 py-0 rounded" style={`background-color: ${label.color}`} >
-    <span>{label.name}</span>
+<span class="badge rounded-pill" style={`background-color: ${label.color}`} >
+    {label.name}
     {#if editable}
-        <a class="btn px-0" role="button" aria-label="edit" on:click={() => onEditPressed(label)}><i class="bi-pencil" /></a>
+        <button class="btn p-0 badge-btn" aria-label="edit" on:click={() => onEditPressed(label)}><i class="bi-pencil" /></button>
     {/if}
-</div>
+</span>
