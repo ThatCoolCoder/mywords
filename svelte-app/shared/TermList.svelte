@@ -44,6 +44,6 @@
     {#each $termsWritable.filter(x => termList === null || x.termList === termList) as term}
         <TermCard {term} showTermList={showTermLists} {syncWithApi} onDeleted={onTermDeleted}/>
     {:else}
-        <p class="lead small">No terms yet!</p>
+        <p class="lead">No terms yet</p>
     {/each}
 </div>

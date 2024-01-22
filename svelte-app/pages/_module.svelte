@@ -2,21 +2,21 @@
 
 <script>
     import { setContext, onMount } from 'svelte';
-    import Modal from 'svelte-simple-modal';
+    import { writable } from 'svelte/store';
+
     import util from './utils';
     import api from 'services/api';
-
+    
+    import Modal from 'svelte-simple-modal';
     import ErrorPopup from 'shared/misc/ErrorPopup.svelte';
     import ApiDependent from 'shared/misc/ApiDependent.svelte';
 
-    let user = null; 
-    setContext('user', {
-        get: () => user,
-        set: newUser => user = newUser
-    });
+    let user = writable(null); 
+    setContext('user', user);
+    console.log('set');
     
     onMount(async () => {
-        user = await api.get('users/me', 'Failed fetching user data');
+        user.set(await api.get('users/me', 'Failed fetching user data'));
     });
 
 </script>
@@ -28,11 +28,11 @@
                 <a class="navbar-brand nav-link text-dark" href="/">MyWords</a>
                 <div class="flex-grow-1"></div>
 
-                <ApiDependent ready={user != null}>
+                <ApiDependent ready={$user != null}>
                     <!-- <div slot="loading"></div> -->
                     <div class="dropdown">
                         <button class="btn btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
-                            { (user?.givenName ?? "") } { (user?.familyName ?? "") }
+                            { ($user?.givenName ?? "") } { ($user?.familyName ?? "") }
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><button class="dropdown-item" on:click={() => util.navigate('/')}>Collections</button></li>

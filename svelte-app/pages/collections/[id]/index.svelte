@@ -42,7 +42,7 @@
     <button class="btn align-self-end" aria-label="Edit details" on:click={openEditSetInfo}><i class="bi-pencil" /></button>
     </div>
 
-<hr />
+<!-- <hr /> -->
 
 <h4>Labels</h4>
 <ApiDependent ready={$labels != null}>
@@ -51,17 +51,15 @@
 
 <hr />
 
-<h4>Terms</h4>
+<h4>Term lists</h4>
 <div class="flex-1">
     <button class="btn btn-primary" on:click={() => navigate(`/collections/${setId}/addterms`)}><i class="bi-plus-lg" />&ensp;Add terms</button>
 </div>
 
-
-
 <ApiDependent ready={$terms != null}>
-    <div class="row mt-3">
+    <div class="row mt-2">
         {#each Object.keys(TermLists) as listName}
-            <div class="col-xs-1 col-lg-6 col-xl-4 col-xxl-3">
+            <div class="col-xs-1 col-lg-6 col-xl-4 col-xxl-3 mb-2">
                 <h5>{TermListDisplayNames[TermLists[listName]]}</h5>
                 <TermList termsWritable={terms} termSetId={setId} termList={TermLists[listName]} />
             </div>

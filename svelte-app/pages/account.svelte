@@ -1,25 +1,28 @@
 <script>
     import { getContext, onMount } from 'svelte';
+    import { get } from 'svelte/store';
 
     import api from 'services/api';
 
-    const { get, set } = getContext('user');
-    let user = get();
+    const user = getContext('user');
+    user.subscribe(undo);
 
     let givenName;
     let familyName;
 
     async function undo() {
-        user = get();
-        givenName = user.givenName;
-        familyName = user.familyName;
+        let u;
+        if ((u = get(user)) == null) return;
+        givenName = u.givenName;
+        familyName = u.familyName;
     }
 
     async function save() {
-        user = get();
-        user.givenName = givenName;
-        user.familyName = familyName;
-        await api.put('users/me', user, 'Failed updating account information');
+        var u = get(user);
+        u.givenName = givenName;
+        u.familyName = familyName;
+        user.set(u);
+        await api.put('users/me', u, 'Failed updating account information');
     }
 </script>
 
