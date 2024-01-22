@@ -1,4 +1,10 @@
-
+<script context="module">
+    export const WidthMode = {
+        Full: 0,
+        Half: 1,
+        Quarter: 2,
+    }
+</script>
 
 <script>
     import { getContext, onMount } from 'svelte';
@@ -18,6 +24,19 @@
     export let showLabels = true;
     export let syncWithApi = false; // false by default because it's a little dangerous
     export let onDeleted = null;
+    export let widthMode = WidthMode.Full;
+
+    let primaryInputSizings = {
+        [WidthMode.Full] : "col-xs-12 col-md-4 col-xxl-3",
+        [WidthMode.Half] : "col-12 col-xxl-3",
+        [WidthMode.Quarter] : "col-12 col-xxl-3"
+    };
+
+    let labelsRowSizings = {
+        [WidthMode.Full] : "col-xl-12 order-xl-1 order-xxl-5 col-xxl-3",
+        [WidthMode.Half] : "col-12 order-1",
+        [WidthMode.Quarter] : "col-12 order-1"
+    };
 
     let sortedTermLabels;
     $: sortedTermLabels = term.labels.map(labelId => $availableLabels.filter(x => x.id == labelId)[0]).toSorted((a, b) => a.name.compareTo(b.name));
@@ -50,16 +69,16 @@
         <div class="d-flex gap-2">
             <!-- value/definition plus labels -->
             <div class="row flex-grow-1">
-                <div class="order-2 col-xs-12 col-md-4 col-xxl-3 form-group">
+                <div class={"order-2 form-group " + primaryInputSizings[widthMode]}>
                     <input on:change={update} bind:value={term.value} class="form-control mb-0 fw-bold" placeholder="Term" />
                 </div>
-                <div class="order-3 col-xs-12 col-md-4 col-xxl-3 form-group">
+                <div class={"order-3 form-group " + primaryInputSizings[widthMode]}>
                     <input on:change={update} bind:value={term.definition} class="form-control mb-0" placeholder="Definition" />
                 </div>
             
                 <!-- Labels and term list, which collapse to above the main inputs when it gets too small -->
                 {#if showTermList || showLabels}
-                    <div class="col-xl-12 order-xl-1 order-xxl-5 col-xxl-3 d-flex gap-2 justify-content-start align-items-center mb-2">
+                    <div class={"d-flex gap-2 justify-content-start align-items-center mb-2 " + labelsRowSizings[widthMode]}>
                         {#if showTermList}
                             <span class="badge rounded-pill h-auto bg-secondary w-auto">
                                 {TermListDisplayNames[term.termList]}

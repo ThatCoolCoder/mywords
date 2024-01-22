@@ -9,6 +9,7 @@
     import ApiDependent from 'shared/misc/ApiDependent.svelte';
     import LabelList from 'shared/LabelList.svelte';
     import TermList from 'shared/TermList.svelte';
+    import { WidthMode } from 'shared/TermCard.svelte';
 
     // $: ({id, set} = scoped);
     // let id, set;
@@ -61,7 +62,7 @@
         {#each Object.keys(TermLists) as listName}
             <div class="col-xs-1 col-lg-6 col-xl-4 col-xxl-3 mb-2">
                 <h5>{TermListDisplayNames[TermLists[listName]]}</h5>
-                <TermList termsWritable={terms} termSetId={setId} termList={TermLists[listName]} />
+                <TermList termsWritable={terms} termSetId={setId} termList={TermLists[listName]} widthMode={WidthMode.Quarter} />
             </div>
         {/each}
     </div>
