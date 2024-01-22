@@ -7,12 +7,14 @@
 </script>
 
 <script>
-    import { getContext, onMount } from 'svelte';
+    import { getContext } from 'svelte';
     import { writable } from 'svelte/store';
 
     import { TermListDisplayNames } from 'data/termLists.js';
     import api from 'services/api';
-    
+
+    import { clickOutside } from 'shared/misc/clickOutside.js';
+    import { hoverNotifier } from 'shared/misc/hoverNotifier';
     import LabelBadge from 'shared/LabelBadge.svelte';
     import EditTermLabels from 'shared/EditTermLabels.svelte';
 
@@ -23,16 +25,35 @@
     export let showTermList = true; // show what term list it's in
     export let showLabels = true;
     export let syncWithApi = false; // false by default because it's a little dangerous
+    export let editable = true;
+    export let editing = false;
+    export let forcedEditing = false;
     export let onDeleted = null;
     export let widthMode = WidthMode.Full;
 
-    let primaryInputSizings = {
+    let hovering = false;
+
+    // true/false is for is editing
+    // let primaryInputSizings = {
+    //     [true]: {
+    //         [WidthMode.Full] : "col-xs-12 col-md-4 col-xxl-3",
+    //         [WidthMode.Half] : "col-12 col-xl-6",
+    //         [WidthMode.Quarter] : "col-12 col-xxl-6"
+    //     },
+    //     [false]: {
+    //         [WidthMode.Full] : "col-xs-12 col-md-4 col-xxl-3",
+    //         [WidthMode.Half] : "col-12 col-xl-6",
+    //         [WidthMode.Quarter] : "col-12 col-xl-6"
+    //     }
+    // };
+
+    const primaryInputSizings = {
         [WidthMode.Full] : "col-xs-12 col-md-4 col-xxl-3",
         [WidthMode.Half] : "col-12 col-xl-6",
         [WidthMode.Quarter] : "col-12 col-xxl-6"
     };
 
-    let labelsRowSizings = {
+    const labelsRowSizings = {
         [WidthMode.Full] : "col-xl-12 col-xxl-6",
         [WidthMode.Half] : "col-12",
         [WidthMode.Quarter] : "col-12"
@@ -40,6 +61,18 @@
 
     let sortedTermLabels;
     $: sortedTermLabels = term.labels.map(labelId => $availableLabels.filter(x => x.id == labelId)[0]).toSorted((a, b) => a.name.compareTo(b.name));
+
+    function tryEdit() {
+        if (editable) editing = true;
+    }
+
+    function closeEdit() {
+        editing = false;
+    }
+
+    function onHoverChanged(newValue) {
+        hovering = newValue.detail;
+    }
     
     function openEditLabelsModal() {
         let w = writable(term.labels);
@@ -50,6 +83,7 @@
     }
 
     function update() {
+        console.log(primaryInputSizings[editing][widthMode])
         if (syncWithApi) {
             api.put(`terms/${term.id}`, term);
         }
@@ -57,55 +91,103 @@
 
     function askDeleteTerm() {
         // todo: make it not use confirm
-        if (confirm(`Are you sure you want to delete the term ${term.value} (${term.definition})?`)) {
+        if (confirm(`Are you sure you want to delete the term ${term.value} (${term.definition.length == 0 ? 'no definition' : term.definition})?`)) {
             api.post(`terms/${term.id}/delete/`);
             if (onDeleted != null) onDeleted(term);
         }
     }
 </script>
 
-<div class="card p-2 d-flex flex-row gap-2">
-    <div class="flex-grow-1 d-flex flex-column gap-2">
-        <div class="d-flex gap-2">
-            <!-- value/definition plus labels -->
-            <div class="row flex-grow-1 gy-2">
-                <div class={"form-group  " + primaryInputSizings[widthMode]}>
-                    <input on:change={update} bind:value={term.value} class="form-control mb-0 fw-bold" placeholder="Term" />
+<style>
+    .delete-button {
+        opacity: 0%;
+        transition: opacity 0.2s ease-in-out;
+    }
+    
+    .delete-button[data-visible="true"] {
+        opacity: 100%;
+    }
+</style>
+
+<!-- Yes, this has become hideously nested and indented. No, I don't care -->
+<div use:clickOutside on:click_outside={closeEdit}
+    use:hoverNotifier on:hover_changed={onHoverChanged}
+    class="card p-2 d-flex flex-row gap-2">
+    {#if editing || forcedEditing}
+        <div class="flex-grow-1 d-flex flex-column gap-2">
+            <div class="d-flex gap-2">
+                <!-- value/definition plus labels -->
+                <div class="row flex-grow-1 gy-2">
+                    <div class={"form-group " + primaryInputSizings[widthMode]}>
+                        <input on:change={update} bind:value={term.value} class="form-control mb-0 fw-bold" placeholder="Term" />
+                    </div>
+                    <div class={"form-group " + primaryInputSizings[widthMode]}>
+                        <input on:change={update} bind:value={term.definition} class="form-control mb-0" placeholder="Definition" />
+                    </div>
+                
+                    <!-- Labels, term list and delete, which collapse to below the main inputs when it gets too small -->
+                    <div class={"d-flex gap-2 justify-content-start align-items-center " + labelsRowSizings[widthMode]}>
+                        {#if showTermList}
+                            <span class="badge rounded-pill h-auto bg-secondary w-auto">
+                                {TermListDisplayNames[term.termList]}
+                            </span>
+                            <div class="vr"></div>
+                        {/if}
+                        {#if showLabels}
+                            <div class="d-flex flex-row gap-2" on:click={openEditLabelsModal} >
+                                {#each sortedTermLabels as label}
+                                    <LabelBadge {label} />
+                                {:else}
+                                    <span class="text-secondary">No labels</span>
+                                {/each}
+                                <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1"><i class={sortedTermLabels.length == 0 ? "bi-plus-lg" : "bi-pencil"}/></button>
+                            </div>
+                        {/if}
+                        {#if syncWithApi}
+                            <button class="btn btn-outline-danger p-1 mb-auto ms-auto" on:click={askDeleteTerm}><i class="bi-trash mb-0"/></button>
+                        {/if}
+                    </div>
                 </div>
-                <div class={"form-group " + primaryInputSizings[widthMode]}>
-                    <input on:change={update} bind:value={term.definition} class="form-control mb-0" placeholder="Definition" />
+            </div>
+            <!-- Notes/description -->
+            <div class="row">
+                <div class="form-group">
+                    <textarea on:change={update} bind:value={term.notes} class="form-control mb-0" style="resize: none" placeholder="Notes"></textarea>
                 </div>
-            
-                <!-- Labels, term list and delete, which collapse to below the main inputs when it gets too small -->
-                <div class={"d-flex gap-2 justify-content-start align-items-center " + labelsRowSizings[widthMode]}>
-                    {#if showTermList}
-                        <span class="badge rounded-pill h-auto bg-secondary w-auto">
-                            {TermListDisplayNames[term.termList]}
-                        </span>
+            </div>
+        </div>
+    {:else}
+        <!-- svelte-ignore a11y-click-events-have-key-events a11y-interactive-supports-focus -->
+        <div class="row flex-grow-1" role="button" on:click={tryEdit}>
+            <div class={primaryInputSizings[widthMode]}>
+                <span class="fw-bold">{term.value}</span>
+            </div>
+            <div class={primaryInputSizings[widthMode]}>
+                <span class={term.definition.length == 0 ? "text-secondary" : ""}>{term.definition.length == 0 ? "(No definition)" : term.definition}</span>
+            </div>
+            <div class={"d-flex gap-2 justify-content-start align-items-center " + labelsRowSizings[widthMode]}>
+                {#if showTermList}
+                    <span class="badge rounded-pill h-auto bg-secondary w-auto">
+                        {TermListDisplayNames[term.termList]}
+                    </span>
+                    {#if showLabels && sortedTermLabels.length > 0}
                         <div class="vr"></div>
                     {/if}
-                    {#if showLabels}
-                        <div class="d-flex flex-row gap-2" on:click={openEditLabelsModal} >
-                            {#each sortedTermLabels as label}
-                                <LabelBadge {label} />
-                            {:else}
-                                <span class="text-secondary">No labels</span>
-                            {/each}
-                            <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1"><i class={sortedTermLabels.length == 0 ? "bi-plus-lg" : "bi-pencil"}/></button>
-                        </div>
-                    {/if}
-                    {#if syncWithApi}
-                        <button class="btn btn-outline-danger p-1 mb-auto ms-auto" on:click={askDeleteTerm}><i class="bi-trash mb-0"/></button>
-                    {/if}
-                </div>
+                {/if}
+                {#if showLabels}
+                    {#each sortedTermLabels as label}
+                        <LabelBadge {label} />
+                    {/each}
+                {/if}
+                {#if syncWithApi}
+                    <button class="btn btn-outline-danger px-1 py-0 my-0 ms-auto delete-button"
+                        data-visible={hovering}
+                        on:click={askDeleteTerm}><i class="bi-trash mb-0"/></button>
+                {/if}
             </div>
         </div>
-        <div class="row">
-            <div class="form-group">
-                <textarea on:change={update} bind:value={term.notes} class="form-control mb-0" style="resize: none" placeholder="Notes"></textarea>
-            </div>
-        </div>
-    </div>
+    {/if}
+
     {#if $$slots.right}
         <div class="flex-shrink-1">
             <slot name="right" />

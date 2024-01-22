@@ -20,6 +20,6 @@ Order of imports:
 
 - Svelte things or things from important libraries like routify
 - Local code imports
-- Local component imports
+- Local component imports, or other UI things such as actions
 
 Currently there aren't any 3rd party code or component libraries so there isn't a place for them designated yet.

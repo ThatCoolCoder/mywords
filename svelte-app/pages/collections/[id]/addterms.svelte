@@ -117,7 +117,7 @@
         <br />
 
         <div>
-            <TermCard bind:term={currentNewTerm} showTermList={false} showLabels={false}>
+            <TermCard bind:term={currentNewTerm} showTermList={false} showLabels={false} forcedEditing={true}>
                 <button class="btn btn-outline-secondary h-100 add-term-button" slot="right" on:click={addCurrentTerm}><i class="bi-plus-lg" /></button>
             </TermCard>
         </div>

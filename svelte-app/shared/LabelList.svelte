@@ -1,4 +1,6 @@
 <script>
+    import { derived } from "svelte/store";
+
     import api from "services/api";
     
     import DataList from "shared/misc/DataList.svelte";
@@ -6,6 +8,7 @@
     import LabelBadge from "shared/LabelBadge.svelte";
 
     export let labelsWritable;
+    const sorted = derived(labelsWritable, ($labelsWritable) => $labelsWritable.toSorted((a, b) => a.name.compareTo(b.name)));
     export let collectionId;
     let editData;
     let dataList;
@@ -36,22 +39,22 @@
 </script>
 
 <div class="d-flex flex-row align-items-center gap-2">
-<DataList itemsWritable={labelsWritable} bind:editData={editData} bind:this={dataList}
-    {onItemEdit} {onItemUpdate} {onItemDelete}
-    let:editing let:item={label} let:idx
-    let:actions>
-    {#if editing}
-        <div class="d-flex align-items-center gap-2 rounded px-2 py-0 children-no-margin" style="border: 1px solid black">
-            <input bind:value={$editData.name} placeholder="name" />
-            <input type="color" bind:value={$editData.color}/>
-            <div class="vr"></div> 
+    <DataList itemsWritable={sorted} bind:editData={editData} bind:this={dataList}
+        {onItemEdit} {onItemUpdate} {onItemDelete}
+        let:editing let:item={label}
+        let:actions>
+        {#if editing}
+            <div class="d-flex align-items-center gap-2 rounded px-2 py-0 children-no-margin" style="border: 1px solid black">
+                <input bind:value={$editData.name} placeholder="name" />
+                <input type="color" bind:value={$editData.color}/>
+                <div class="vr"></div> 
 
-            <StandardEditorButtons {actions} item={label} />
-        </div>
-    {:else}
-        <LabelBadge {label} editable={true} onEditPressed={() => actions.edit(label)} />
-    {/if}
-</DataList>
-<button class="btn mb-0" aria-label="add label" on:click={create}><i class="bi-plus-lg"/></button>
+                <StandardEditorButtons {actions} item={label} />
+            </div>
+        {:else}
+            <LabelBadge {label} editable={true} onEditPressed={() => actions.edit(label)} />
+        {/if}
+    </DataList>
+    <button class="btn mb-0" aria-label="add label" on:click={create}><i class="bi-plus-lg"/></button>
 </div>
 
