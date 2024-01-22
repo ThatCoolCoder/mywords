@@ -35,37 +35,15 @@
         else api.put(`terms/${term.id}`, term);
     }
 
-    function onItemDelete(term) {
-        if (term.id !== undefined) api.post(`terms/${term.id}/delete`);
+    function onTermDeleted(term) {
+        termsWritable.update(terms => terms.deleteItem(term));
     }
-
-    // function create() {
-    //     let term = {id: undefined, termSetId: termSetId, value: '', definition: '', labels: [], termList: termList};
-    //     termsWritable.update(x => x.pushed(term));
-    //     dataList.edit(term);
-    // }
 </script>
 
 <div class="d-flex flex-column gap-2">
-    {#each $termsWritable.filter(x => termList === null || x.termList === termList) as term }
-        <TermCard {term} showTermList={showTermLists} {syncWithApi}/>
+    {#each $termsWritable.filter(x => termList === null || x.termList === termList) as term}
+        <TermCard {term} showTermList={showTermLists} {syncWithApi} onDeleted={onTermDeleted}/>
     {:else}
         <p class="lead small">No terms yet!</p>
     {/each}
 </div>
-
-<!-- <div class="container">
-    <DataList itemsWritable={termsWritable} bind:editData={editData} bind:this={dataList}
-        {onItemEdit} {onItemUpdate} {onItemDelete}
-        let:editing let:item={term} let:idx
-        let:actions>
-        <div class="row">
-            {#if editing}
-                <p>haha nothing to edit</p>
-                <StandardEditorButtons {actions} item={term} />
-            {:else}
-            {/if}
-        </div>
-    </DataList>
-
-</div> -->

@@ -54,7 +54,6 @@
         w.subscribe(newVal => currentNewTerm.labels = newVal);
         open(EditTermLabels, {availableLabels: labels, labels: w});
     }
-
 </script>
 
 <script context="module">
@@ -77,13 +76,12 @@
             <legend class="float-none w-auto px-3">General settings</legend>
 
             <div class="form-group d-flex gap-2 align-items-center">
-                <label for="listSelect">List to insert terms into
-                    <select class="mb-0 w-auto form-select" bind:value={generalSettings.termList}>
-                        {#each Object.keys(TermLists) as listName}
-                            <option value={TermLists[listName]}>{TermListDisplayNames[TermLists[listName]]}</option>
-                        {/each}
-                    </select>
-                </label>
+                <label for="listSelect">List to insert terms into</label>
+                <select id="listSelect" class="mb-0 w-auto form-select" bind:value={generalSettings.termList}>
+                    {#each Object.keys(TermLists) as listName}
+                        <option value={TermLists[listName]}>{TermListDisplayNames[TermLists[listName]]}</option>
+                    {/each}
+                </select>
             </div>
 
             <div on:click={openEditLabelsModal} class="form-group d-flex gap-2 justify-content-start align-items-center">
