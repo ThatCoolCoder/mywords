@@ -78,22 +78,22 @@
 
             <div class="form-group d-flex gap-2 align-items-center">
                 <label for="listSelect">List to insert terms into
+                    <select class="mb-0 w-auto form-select" bind:value={generalSettings.termList}>
+                        {#each Object.keys(TermLists) as listName}
+                            <option value={TermLists[listName]}>{TermListDisplayNames[TermLists[listName]]}</option>
+                        {/each}
+                    </select>
                 </label>
-                <select class="mb-0 w-auto form-select" name="listSelect" bind:value={generalSettings.termList}>
-                    {#each Object.keys(TermLists) as listName}
-                        <option value={TermLists[listName]}>{TermListDisplayNames[TermLists[listName]]}</option>
-                    {/each}
-                </select>
             </div>
 
-            <div class="form-group d-flex gap-2 justify-content-start align-items-center">
+            <div on:click={openEditLabelsModal} class="form-group d-flex gap-2 justify-content-start align-items-center">
+                <span>Labels for added terms:</span>
                 {#each sortedNewTermLabels as label}
                     <LabelBadge {label} />
                 {:else}
-                    <span class="text-secondary">No labels</span>
+                    <span class="text-secondary">(None)</span>
                 {/each}
-                <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1" on:click={openEditLabelsModal}><i class="bi-plus-lg"/></button>
-            
+                <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1" aria-label="edit labels"><i class={sortedNewTermLabels.length == 0 ? "bi-plus-lg" : "bi-pencil" }/></button>
             </div>
         </fieldset>
 
@@ -107,6 +107,7 @@
 
         <hr />
 
+        <h3>Recently added</h3>
         <TermList termsWritable={terms} termSetId={setId} showTermLists={true} />
 
     </div>

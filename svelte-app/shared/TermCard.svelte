@@ -24,7 +24,9 @@
     function openEditLabelsModal() {
         let w = writable(term.labels);
         w.subscribe(newVal => term.labels = newVal);
-        open(EditTermLabels, {availableLabels, labels: w});
+        open(EditTermLabels, {availableLabels, labels: w}, {}, {
+            onClosed: update
+        });
     }
 
     function update() {
@@ -38,10 +40,10 @@
     <div class="flex-grow-1 d-flex flex-column gap-2">
         <div class="row">
             <div class="order-2 col-xs-12 col-md-4 col-xxl-3 form-group">
-                <input class="form-control mb-0" placeholder="Value" bind:value={term.value} />
+                <input on:change={update} bind:value={term.value} class="form-control mb-0" placeholder="Value" />
             </div>
             <div class="order-3 col-xs-12 col-md-4 col-xxl-3 form-group">
-                <input class="form-control mb-0" placeholder="Definition" bind:value={term.definition} />
+                <input on:change={update} bind:value={term.definition} class="form-control mb-0" placeholder="Definition" />
             </div>
 
             
@@ -54,19 +56,21 @@
                         <div class="vr"></div>
                     {/if}
                     {#if showLabels}
-                        {#each sortedTermLabels as label}
-                            <LabelBadge {label} />
-                        {:else}
-                            <span class="text-secondary">No labels</span>
-                        {/each}
-                        <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1" on:click={openEditLabelsModal}><i class="bi-plus-lg"/></button>
+                        <div class="d-flex flex-row gap-2" on:click={openEditLabelsModal} >
+                            {#each sortedTermLabels as label}
+                                <LabelBadge {label} />
+                            {:else}
+                                <span class="text-secondary">No labels</span>
+                            {/each}
+                            <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1"><i class={sortedTermLabels.length == 0 ? "bi-plus-lg" : "bi-pencil"}/></button>
+                        </div>
                     {/if}
                 </div>
             {/if}
         </div>
         <div class="row">
             <div class="form-group">
-                <textarea bind:value={term.notes} class="form-control mb-0" style="resize: none" placeholder="Notes"></textarea>
+                <textarea on:change={update} bind:value={term.notes} class="form-control mb-0" style="resize: none" placeholder="Notes"></textarea>
             </div>
         </div>
     </div>
