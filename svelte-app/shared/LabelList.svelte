@@ -1,5 +1,5 @@
 <script>
-    import { derived } from "svelte/store";
+    import { get, derived } from "svelte/store";
 
     import api from "services/api";
     
@@ -25,6 +25,7 @@
 
         if (label.id === undefined) label.id = Number(await (await api.post(`labels/`, label)).text());
         else api.put(`labels/${label.id}`, label);
+        labelsWritable.set(get(labelsWritable));
     }
 
     function onItemDelete(label) {
@@ -38,7 +39,7 @@
     }
 </script>
 
-<div class="d-flex flex-row align-items-center gap-2">
+<div class="d-flex flex-row flex-wrap align-items-center gap-2">
     <DataList itemsWritable={sorted} bind:editData={editData} bind:this={dataList}
         {onItemEdit} {onItemUpdate} {onItemDelete}
         let:editing let:item={label}

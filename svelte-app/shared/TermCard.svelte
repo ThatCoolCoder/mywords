@@ -59,6 +59,19 @@
         [WidthMode.Quarter] : "col-12"
     };
 
+    // Sorry these two are janky as they rely on the knowledge of the column breakpoints in the index.svelte
+    const previewTextSizings = {
+        [WidthMode.Full] : "col-xl-1 col-lg-2 col-md-3 col-sm-4 col-6",
+        [WidthMode.Half] : "col-xl-2 col-lg-3 col-md-4 col-6",
+        [WidthMode.Quarter] : "col-xxl-6 col-xl-6 col-lg-3 col-md-3 col-6"
+    };
+
+    const previewLabelsSizings = {
+        [WidthMode.Full] : "col-xl-10 col-lg-8 col-md-6 col-xs-12",
+        [WidthMode.Half] : "col-xxl-12 col-xl-6 col-lg-6 col-12",
+        [WidthMode.Quarter] : "col-xxl-12 xl-12 col-lg-6 col-sm-6 col-12"
+    };
+
     let sortedTermLabels;
     $: sortedTermLabels = term.labels.map(labelId => $availableLabels.filter(x => x.id == labelId)[0]).toSorted((a, b) => a.name.compareTo(b.name));
 
@@ -159,13 +172,17 @@
     {:else}
         <!-- svelte-ignore a11y-click-events-have-key-events a11y-interactive-supports-focus -->
         <div class="row flex-grow-1" role="button" on:click={tryEdit}>
-            <div class={primaryInputSizings[widthMode]}>
+            <div class={previewTextSizings[widthMode]}>
                 <span class="fw-bold">{term.value}</span>
             </div>
-            <div class={primaryInputSizings[widthMode]}>
+            <div class={previewTextSizings[widthMode]}>
                 <span class={term.definition.length == 0 ? "text-secondary" : ""}>{term.definition.length == 0 ? "(No definition)" : term.definition}</span>
             </div>
-            <div class={"d-flex gap-2 justify-content-start align-items-center " + labelsRowSizings[widthMode]}>
+
+            <div class={"d-flex gap-2 justify-content-start align-items-center flex-wrap " + previewLabelsSizings[widthMode]}>
+                {#if showTermList || (showLabels && sortedTermLabels.length > 0)}
+                    <div class="vr"></div>
+                {/if}
                 {#if showTermList}
                     <span class="badge rounded-pill h-auto bg-secondary w-auto">
                         {TermListDisplayNames[term.termList]}

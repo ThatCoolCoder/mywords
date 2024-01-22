@@ -103,7 +103,7 @@
                 <HelpButton topic="Term lists" text={termListsHelp} />
             </div>
 
-            <div on:click={openEditLabelsModal} class="form-group d-flex gap-2 justify-content-start align-items-center">
+            <div on:click={openEditLabelsModal} class="form-group d-flex flex-wrap gap-2 justify-content-start align-items-center">
                 <span>Labels for added terms:</span>
                 {#each sortedNewTermLabels as label}
                     <LabelBadge {label} />
