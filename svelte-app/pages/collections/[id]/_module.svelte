@@ -8,14 +8,15 @@
     let setId;
     let set;
     let terms;
-    let labels;
+    let labels = writable([]);
+    setContext('labels', labels);
     let props = writable({});
 
     onMount(async () => {
         setId = id;
         set = writable(await api.get(`termsets/${id}`, 'Failed fetching collection info'));
         terms = writable(await api.get(`termsets/${id}/terms`, 'Failed loading terms'));
-        labels = writable(await api.get(`termsets/${id}/labels`, 'Failed loading labels'));
+        labels.set(await api.get(`termsets/${id}/labels`, 'Failed loading labels'));
         props.set({setId, set, terms, labels});
     });
 </script>

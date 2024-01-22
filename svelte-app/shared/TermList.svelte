@@ -10,6 +10,7 @@
     export let termsWritable;
     export let termSetId;
     export let termList = null; // as in which of the user-lists it's in
+    export let showTermLists = false;
     let editData;
     let dataList;
 
@@ -46,7 +47,7 @@
 
 <div class="d-flex flex-column">
     {#each $termsWritable.filter(x => termList === null || x.termList === termList) as term }
-        <TermCard {term} />
+        <TermCard {term} showTermList={showTermLists}/>
     {:else}
         <p class="lead small">No terms yet!</p>
     {/each}

@@ -81,31 +81,17 @@
         <br />
 
         <div style="max-width: 1500px" >
-            <TermCard bind:term={currentNewTerm}>
-                <!-- todo: make this icon fill the button -->
+            <TermCard bind:term={currentNewTerm} showTermList={false}>
                 <button class="btn btn-outline-secondary h-100 add-term-button" slot="right" on:click={addCurrentTerm}><i class="bi-plus-lg" /></button>
             </TermCard>
         </div>
-        
-        <!-- <div class="card p-3">
-            <div class="row">
-                <div class="col-xs-12 col-md-4 col-xxl-3 form-group">
-                    <input class="form-control" placeholder="Value" bind:value={currentNewTerm.value} />
-                </div>
-                <div class="col-xs-12 col-md-4 col-xxl-3 form-group">
-                    <input class="form-control" placeholder="Definition" bind:value={currentNewTerm.definition} />
-                </div>
-                <!-- Todo: big plus button on the right filling all sub-rows
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <textarea bind:value={currentNewTerm.notes} class="form-control" style="resize: none" placeholder="Notes"></textarea>
-                </div>
-            </div>
-        </div> -->
 
+        <hr />
 
-        <div class="row mt-3">
+        <TermList termsWritable={terms} termSetId={setId} showTermLists={true} />
+
+        <!-- obsolete but we probably will want to paste this into somewhere later -->
+        <!-- <div class="row mt-3">
             {#each Object.keys(TermLists) as listName}
                 <div class="col-xs-1 col-lg-6 col-xl-4 col-xxl-3">
                     <h4>{TermListDisplayNames[TermLists[listName]]}</h4>
@@ -113,7 +99,7 @@
                     <TermList termsWritable={terms} termSetId={setId} termList={TermLists[listName]} />
                 </div>
             {/each}
-        </div>
+        </div> -->
 
     </div>
     
