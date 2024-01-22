@@ -76,6 +76,7 @@ export default {
 		alias({
 			resolve: ['.svelte', '.js'], //optional, by default this will just look for .js files or folders
 			entries: [
+				// Please keep this in sync with jsconfig.json
 				{ find: 'services', replacement: './svelte-app/services' },
 				{ find: 'pages', replacement: './svelte-app/pages' },
 				{ find: 'shared', replacement: './svelte-app/shared' },

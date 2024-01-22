@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./svelte-app",
+        "paths": {
+            // Please keep this in sync with settings in rollup.config.js
+            
+            "services/*": ["./services/*"],
+            "pages/*": ["./pages/*"],
+            "shared/*": ["./shared/*"],
+            "data/*": ["./data/*"],
+        },
+    }
+}

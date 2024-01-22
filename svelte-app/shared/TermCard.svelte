@@ -2,11 +2,11 @@
 
 <script>
     import { getContext, onMount } from 'svelte';
-    import { get } from 'svelte/store';
+    import { writable } from 'svelte/store';
 
     import { TermListDisplayNames } from 'data/termLists.js';
     
-    import LabelCard from 'shared/LabelCard.svelte';
+    import LabelBadge from 'shared/LabelBadge.svelte';
     import EditTermLabels from 'shared/EditTermLabels.svelte';
 
     const { open, close } = getContext('simple-modal');
@@ -14,10 +14,16 @@
     
     export let term = {value: '', definition: '', termList: 0, notes: '', labels: []};
     export let showTermList = true;
+
+    let sortedTermLabels;
+    $: sortedTermLabels = term.labels.map(labelId => $availableLabels.filter(x => x.id == labelId)[0]).toSorted((a, b) => a.name.compareTo(b.name));
     
 
     function openEditLabelsModal() {
-        open(EditTermLabels, {availableLabels, labels: []});
+        var w = writable(term.labels);
+        console.log(term.labels);
+        w.subscribe(newVal => term.labels = newVal);
+        open(EditTermLabels, {availableLabels, labels: w});
     }
 </script>
 
@@ -30,8 +36,8 @@
                 </span>
                 <div class="vr"></div>
             {/if}
-            {#each term.labels as label}
-                <LabelCard {label} />
+            {#each sortedTermLabels as label}
+                <LabelBadge {label} />
             {:else}
                 <span class="text-secondary">No labels</span>
             {/each}

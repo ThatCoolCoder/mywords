@@ -2,12 +2,12 @@
     import { onMount, getContext } from 'svelte';
     import { writable } from 'svelte/store';
 
-    import api from 'services/api.js';
     import { TermLists, TermListDisplayNames } from 'data/termLists.js';
     
     import ApiDependent from 'shared/misc/ApiDependent.svelte';
     import TermList from 'shared/TermList.svelte';
     import TermCard from 'shared/TermCard.svelte';
+    import EditTermLabels from 'shared/EditTermLabels.svelte';
 
     export let setId;
     export let set;
@@ -57,10 +57,10 @@
 <title>Add Terms | MyWords</title>
 
 <ApiDependent ready={set != null}>
-    <div class="d-flex flex-column gap-3">
+    <div class="d-flex flex-column gap-3" style="max-width: 1500px">
         <h2>Add terms - { $set.name }</h2>
         
-        <fieldset style="max-width: 1500px" class="border p-2 text-start">
+        <fieldset class="border p-2 text-start">
             <legend class="float-none w-auto px-3">General settings</legend>
 
             <div class="form-group d-flex gap-2 align-items-center">
@@ -74,13 +74,13 @@
             </div>
 
             <div>
-                <p>Placeholder for a thing to select which labels you want added</p>
+                <!-- <EditTermLabels />; -->
             </div>
         </fieldset>
 
         <br />
 
-        <div style="max-width: 1500px" >
+        <div>
             <TermCard bind:term={currentNewTerm} showTermList={false}>
                 <button class="btn btn-outline-secondary h-100 add-term-button" slot="right" on:click={addCurrentTerm}><i class="bi-plus-lg" /></button>
             </TermCard>

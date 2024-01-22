@@ -27,3 +27,12 @@ Object.deleted = function(obj, key) {
     delete toModify[key];
     return toModify;
 }
+
+String.prototype.compareTo = function(other) {
+    // used in sorting such as how you would do with integers arr.sort((a, b) => a - b);
+    // (required if trying to sort by a string sub-property)
+    if (this == other) return 0;
+    var arr = [this, other];
+    arr.sort();
+    return (arr[0] == this) ? -1 : 1;
+}

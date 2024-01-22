@@ -5,7 +5,7 @@
     
     import DataList from "shared/misc/DataList.svelte";
     import StandardEditorButtons from "shared/misc/StandardEditorButtons.svelte";
-    import LabelCard from "shared/LabelCard.svelte";
+    import LabelBadge from "shared/LabelBadge.svelte";
 
     export let labelsWritable;
     export let termSetId;
@@ -51,7 +51,7 @@
             <StandardEditorButtons {actions} item={label} />
         </div>
     {:else}
-        <LabelCard {label} editable={true} onEditPressed={() => actions.edit(label)} />
+        <LabelBadge {label} editable={true} onEditPressed={() => actions.edit(label)} />
     {/if}
 </DataList>
 <button class="btn" aria-label="add label" on:click={create}><i class="bi-plus-lg"/></button>
