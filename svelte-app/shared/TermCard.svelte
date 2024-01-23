@@ -128,7 +128,7 @@
                 <!-- value/definition plus labels -->
                 <div class="row flex-grow-1 gy-2">
                     <div class={"form-group " + primaryInputSizings[widthMode]}>
-                        <input on:change={update} bind:value={term.value} class="form-control mb-0 fw-bold" placeholder="Term" />
+                        <input on:change={update} bind:value={term.value} class={"form-control mb-0 " + (term.value == "" ? "" : "fw-bold")} placeholder="Term" />
                     </div>
                     <div class={"form-group " + primaryInputSizings[widthMode]}>
                         <input on:change={update} bind:value={term.definition} class="form-control mb-0" placeholder="Definition" />
