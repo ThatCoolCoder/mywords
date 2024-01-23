@@ -1,6 +1,6 @@
 <script>
     import { getContext } from 'svelte';
-    import { writable } from 'svelte/store';
+    import { derived, writable } from 'svelte/store';
 
     import { TermLists } from 'data/termLists.js';
     import api from 'services/api';
@@ -16,6 +16,10 @@
     export let collection;
     export let terms;
     export let labels;
+
+    // let recentTerms = derived(terms, $terms => $terms.filter(t => {
+    //     let date = new Date(parseInt(/-?\d+/.exec(t.movedToCurrentListUtc)[0]));
+    // }).toSorted();)
 
     const termListsHelp = "MyWords offers multiple lists that you can organise your words into.\n" + 
         "Backlog is for words which you have come across but haven't yet found the meaning of\n" + 
@@ -103,6 +107,7 @@
                 <HelpButton topic="Term lists" text={termListsHelp} />
             </div>
 
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div on:click={openEditLabelsModal} class="form-group d-flex flex-wrap gap-2 justify-content-start align-items-center">
                 <span>Labels for added terms:</span>
                 {#each sortedNewTermLabels as label}
@@ -125,7 +130,7 @@
         <hr />
 
         <h3>Recently added</h3>
-        <TermList termsWritable={terms} showTermLists={true} />
+        <TermList termsStore={terms} showTermLists={true} />
 
     </div>
     

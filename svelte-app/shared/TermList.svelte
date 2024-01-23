@@ -6,7 +6,11 @@
     import TermCard from "shared/TermCard.svelte";
     import { WidthMode }from "shared/TermCard.svelte";
 
-    export let termsWritable;
+    export let termsStore;
+    export let baseTermsWritable = null; // You need to provide this if providing terms in a derived store, should be the writable that the store was derived from
+    let targetStore;
+    $: targetStore = baseTermsWritable ?? termsStore;
+
     export let termList = null; // as in which of the user-lists it's in, if set it will filter to that list
     export let showTermLists = false;
     export let syncWithApi = true;
@@ -14,7 +18,7 @@
     export let dragAndDropEnabled = false;
 
     function onTermDeleted(term) {
-        termsWritable.update(terms => terms.deleteItem(term));
+        targetStore.update(terms => terms.deleteItem(term));
     }
 
     async function onTermDrop(e) {
@@ -23,7 +27,7 @@
         const id = Number(e.dataTransfer.getData("text/plain"));
 
         let term = null;
-        for (let crntTerm of get(termsWritable)) {
+        for (let crntTerm of get(targetStore)) {
             if (crntTerm.id == id) {
                 term = crntTerm;
                 break;
@@ -35,7 +39,7 @@
 
         if (term.termList != termList) {
             term.termList = termList;
-            termsWritable.set(get(termsWritable));
+            targetStore.set(get(targetStore));
             await api.put(`terms/${term.id}`, term, "Failed moving term into list");
         }
     }
@@ -56,7 +60,7 @@
 </script>
 
 <div class="d-flex flex-column gap-2" on:drop={onTermDrop} on:dragover={onTermDragOver}>
-    {#each $termsWritable.filter(x => termList === null || x.termList === termList) as term}
+    {#each $termsStore.filter(x => termList === null || x.termList === termList) as term}
         <TermCard {term} showTermList={showTermLists} {syncWithApi} onDeleted={onTermDeleted} {widthMode} {dragAndDropEnabled} on:dragstart={() => onDragStart(term.termList)}/>
     {:else}
         <p class="lead mb-1">No terms yet</p>
