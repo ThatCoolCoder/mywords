@@ -23,29 +23,20 @@
     
     export let term = {value: '', definition: '', termList: 0, notes: '', labels: []};
     export let showTermList = true; // show what term list it's in
+    
     export let showLabels = true;
+    export let widthMode = WidthMode.Full;
+    
+    export let dragAndDropEnabled = false; // enable dragging labels between lists
+
     export let syncWithApi = false; // false by default because it's a little dangerous
     export let editable = true;
     export let editing = false;
     export let forcedEditing = false;
+
     export let onDeleted = null;
-    export let widthMode = WidthMode.Full;
 
     let hovering = false;
-
-    // true/false is for is editing
-    // let primaryInputSizings = {
-    //     [true]: {
-    //         [WidthMode.Full] : "col-xs-12 col-md-4 col-xxl-3",
-    //         [WidthMode.Half] : "col-12 col-xl-6",
-    //         [WidthMode.Quarter] : "col-12 col-xxl-6"
-    //     },
-    //     [false]: {
-    //         [WidthMode.Full] : "col-xs-12 col-md-4 col-xxl-3",
-    //         [WidthMode.Half] : "col-12 col-xl-6",
-    //         [WidthMode.Quarter] : "col-12 col-xl-6"
-    //     }
-    // };
 
     const primaryInputSizings = {
         [WidthMode.Full] : "col-xs-12 col-md-4 col-xxl-3",
@@ -108,6 +99,11 @@
             if (onDeleted != null) onDeleted(term);
         }
     }
+
+    function onDragStart(e) {
+        e.dataTransfer.setData("text/plain", term.id);
+        e.dataTransfer.dropEffect = "move";
+    }
 </script>
 
 <style>
@@ -124,7 +120,8 @@
 <!-- Yes, this has become hideously nested and indented. No, I don't care -->
 <div use:clickOutside on:click_outside={closeEdit}
     use:hoverNotifier on:hover_changed={onHoverChanged}
-    class="card p-2 d-flex flex-row gap-2">
+    class="card p-2 d-flex flex-row gap-2"
+    draggable={dragAndDropEnabled} on:dragstart={onDragStart} on:dragstart>
     {#if editing || forcedEditing}
         <div class="flex-grow-1 d-flex flex-column gap-2">
             <div class="d-flex gap-2">

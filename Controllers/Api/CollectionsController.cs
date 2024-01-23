@@ -91,11 +91,11 @@ public class CollectionsController : Controller
             .Where(x => x.Id == id).FirstOrDefault();
 
         if (collection == null || collection?.ApplicationUserId != user!.Id) return NotFound();
-
+        
         return Json(collection.Terms.Select(x => new TermApiModel(
             x.Id, x.CollectionId,
             x.Value, x.Definition, x.Notes,
-            x.CurrentStreak, (int) x.TermList, x.MovedToCurrentListUtc,
+            (int) x.TermList, x.CurrentStreak, x.MovedToCurrentListUtc,
             x.LabelTerms.Select(x => x.Label.Id).ToList())));
     }
 

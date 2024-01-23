@@ -1,4 +1,8 @@
 <script>
+    import { get, writable } from "svelte/store";
+
+    import api from "services/api";
+
     import TermCard from "shared/TermCard.svelte";
     import { WidthMode }from "shared/TermCard.svelte";
 
@@ -7,16 +11,58 @@
     export let showTermLists = false;
     export let syncWithApi = true;
     export let widthMode = WidthMode.Full;
+    export let dragAndDropEnabled = false;
 
     function onTermDeleted(term) {
         termsWritable.update(terms => terms.deleteItem(term));
     }
+
+    async function onTermDrop(e) {
+        e.preventDefault();
+
+        const id = Number(e.dataTransfer.getData("text/plain"));
+
+        let term = null;
+        for (let crntTerm of get(termsWritable)) {
+            if (crntTerm.id == id) {
+                term = crntTerm;
+                break;
+            }
+        }
+        // todo: raise error if term is still null
+        
+        dragging.set(false);
+
+        if (term.termList != termList) {
+            term.termList = termList;
+            termsWritable.set(get(termsWritable));
+            await api.put(`terms/${term.id}`, term, "Failed moving term into list");
+        }
+    }
+    
+    function onTermDragOver(e) {
+        e.preventDefault();
+    }
 </script>
 
-<div class="d-flex flex-column gap-2">
+<script context="module">
+    let dragging = writable(false);
+    let draggingFromList = writable(-1);
+
+    function onDragStart(termList) {
+        dragging.set(true);
+        draggingFromList.set(termList);
+    }
+</script>
+
+<div class="d-flex flex-column gap-2" on:drop={onTermDrop} on:dragover={onTermDragOver}>
     {#each $termsWritable.filter(x => termList === null || x.termList === termList) as term}
-        <TermCard {term} showTermList={showTermLists} {syncWithApi} onDeleted={onTermDeleted} {widthMode}/>
+        <TermCard {term} showTermList={showTermLists} {syncWithApi} onDeleted={onTermDeleted} {widthMode} {dragAndDropEnabled} on:dragstart={() => onDragStart(term.termList)}/>
     {:else}
-        <p class="lead">No terms yet</p>
+        <p class="lead mb-1">No terms yet</p>
     {/each}
+    {#if $dragging && $draggingFromList !== termList}
+        <!-- give space for it to drag in to -->
+        <div class="card" style="height: 150px"></div>
+    {/if}
 </div>

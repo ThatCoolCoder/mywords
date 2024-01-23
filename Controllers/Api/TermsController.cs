@@ -89,7 +89,6 @@ public class TermsController : Controller
             existing.MovedToCurrentListUtc = DateTime.UtcNow;
         }
         existing.TermList = (TermList) model.TermList;
-
         _context.Update(existing);
 
         // Add ones that didn't exist before
