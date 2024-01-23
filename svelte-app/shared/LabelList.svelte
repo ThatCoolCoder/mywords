@@ -8,7 +8,8 @@
     import LabelBadge from "shared/LabelBadge.svelte";
 
     export let labelsWritable;
-    const sorted = derived(labelsWritable, ($labelsWritable) => $labelsWritable.toSorted((a, b) => a.name.compareTo(b.name)));
+    // const sorted = derived(labelsWritable, ($labelsWritable) => $labelsWritable.toSorted((a, b) => a.name.compareTo(b.name)));
+    // todo: can't edit a derived, how do we get it to display sorted and not have a fit?
     export let collectionId;
     let editData;
     let dataList;
@@ -40,7 +41,7 @@
 </script>
 
 <div class="d-flex flex-row flex-wrap align-items-center gap-2">
-    <DataList itemsWritable={sorted} bind:editData={editData} bind:this={dataList}
+    <DataList itemsWritable={labelsWritable} bind:editData={editData} bind:this={dataList}
         {onItemEdit} {onItemUpdate} {onItemDelete}
         let:editing let:item={label}
         let:actions>

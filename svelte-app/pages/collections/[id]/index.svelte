@@ -13,8 +13,7 @@
     export let collectionId;
     export let collection;
     export let terms;
-    // export let labels;
-    let labels = getContext('labels');
+    export let labels;
     
     const { open, close } = getContext('simple-modal');
     

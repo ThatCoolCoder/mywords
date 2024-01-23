@@ -96,7 +96,6 @@
     }
 
     function update() {
-        console.log(primaryInputSizings[editing][widthMode])
         if (syncWithApi) {
             api.put(`terms/${term.id}`, term);
         }
