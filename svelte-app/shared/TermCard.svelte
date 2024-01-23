@@ -60,7 +60,7 @@
     const previewLabelsSizings = {
         [WidthMode.Full] : "col-xl-10 col-lg-8 col-md-6 col-xs-12",
         [WidthMode.Half] : "col-xxl-12 col-xl-6 col-lg-6 col-12",
-        [WidthMode.Quarter] : "col-xxl-12 xl-12 col-lg-6 col-sm-6 col-12"
+        [WidthMode.Quarter] : "col-xxl-12 col-xl-12 col-lg-6 col-sm-6 col-12"
     };
 
     let sortedTermLabels;
