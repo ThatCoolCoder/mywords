@@ -31,7 +31,7 @@ public class TermPracticeService
         CanMoveToRecentlyLearned = 1,
         CanReturnToLearning = 2,
         MovedToLearned = 3,
-        StillLearned = 0,
+        StillLearned = 4,
     }
 
     public class TermPracticeException : Exception { }
@@ -108,6 +108,9 @@ public class TermPracticeService
         if (correct)
         {
             term.CurrentStreak++;
+            term.CurrentAntiStreak = 0;
+            term.TotalCorrectAnswers++;
+
             if (term.TermList == TermList.Backlog) throw new PracticingBackLogTerm();
             else if (term.TermList == TermList.Learning)
             {
@@ -139,6 +142,7 @@ public class TermPracticeService
         else
         {
             term.CurrentStreak = 0;
+            term.CurrentAntiStreak++;
             result = PracticeAnswerResult.CanReturnToLearning;
         }
 
