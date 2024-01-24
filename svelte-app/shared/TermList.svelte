@@ -35,13 +35,17 @@
         }
         // todo: raise error if term is still null
         
-        dragging.set(false);
+        onDragEnd();
 
         if (term.termList != termList) {
             term.termList = termList;
             targetStore.set(get(targetStore));
             await api.put(`terms/${term.id}`, term, "Failed moving term into list");
         }
+    }
+
+    function onDragEnd() {
+        dragging.set(false);
     }
     
     function onTermDragOver(e) {
@@ -61,7 +65,8 @@
 
 <div class="d-flex flex-column gap-2" on:drop={onTermDrop} on:dragover={onTermDragOver}>
     {#each $termsStore.filter(x => termList === null || x.termList === termList) as term}
-        <TermCard {term} showTermList={showTermLists} {syncWithApi} onDeleted={onTermDeleted} {widthMode} {dragAndDropEnabled} on:dragstart={() => onDragStart(term.termList)}/>
+        <TermCard {term} showTermList={showTermLists} {syncWithApi} onDeleted={onTermDeleted} {widthMode} {dragAndDropEnabled}
+            on:dragstart={() => onDragStart(term.termList)} on:dragend={onDragEnd} />
     {:else}
         <p class="lead mb-1">No terms yet</p>
     {/each}

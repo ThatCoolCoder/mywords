@@ -121,7 +121,7 @@
 <div use:clickOutside on:click_outside={closeEdit}
     use:hoverNotifier on:hover_changed={onHoverChanged}
     class="card p-2 d-flex flex-row gap-2"
-    draggable={dragAndDropEnabled} on:dragstart={onDragStart} on:dragstart>
+    draggable={dragAndDropEnabled} on:dragstart={onDragStart} on:dragstart on:dragend>
     {#if editing || forcedEditing}
         <div class="flex-grow-1 d-flex flex-column gap-2">
             <div class="d-flex gap-2">
