@@ -11,6 +11,7 @@ public class Term
     public string Notes { get; set; } = "";
     public TermList TermList { get; set; } = TermList.Backlog;
 
+    public int CurrentStreakWithinList { get; set; } // like currentstreak but reset when it changes lists
     public int CurrentStreak { get; set; }
     public int CurrentAntiStreak { get; set; } // Antistreak - how many times you get it wrong
     public int TotalAnswers { get; set; }

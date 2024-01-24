@@ -5,6 +5,10 @@ namespace Services;
 
 public class TermPracticeService
 {
+    // Business logic of practice mode
+    // In many ways this is the core of the service provided by the app
+    // todo: to fulfill the original plans, we need to make the magic numbers (and potentially some behaviours) user-configurable
+
     private readonly ApplicationDbContext _context;
 
     public TermPracticeService(ApplicationDbContext context)
@@ -27,11 +31,10 @@ public class TermPracticeService
 
     public enum PracticeAnswerResult
     {
-        StillLearning = 0,
+        StillInSameList = 0,
         CanMoveToRecentlyLearned = 1,
         CanReturnToLearning = 2,
         MovedToLearned = 3,
-        StillLearned = 4,
     }
 
     public class TermPracticeException : Exception { }
@@ -105,33 +108,36 @@ public class TermPracticeService
     {
         PracticeAnswerResult? result;
 
+        if (term.TermList == TermList.Backlog) throw new PracticingBackLogTerm();
+
         if (correct)
         {
+            term.CurrentStreakWithinList++;
             term.CurrentStreak++;
             term.CurrentAntiStreak = 0;
             term.TotalCorrectAnswers++;
 
-            if (term.TermList == TermList.Backlog) throw new PracticingBackLogTerm();
-            else if (term.TermList == TermList.Learning)
+            if (term.TermList == TermList.Learning)
             {
                 if (term.CurrentStreak >= 3) result = PracticeAnswerResult.CanMoveToRecentlyLearned;
-                else result = PracticeAnswerResult.StillLearning;
+                else result = PracticeAnswerResult.StillInSameList;
             }
             else if (term.TermList == TermList.RecentlyLearned)
             {
-                if (term.CurrentStreak >= 3 && (DateTime.UtcNow - term.MovedToCurrentListUtc) < TimeSpan.FromDays(2))
+                if (term.CurrentStreak >= 3 && (DateTime.UtcNow - term.MovedToCurrentListUtc) > TimeSpan.FromDays(2))
                 {
                     result = PracticeAnswerResult.MovedToLearned;
                     term.TermList = TermList.Learned;
+                    term.CurrentStreakWithinList = 0; // todo: not having a single way to reset this is going to bite me one day
                 }
                 else
                 {
-                    result = PracticeAnswerResult.CanReturnToLearning;
+                    result = PracticeAnswerResult.StillInSameList;
                 }
             }
             else if (term.TermList == TermList.Learned)
             {
-                result = PracticeAnswerResult.StillLearned;
+                result = PracticeAnswerResult.StillInSameList;
             }
             else
             {
@@ -141,6 +147,7 @@ public class TermPracticeService
         }
         else
         {
+            term.CurrentStreakWithinList = 0;
             term.CurrentStreak = 0;
             term.CurrentAntiStreak++;
             result = PracticeAnswerResult.CanReturnToLearning;

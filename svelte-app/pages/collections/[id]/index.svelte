@@ -34,7 +34,7 @@
         </ApiDependent>
     </div>
     <button class="btn align-self-end" aria-label="Edit details" on:click={openEditCollectionInfo}><i class="bi-pencil" /></button>
-    </div>
+</div>
 
 <!-- <hr /> -->
 

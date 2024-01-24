@@ -39,14 +39,14 @@ public class TermsController : Controller
             Definition = model.Definition,
             Notes = model.Notes,
             CurrentStreak = 0,
-            TermList = (TermList) model.TermList,
-            MovedToCurrentListUtc = (DateTime) model.MovedToCurrentListUtc!
+            TermList = (TermList)model.TermList,
+            MovedToCurrentListUtc = (DateTime)model.MovedToCurrentListUtc!
         };
         created.LabelTerms = model.Labels.Select(id => new LabelTerm()
-            {
-                LabelId = id,
-                Term = created
-            }).ToList();
+        {
+            LabelId = id,
+            Term = created
+        }).ToList();
 
         _context.Add(created);
         await _context.SaveChangesAsync();
@@ -84,11 +84,12 @@ public class TermsController : Controller
         existing.Definition = model.Definition;
         existing.Notes = model.Notes;
         existing.CurrentStreak = model.CurrentStreak;
-        if (model.TermList != (int) existing.TermList)
+        if (model.TermList != (int)existing.TermList)
         {
             existing.MovedToCurrentListUtc = DateTime.UtcNow;
+            existing.CurrentStreakWithinList = 0;
         }
-        existing.TermList = (TermList) model.TermList;
+        existing.TermList = (TermList)model.TermList;
         _context.Update(existing);
 
         // Add ones that didn't exist before
@@ -99,7 +100,7 @@ public class TermsController : Controller
         {
             if (!oldLabelIds.Contains(newLabelId))
             {
-                _context.Update(new LabelTerm(){ LabelId = newLabelId, TermId = model.Id });
+                _context.Update(new LabelTerm() { LabelId = newLabelId, TermId = model.Id });
             }
         }
         // Remove ones that don't exist anymore

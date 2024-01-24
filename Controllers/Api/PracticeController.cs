@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 
 using Data;
 using Services;
+using System.Runtime.CompilerServices;
 
 namespace Controllers.Api;
 
 
 
 
-[StandardApiController("Labels")]
+[StandardApiController("practice")]
 public class PracticeController : Controller
 {
     private readonly ILogger<PracticeController> _logger;
@@ -31,7 +32,7 @@ public class PracticeController : Controller
             .Where(c => c.Id == collectionId)
             .Include(c => c.Labels)
             .FirstOrDefault();
-        
+
         if (collection == null) return NotFound();
         if (collection.ApplicationUserId != _context.GetLoggedInUser(HttpContext).Id) return Unauthorized();
 
@@ -54,8 +55,23 @@ public class PracticeController : Controller
         if (term == null) return NotFound("Term does not exist");
         if (term.Collection.ApplicationUserId != _context.GetLoggedInUser(HttpContext).Id) return Unauthorized();
 
-        await _termPracticeService.SubmitAnswer(term, correct);
+        try
+        {
+            await _termPracticeService.SubmitAnswer(term, correct);
+        }
+        catch (TermPracticeService.PracticingBackLogTerm)
+        {
+            return BadRequest("Cannot practice a term in the backlog list");
+        }
 
         return Ok(term);
+    }
+
+    [HttpGet]
+    [Route("settings/default")]
+    // I can't be bothered duplicating them into js
+    public IActionResult GetDefaultSettings()
+    {
+        return Json(new TermPracticeService.PracticeSettings());
     }
 }

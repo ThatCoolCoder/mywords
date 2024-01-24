@@ -61,6 +61,7 @@
     });
 </script>
 
+<!-- todo: find a way to key this without recreating all the components, as it makes children hit server twice -->
 {#key $props}
     <slot props={$props}/>
 {/key}
