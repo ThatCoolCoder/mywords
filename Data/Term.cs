@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-
 namespace Data;
 
+// Possible optimization: normalize by moving statistics/metadata into separate table
 public class Term
 {
     public long Id { get; set; }

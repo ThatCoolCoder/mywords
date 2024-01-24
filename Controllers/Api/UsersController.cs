@@ -35,7 +35,7 @@ public class UsersController : Controller
 
     [HttpPut]
     [Route("me")]
-    public async Task<IActionResult> PutMe([FromBody] UserApiModel model)
+    public async Task<IActionResult> UpdateMe([FromBody] UserApiModel model)
     {
         if (!ModelState.IsValid) return BadRequest("Model state invalid");
 

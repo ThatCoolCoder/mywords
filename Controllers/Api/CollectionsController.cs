@@ -31,7 +31,7 @@ public class CollectionsController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostIndex([FromBody] CollectionApiModel model)
+    public async Task<IActionResult> CreateNew([FromBody] CollectionApiModel model)
     {
         if (!ModelState.IsValid) return BadRequest("Model state invalid");
 
@@ -55,20 +55,23 @@ public class CollectionsController : Controller
     public IActionResult GetById(long id)
     {
         var user = _context.GetLoggedInUser(HttpContext);
-        var collection = _context.Collection.Where(x => x.Id == id).FirstOrDefault();
-        if (collection == null || collection?.ApplicationUserId != user!.Id) return NotFound();
+        var collection = _context.Collection
+            .Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefault();
+        if (collection == null) return NotFound();
 
         return Json(new CollectionApiModel(collection!.Id, collection.Name, collection.Description));
     }
 
     [HttpPut]
     [Route("{id}")]
-    public IActionResult PutById(long id, [FromBody] CollectionApiModel model)
+    public IActionResult UpdateById(long id, [FromBody] CollectionApiModel model)
     {
         if (!ModelState.IsValid) return BadRequest("Model state invalid");
         var user = _context.GetLoggedInUser(HttpContext);
-        var collection = _context.Collection.Where(x => x.Id == id).FirstOrDefault();
-        if (collection == null || collection?.ApplicationUserId != user!.Id) return NotFound();
+        var collection = _context.Collection
+            .Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefault();
+
+        if (collection == null) return NotFound();
 
         collection.Name = model.Name;
         collection.Description = model.Description;
@@ -88,9 +91,9 @@ public class CollectionsController : Controller
             .Include(x => x.Terms)
                 .ThenInclude(x => x.LabelTerms)
                     .ThenInclude(x => x.Label)
-            .Where(x => x.Id == id).FirstOrDefault();
+            .Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefault();
 
-        if (collection == null || collection?.ApplicationUserId != user!.Id) return NotFound();
+        if (collection == null) return NotFound();
         
         return Json(collection.Terms.Select(x => new TermApiModel(
             x.Id, x.CollectionId,
@@ -106,9 +109,9 @@ public class CollectionsController : Controller
         var user = _context.GetLoggedInUser(HttpContext);
         var collection = _context.Collection
             .Include(x => x.Labels)
-            .Where(x => x.Id == id).FirstOrDefault();
+            .Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefault();
 
-        if (collection == null || collection?.ApplicationUserId != user!.Id) return NotFound();
+        if (collection == null) return NotFound();
 
         return Json(collection.Labels.Select(x => new LabelApiModel(x.Id, x.Name, x.Color, x.CollectionId)));
     }

@@ -1,32 +1,61 @@
-// using System.Collections.Generic;
-// using Microsoft.EntityFrameworkCore;
-// using Microsoft.AspNetCore.Mvc;
-// using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
-// using Data;
+using Data;
+using Services;
 
-// namespace Controllers.Api;
+namespace Controllers.Api;
 
 
-// [StandardApiController("Labels")]
-// public class PracticeController : Controller
-// {
-//     private readonly ILogger<PracticeController> _logger;
-//     private readonly ApplicationDbContext _context;
 
-//     public PracticeController(ILogger<PracticeController> logger, ApplicationDbContext context)
-//     {
-//         _logger = logger;
-//         _context = context;
-//     }
 
-//     [HttpGet]
-//     [Route("newround/{collectionId}")]
-//     public async Task<IActionResult> CreateRound([FromRoute] long collectionId)
-//     {
-//         return Json()
-//     }
+[StandardApiController("Labels")]
+public class PracticeController : Controller
+{
+    private readonly ILogger<PracticeController> _logger;
+    private readonly ApplicationDbContext _context;
+    private readonly TermPracticeService _termPracticeService;
 
-//     [HttpPost]
-//     [Route("")]
-// }
+    public PracticeController(ILogger<PracticeController> logger, ApplicationDbContext context)
+    {
+        _logger = logger;
+        _context = context;
+        _termPracticeService = new TermPracticeService(_context); // we need to share the context, not sure if this is the best way to do it though
+    }
+
+    [HttpPost]
+    [Route("newround/{collectionId}")]
+    public IActionResult CreateRound([FromRoute] long collectionId, [FromBody] TermPracticeService.PracticeSettings settings)
+    {
+        var collection = _context.Collection
+            .Where(c => c.Id == collectionId)
+            .Include(c => c.Labels)
+            .FirstOrDefault();
+        
+        if (collection == null) return NotFound();
+        if (collection.ApplicationUserId != _context.GetLoggedInUser(HttpContext).Id) return Unauthorized();
+
+        var terms = _termPracticeService.GeneratePracticeRound(collection, settings);
+
+        return Json(terms);
+    }
+
+    [HttpPost]
+    [Route("submitanswer/{termId}/{result}")]
+    public async Task<IActionResult> SubmitAnswer([FromRoute] long termId, [FromRoute] string result)
+    {
+        bool correct;
+        if (result.ToLower() == "correct") correct = true;
+        else if (result.ToLower() == "incorrect") correct = false;
+        else return BadRequest("Expected result to be either correct or incorrect");
+
+        var term = _context.Term.Where(t => t.Id == termId).Include(t => t.Collection).FirstOrDefault();
+
+        if (term == null) return NotFound("Term does not exist");
+        if (term.Collection.ApplicationUserId != _context.GetLoggedInUser(HttpContext).Id) return Unauthorized();
+
+        await _termPracticeService.SubmitAnswer(term, correct);
+
+        return Ok(term);
+    }
+}
