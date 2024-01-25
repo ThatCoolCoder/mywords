@@ -46,7 +46,7 @@
     };
 
     let generalSettings = {
-        termListMode: TermListModes.Backlog,
+        termListMode: TermListModes.Auto,
     };
 
     let currentNewTerm;
@@ -87,7 +87,7 @@
             definition: "",
             notes: "",
             currentStreak: 0,
-            labels: [],
+            labels: currentNewTerm?.labels ?? [],
         };
     }
 

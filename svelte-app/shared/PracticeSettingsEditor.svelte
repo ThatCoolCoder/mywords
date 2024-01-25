@@ -19,12 +19,7 @@
 
     <fieldset>
         <legend>Labels</legend>
-        <!-- <div class="row align-items-center">
-            <label class="col-auto" for={id + "size"}>Amount of terms</label>
-            <div class="col-auto">
-                <input class="mb-0 form-control" type="number" size="6" id={id + "size"} bind:value={settings.roundLength}/>
-            </div>
-        </div> -->
+        <p>todo: make a bearable label list editor and use it here</p>
     </fieldset>
 
     <fieldset class="d-flex flex-column">

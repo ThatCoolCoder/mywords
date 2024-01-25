@@ -9,6 +9,15 @@ public record TermApiModel(long Id, long CollectionId, string Value, string Defi
 {
     public DateTime? MovedToCurrentListUtc { get; init; } = MovedToCurrentListUtc ?? DateTime.UtcNow; // c# records a little goofy with not having a better way of a non-constant default on value type
     public List<long> Labels { get; init; } = Labels ?? new();
+
+    public static TermApiModel FromTerm(Term t)
+    {
+        return new TermApiModel(
+            t.Id, t.CollectionId,
+            t.Value, t.Definition, t.Notes,
+            (int)t.TermList, t.CurrentStreak, t.MovedToCurrentListUtc,
+            t.LabelTerms.Select(x => x.Label.Id).ToList());
+    }
 }
 
 [StandardApiController("Terms")]

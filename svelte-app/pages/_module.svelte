@@ -8,7 +8,6 @@
     import api from 'services/api';
     
     import Modal from 'svelte-simple-modal';
-    import ErrorPopup from 'shared/misc/ErrorPopup.svelte';
     import ApiDependent from 'shared/misc/ApiDependent.svelte';
 
     let user = writable(null); 
@@ -26,8 +25,7 @@
     });
 
     function padIfNoMeta(meta, metaVar, side) {
-        var zero = side == "s" ? "2" : "0"; // ok I am very confused but for some reason it is all shifted to the right so we treat left differently
-        return meta[metaVar] ? `p${side}-${zero} ` : `p${side}-4 `; // ok I have no clue why this is happening
+        return meta[metaVar] ? `p${side}-0 ` : `p${side}-4 `;
     }
 
 </script>
@@ -42,7 +40,7 @@
                 <ApiDependent ready={$user != null}>
                     <!-- <div slot="loading"></div> -->
                     <div class="dropdown">
-                        <button class="btn btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-secondary mb-0" data-bs-toggle="dropdown" aria-expanded="false">
                             { ($user?.givenName ?? "") } { ($user?.familyName ?? "") }
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -54,11 +52,10 @@
                 </ApiDependent>
             </div>
         </nav>
-        <!-- Main, with padding optionally disabled by route if we want stuff to go to edge. todo: norightpad causes thing to be too wide & have scrollbar -->
+        <!-- Main, with padding optionally disabled by route if we want stuff to go to edge. -->
         <main class={"flex-grow-1 text-start " + mainPadding}>
             <slot />
         </main>
-        <!-- {JSON.stringify(meta)} -->
         <!-- <div class="footer p-3">
         </div> -->
     </div>

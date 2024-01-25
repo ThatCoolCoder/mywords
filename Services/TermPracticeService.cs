@@ -62,6 +62,7 @@ public class TermPracticeService
         int recentReviewAmount = settings.IncludeRecentReview ? (int)(settings.RoundLength * settings.RecentReviewProportion) : 0;
         int lateReviewAmount = settings.IncludeLateReview ? (int)(settings.RoundLength * settings.LateReviewProportion) : 0;
         int normalTermsAmount = settings.RoundLength - recentReviewAmount - lateReviewAmount;
+        Console.WriteLine($"rr: {recentReviewAmount}, lr: {lateReviewAmount}, normal: {normalTermsAmount}");
 
         var resultingTerms = new List<Term>();
         if (settings.IncludeRecentReview)
@@ -75,7 +76,9 @@ public class TermPracticeService
         }
         resultingTerms.AddRange(GetNRandomItems(possibleTerms.Where(t => t.TermList == TermList.Learning), normalTermsAmount, t => t.Id));
 
-        return resultingTerms;
+        var random = new Random();
+        return resultingTerms.OrderBy(x => random.Next());
+        // return resultingTerms;
     }
 
     private IEnumerable<T> GetNRandomItems<T>(IEnumerable<T> source, int count, Func<T, long> getId)
@@ -94,9 +97,10 @@ public class TermPracticeService
         count = Math.Min(count, totalCount);
 
         var indexes = new HashSet<int>();
+        Console.WriteLine($"Starting pass for length of {count}");
         while (indexes.Count < count)
         {
-            var index = random.Next(count);
+            var index = random.Next(totalCount);
             if (indexes.Add(index))
             {
                 yield return sorted.Skip(index).FirstOrDefault()!;
@@ -150,7 +154,7 @@ public class TermPracticeService
             term.CurrentStreakWithinList = 0;
             term.CurrentStreak = 0;
             term.CurrentAntiStreak++;
-            result = PracticeAnswerResult.CanReturnToLearning;
+            result = term.TermList == TermList.Learning ? PracticeAnswerResult.StillInSameList : PracticeAnswerResult.CanReturnToLearning;
         }
 
         _context.Update(term);

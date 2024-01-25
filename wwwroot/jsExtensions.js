@@ -15,6 +15,10 @@ Array.prototype.pushed = function(item) {
     return modified;
 }
 
+Array.prototype.find = function(predicate) {
+    return this.filter(predicate)[0];
+}
+
 // Can't put these in prototype because svelte seems to think they're props
 Object.appended = function(obj, key, item) {
     let toAdd = {};

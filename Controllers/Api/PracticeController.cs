@@ -36,9 +36,9 @@ public class PracticeController : Controller
         if (collection == null) return NotFound();
         if (collection.ApplicationUserId != _context.GetLoggedInUser(HttpContext).Id) return Unauthorized();
 
-        var terms = _termPracticeService.GeneratePracticeRound(collection, settings);
+        var termIds = _termPracticeService.GeneratePracticeRound(collection, settings).Select(t => t.Id);
 
-        return Json(terms);
+        return Json(termIds);
     }
 
     [HttpPost]
@@ -55,16 +55,17 @@ public class PracticeController : Controller
         if (term == null) return NotFound("Term does not exist");
         if (term.Collection.ApplicationUserId != _context.GetLoggedInUser(HttpContext).Id) return Unauthorized();
 
+        TermPracticeService.PracticeAnswerResult practiceResult;
         try
         {
-            await _termPracticeService.SubmitAnswer(term, correct);
+            practiceResult = await _termPracticeService.SubmitAnswer(term, correct);
         }
         catch (TermPracticeService.PracticingBackLogTerm)
         {
             return BadRequest("Cannot practice a term in the backlog list");
         }
 
-        return Ok(term);
+        return Json(new { Result = (int)practiceResult, Term = TermApiModel.FromTerm(term) });
     }
 
     [HttpGet]

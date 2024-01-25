@@ -1,6 +1,8 @@
 <script>
 	import { Router } from "@roxi/routify";
+	
 	import routes from "./.routify/routes.default.js";
+    import ErrorPopup from "shared/misc/ErrorPopup.svelte";
 
 	const config = {
 		urlTransform: {
@@ -10,3 +12,4 @@
 </script>
 
 <Router {config} {routes} />
+<ErrorPopup />

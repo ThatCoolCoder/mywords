@@ -94,12 +94,8 @@ public class CollectionsController : Controller
             .Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefault();
 
         if (collection == null) return NotFound();
-        
-        return Json(collection.Terms.Select(x => new TermApiModel(
-            x.Id, x.CollectionId,
-            x.Value, x.Definition, x.Notes,
-            (int) x.TermList, x.CurrentStreak, x.MovedToCurrentListUtc,
-            x.LabelTerms.Select(x => x.Label.Id).ToList())));
+
+        return Json(collection.Terms.Select(TermApiModel.FromTerm));
     }
 
     [HttpGet]

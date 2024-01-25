@@ -43,7 +43,7 @@
     <LabelList labelsWritable={labels} collectionId={collectionId} />
 </ApiDependent>
 
-<a href="./practice">Lazy link to practice page</a>
+<button class="btn btn-primary" on:click={() => navigate(`/collections/${collectionId}/practice`)}>Lazy button for practice</button>
 
 <hr />
 
