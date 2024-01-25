@@ -43,12 +43,12 @@
     <LabelList labelsWritable={labels} collectionId={collectionId} />
 </ApiDependent>
 
+<a href="./practice">Lazy link to practice page</a>
+
 <hr />
 
-<h4>Term lists</h4>
-<div class="flex-1">
-    <button class="btn btn-primary" on:click={() => navigate(`/collections/${collectionId}/addterms`)}><i class="bi-plus-lg" />&ensp;Add terms</button>
-</div>
+<h4>Terms</h4>
+<button class="btn btn-primary mt-2" on:click={() => navigate(`/collections/${collectionId}/addterms`)}><i class="bi-plus-lg" />&ensp;Add terms</button>
 
 <ApiDependent ready={$terms != null}>
     <div class="row mt-2">

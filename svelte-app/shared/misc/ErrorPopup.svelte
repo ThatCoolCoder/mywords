@@ -23,7 +23,7 @@
         alert(`Error details (placeholder popup):\n${toShow}`)
     }
 
-    onMount(() => handler.set(open));
+    onMount(() => handler.set(open)); // todo: stupid svelte won't run this if another component errors immediately upon loading, leaving the whole screen white
 </script>
 
 <div class="footer fixed-bottom p-4 d-flex w-100 error-popup {isOpen ? 'error-popup-open' : 'error-popup-closed'}" aria-hidden={! isOpen}>

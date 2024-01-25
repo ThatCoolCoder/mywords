@@ -1,7 +1,7 @@
 <script>
     import { onMount, setContext } from "svelte";
     import { writable, get } from "svelte/store";
-    
+
     import api from 'services/api';
 
     export let id;

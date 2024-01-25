@@ -104,62 +104,38 @@
     <div class="d-flex flex-column gap-2" style="max-width: 1500px">
         <h2>Add terms - {$collection.name}</h2>
 
-        <fieldset class="border text-start d-flex flex-column gap-3 p-3">
-            <legend class="float-none w-auto px-3">General settings</legend>
+        <fieldset class="d-flex flex-column gap-3">
+            <legend>General settings</legend>
 
             <div class="form-group d-flex gap-2 align-items-center">
                 <label for="listSelect">List to insert terms into</label>
-                <select
-                    id="listSelect"
-                    class="mb-0 w-auto form-select"
-                    bind:value={generalSettings.termListMode}
-                >
+                <select id="listSelect" class="mb-0 w-auto form-select" bind:value={generalSettings.termListMode} >
                     {#each Object.keys(TermListModes) as modeName}
-                        <option value={TermListModes[modeName]}
-                            >{modeName}</option
-                        >
+                        <option value={TermListModes[modeName]}>{modeName}</option>
                     {/each}
                 </select>
                 <HelpButton topic="Term lists" text={termListsHelp} />
             </div>
 
             <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <div
-                on:click={openEditLabelsModal}
-                class="form-group d-flex flex-wrap gap-2 justify-content-start align-items-center"
-            >
+            <div on:click={openEditLabelsModal} class="form-group d-flex flex-wrap gap-2 justify-content-start align-items-center">
                 <span>Labels for added terms:</span>
                 {#each sortedNewTermLabels as label}
                     <LabelBadge {label} />
                 {:else}
                     <span class="text-secondary">(None)</span>
                 {/each}
-                <button
-                    class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1"
-                    aria-label="edit labels"
-                    ><i
-                        class={sortedNewTermLabels.length == 0
-                            ? "bi-plus-lg"
-                            : "bi-pencil"}
-                    /></button
-                >
+                <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1" aria-label="edit labels">
+                    <i class={sortedNewTermLabels.length == 0 ? "bi-plus-lg" : "bi-pencil"}/>
+                </button>
             </div>
         </fieldset>
 
         <br />
 
         <div>
-            <TermCard
-                bind:term={currentNewTerm}
-                showTermList={false}
-                showLabels={false}
-                forcedEditing={true}
-            >
-                <button
-                    class="btn btn-outline-secondary h-100 add-term-button"
-                    slot="right"
-                    on:click={addCurrentTerm}><i class="bi-plus-lg" /></button
-                >
+            <TermCard bind:term={currentNewTerm} showTermList={false} showLabels={false} forcedEditing={true}>
+                <button class="btn btn-outline-secondary h-100 add-term-button" slot="right" on:click={addCurrentTerm}><i class="bi-plus-lg" /></button>
             </TermCard>
         </div>
 

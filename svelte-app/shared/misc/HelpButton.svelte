@@ -13,4 +13,4 @@
     }
 </script>
 
-<button on:click={openHelp} class="btn p-0 mb-0" style="font-size: 1.4em"><i class="text-secondary bi-question-circle-fill" /></button>
+<button on:click={openHelp} class="btn p-0 mb-0" style="font-size: 1em"><i class="text-secondary bi-question-circle-fill" /></button>

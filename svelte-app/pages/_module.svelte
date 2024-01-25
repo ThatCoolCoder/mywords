@@ -1,6 +1,8 @@
 <script>
     import { setContext, onMount } from 'svelte';
     import { writable } from 'svelte/store';
+    import { activeRoute } from "@roxi/routify";
+
 
     import util from './utils';
     import api from 'services/api';
@@ -11,10 +13,22 @@
 
     let user = writable(null); 
     setContext('user', user);
+
+    let mainPadding;
+
+    activeRoute.subscribe(r => {
+        mainPadding = padIfNoMeta(r.meta, "_noLeftPad", "s") + padIfNoMeta(r.meta, "_noRightPad", "e") +
+            padIfNoMeta(r.meta, "_noTopPad", "t") + padIfNoMeta(r.meta, "_noBottomPad", "b")
+    });
     
     onMount(async () => {
         user.set(await api.get('users/me', 'Failed fetching user data'));
     });
+
+    function padIfNoMeta(meta, metaVar, side) {
+        var zero = side == "s" ? "2" : "0"; // ok I am very confused but for some reason it is all shifted to the right so we treat left differently
+        return meta[metaVar] ? `p${side}-${zero} ` : `p${side}-4 `; // ok I have no clue why this is happening
+    }
 
 </script>
 
@@ -40,10 +54,11 @@
                 </ApiDependent>
             </div>
         </nav>
-        <main class="flex-grow-1 px-4 py-4 text-start">
+        <!-- Main, with padding optionally disabled by route if we want stuff to go to edge. todo: norightpad causes thing to be too wide & have scrollbar -->
+        <main class={"flex-grow-1 text-start " + mainPadding}>
             <slot />
         </main>
-        <ErrorPopup />
+        <!-- {JSON.stringify(meta)} -->
         <!-- <div class="footer p-3">
         </div> -->
     </div>

@@ -129,3 +129,19 @@ fieldset {
 .badge .badge-btn {
 	margin: -2px 0px;
 }
+
+/* Bootstrap default fieldset is ugly and I don't want to be pasting classes around everywhere, so just apply an opinionated style from here */
+fieldset {
+	border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+	border-radius: 5px;
+	padding: 1rem;
+	padding-top: 0rem;
+}
+
+fieldset>legend {
+	float: none;
+	width: auto;
+	padding: 0.5rem;
+	margin-left: 1rem;
+	color: var(--bs-secondary);
+}

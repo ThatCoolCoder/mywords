@@ -1,3 +1,5 @@
+<!-- label list as in the main one that allows editing and stuff. Needs to be redone -->
+
 <script>
     import { get, derived } from "svelte/store";
 
@@ -6,6 +8,7 @@
     import DataList from "shared/misc/DataList.svelte";
     import StandardEditorButtons from "shared/misc/StandardEditorButtons.svelte";
     import LabelBadge from "shared/LabelBadge.svelte";
+    import { clickOutside } from "shared/misc/clickOutside.js";
 
     export let labelsWritable;
     // const sorted = derived(labelsWritable, ($labelsWritable) => $labelsWritable.toSorted((a, b) => a.name.compareTo(b.name)));
@@ -46,7 +49,7 @@
         let:editing let:item={label}
         let:actions>
         {#if editing}
-            <div class="d-flex align-items-center gap-2 rounded px-2 py-0 children-no-margin" style="border: 1px solid black">
+            <div use:clickOutside on:click_outside={() => actions.update(label)} class="d-flex align-items-center gap-2 rounded px-2 py-0 children-no-margin" style="border: 1px solid black">
                 <input bind:value={$editData.name} placeholder="name" />
                 <input type="color" bind:value={$editData.color}/>
                 <div class="vr"></div> 
