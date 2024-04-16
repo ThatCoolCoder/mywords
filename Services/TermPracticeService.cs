@@ -132,7 +132,7 @@ public class TermPracticeService
                 {
                     result = PracticeAnswerResult.MovedToLearned;
                     term.TermList = TermList.Learned;
-                    term.CurrentStreakWithinList = 0; // todo: not having a single way to reset this is going to bite me one day
+                    term.CurrentStreakWithinList = 0; // todo: not having a single way to reset this & move terms between lists is going to bite me one day
                 }
                 else
                 {

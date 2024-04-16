@@ -27,9 +27,9 @@
     export let terms;
     export let labels;
 
-    // let recentTerms = derived(terms, $terms => $terms.filter(t => {
-    //     let date = new Date(parseInt(/-?\d+/.exec(t.movedToCurrentListUtc)[0]));
-    // }).toSorted();)
+    let recentTerms = derived(terms, $terms => $terms.filter(t => {
+        return Date.now() - new Date(t.createdUtc) < 1000 * 3600 * 24 * 2;
+    }).toSorted((a, b) => new Date(b.createdUtc) - new Date(a.createdUtc))); // if it gets slow then don't parse the dates 3 times
 
     const termListsHelp =
         "MyWords offers multiple lists that you can organise your words into.\n" +
@@ -69,14 +69,9 @@
                     : TermLists.Learning;
         }
 
-        term.movedToCurrentListUtc;
         clearCurrentNewTerm();
-        terms.update((x) => x.pushed(term));
-        term.id = Number(
-            await (
-                await api.post(`terms/`, term, "Failed to save term")
-            ).text(),
-        );
+        let newTermData = await api.postJsonResponse(`terms/`, term, "Failed to save term");
+        terms.update((x) => x.pushed(newTermData));
     }
 
     function clearCurrentNewTerm() {
@@ -142,6 +137,6 @@
         <hr />
 
         <h3>Recently added</h3>
-        <TermList termsStore={terms} showTermLists={true} />
+        <TermList termsStore={terms} showTermLists={true} sortFunc={(a, b) => new Date(b.createdUtc) - new Date(a.createdUtc)} />
     </div>
 </ApiDependent>

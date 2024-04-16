@@ -5,9 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Controllers.Api;
 
-public record TermApiModel(long Id, long CollectionId, string Value, string Definition, string Notes, int TermList, int CurrentStreak = 0, DateTime? MovedToCurrentListUtc = null, List<long> Labels = null!)
+public record TermApiModel(long Id, long CollectionId, string Value, string Definition, string Notes, int TermList, int CurrentStreak = 0,
+    // DateTime? MovedToCurrentListUtc = null,
+    DateTime? MovedToCurrentListUtc = null, DateTime? CreatedUtc = null,
+    List<long> Labels = null!)
 {
     public DateTime? MovedToCurrentListUtc { get; init; } = MovedToCurrentListUtc ?? DateTime.UtcNow; // c# records a little goofy with not having a better way of a non-constant default on value type
+    public DateTime? CreatedUtc { get; init; } = CreatedUtc ?? DateTime.UtcNow;
     public List<long> Labels { get; init; } = Labels ?? new();
 
     public static TermApiModel FromTerm(Term t)
@@ -15,7 +19,7 @@ public record TermApiModel(long Id, long CollectionId, string Value, string Defi
         return new TermApiModel(
             t.Id, t.CollectionId,
             t.Value, t.Definition, t.Notes,
-            (int)t.TermList, t.CurrentStreak, t.MovedToCurrentListUtc,
+            (int)t.TermList, t.CurrentStreak, t.MovedToCurrentListUtc, t.CreatedUtc,
             t.LabelTerms.Select(x => x.Label.Id).ToList());
     }
 }
@@ -49,7 +53,8 @@ public class TermsController : Controller
             Notes = model.Notes,
             CurrentStreak = 0,
             TermList = (TermList)model.TermList,
-            MovedToCurrentListUtc = (DateTime)model.MovedToCurrentListUtc!
+            MovedToCurrentListUtc = (DateTime)model.MovedToCurrentListUtc!,
+            CreatedUtc = DateTime.Now,
         };
         created.LabelTerms = model.Labels.Select(id => new LabelTerm()
         {
@@ -60,7 +65,7 @@ public class TermsController : Controller
         _context.Add(created);
         await _context.SaveChangesAsync();
 
-        return Ok(created.Id);
+        return Json(TermApiModel.FromTerm(created));
     }
 
     [HttpPost]

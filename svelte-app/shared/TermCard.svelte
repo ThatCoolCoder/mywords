@@ -97,6 +97,7 @@
         if (confirm(`Are you sure you want to delete the term ${term.value} (${term.definition.length == 0 ? 'no definition' : term.definition})?`)) {
             api.post(`terms/${term.id}/delete/`);
             if (onDeleted != null) onDeleted(term);
+            closeEdit();
         }
     }
 

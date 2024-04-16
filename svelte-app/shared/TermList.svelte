@@ -16,6 +16,8 @@
     export let syncWithApi = true;
     export let widthMode = WidthMode.Full;
     export let dragAndDropEnabled = false;
+    export let filterFunc = null;
+    export let sortFunc = null;
 
     function onTermDeleted(term) {
         targetStore.update(terms => terms.deleteItem(term));
@@ -64,7 +66,10 @@
 </script>
 
 <div class="d-flex flex-column gap-2" on:drop={onTermDrop} on:dragover={onTermDragOver}>
-    {#each $termsStore.filter(x => termList === null || x.termList === termList) as term}
+    {#each $termsStore
+        .filter(x => (termList === null || x.termList === termList) && (filterFunc == null || filterFunc(x)))
+        .toSorted((a, b) => sortFunc == null ? -1 : sortFunc(a, b))
+        as term}
         <TermCard {term} showTermList={showTermLists} {syncWithApi} onDeleted={onTermDeleted} {widthMode} {dragAndDropEnabled}
             on:dragstart={() => onDragStart(term.termList)} on:dragend={onDragEnd} />
     {:else}

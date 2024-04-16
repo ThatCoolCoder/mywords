@@ -40,6 +40,17 @@ export async function post(url, data, failMessage='Failed sending data to server
     return response;
 }
 
+export async function postJsonResponse(url, data, failMessage='Failed sending data to server', overrideMethod=null) {
+    let response = await post(url, data, failMessage, overrideMethod);
+    try {
+        return await response.json();
+    }
+    catch
+    {
+        errorService.display(failMessage, 'Failed parsing server response');
+    }
+}
+
 export async function put(url, data, failMessage='Failed sending data to server') {
     // Is actually the same code except for method so might as well be efficient but also provide a nice interface
     return await post(url, data, failMessage, 'put');
@@ -48,5 +59,6 @@ export async function put(url, data, failMessage='Failed sending data to server'
 export default {
     get,
     post,
+    postJsonResponse,
     put,
 }
