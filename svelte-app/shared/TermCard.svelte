@@ -52,13 +52,13 @@
 
     // Sorry these two are janky as they rely on the knowledge of the column breakpoints in the index.svelte
     const previewTextSizings = {
-        [WidthMode.Full] : "col-xl-1 col-lg-2 col-md-3 col-sm-4 col-6",
+        [WidthMode.Full] : "col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6",
         [WidthMode.Half] : "col-xl-2 col-lg-3 col-md-4 col-6",
         [WidthMode.Quarter] : "col-xxl-6 col-xl-6 col-lg-3 col-md-3 col-6"
     };
 
     const previewLabelsSizings = {
-        [WidthMode.Full] : "col-xl-10 col-lg-8 col-md-6 col-xs-12",
+        [WidthMode.Full] : "col-xl-8 col-lg-8 col-md-6 col-xs-12",
         [WidthMode.Half] : "col-xxl-12 col-xl-6 col-lg-6 col-12",
         [WidthMode.Quarter] : "col-xxl-12 col-xl-12 col-lg-6 col-sm-6 col-12"
     };

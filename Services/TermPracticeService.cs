@@ -22,7 +22,7 @@ public class TermPracticeService
         public List<long>? ExcludeLabelIds { get; set; } = null; // if null assumes don't exclude any
 
         public bool IncludeRecentReview { get; set; } = true; // review of recently learned
-        public float RecentReviewProportion { get; set; } = 0.25f;
+        public float RecentReviewProportion { get; set; } = 0.4f;
         public bool IncludeLateReview { get; set; } = true; // review of learned
         public float LateReviewProportion { get; set; } = 0.1f;
 
@@ -128,7 +128,8 @@ public class TermPracticeService
             }
             else if (term.TermList == TermList.RecentlyLearned)
             {
-                if (term.CurrentStreak >= 3 && (DateTime.UtcNow - term.MovedToCurrentListUtc) > TimeSpan.FromDays(2))
+                var daysRequiredToMoveToLearned = Math.Clamp(7f / term.TotalCorrectAnswers * (2f / (7f / 20f)), 2f, 7f);
+                if (term.CurrentStreak >= 3 && (DateTime.UtcNow - term.MovedToCurrentListUtc) > TimeSpan.FromDays(daysRequiredToMoveToLearned))
                 {
                     result = PracticeAnswerResult.MovedToLearned;
                     term.TermList = TermList.Learned;

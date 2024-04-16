@@ -4,6 +4,7 @@
     setInterval(() => {
         for (let e of document.getElementsByClassName("add-term-button")) {
             e.style.width = e.clientHeight + "px";
+            e.style.maxWidth = "20vw";
         }
     }, 100);
 </script>
