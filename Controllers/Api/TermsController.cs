@@ -20,7 +20,7 @@ public record TermApiModel(long Id, long CollectionId, string Value, string Defi
             t.Id, t.CollectionId,
             t.Value, t.Definition, t.Notes,
             (int)t.TermList, t.CurrentStreak, t.MovedToCurrentListUtc, t.CreatedUtc,
-            t.LabelTerms.Select(x => x.Label.Id).ToList());
+            t.LabelTerms.Select(x => x.LabelId).ToList());
     }
 }
 
@@ -86,7 +86,7 @@ public class TermsController : Controller
     [Route("{id}")]
     public async Task<IActionResult> UpdateById([FromBody] TermApiModel model)
     {
-        // if (ModelState.IsValid) return BadRequest();
+        if (!ModelState.IsValid) return BadRequest();
         var loggedInUserId = _context.GetLoggedInUser(HttpContext).Id;
         var existing = _context.Term
             .Include(x => x.LabelTerms)

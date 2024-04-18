@@ -12,6 +12,7 @@
     import { enterNotifier } from "shared/misc/enterNotifier";
     import { PracticeAnswerResult } from "data/practiceAnswerResult";
     import { TermLists } from "data/termLists";
+    import { isCorrect } from "services/practiceGrading";
     
     import ApiDependent from "shared/misc/ApiDependent.svelte";
     import PracticeSettingsEditor from "shared/PracticeSettingsEditor.svelte";
@@ -71,9 +72,7 @@
             return;
         }
 
-        let correctAnswer = currentTerm.definition;
-        // todo: fancy checking
-        let correct = (correctAnswer.trim().toLowerCase() == currentAnswer.trim().toLowerCase());
+        let correct = isCorrect(currentAnswer, currentTerm.definition);
 
         var response = await (await api.post(`practice/submitanswer/${currentTerm.id}/${correct ? "correct" : "incorrect"}`)).json();
 
