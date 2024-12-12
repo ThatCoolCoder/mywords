@@ -40,23 +40,17 @@ public class IdentityController : Controller
         }
     }
 
-    [HttpPost]
-    public IActionResult Signup()
-    {
-        return View();
-    }
-
     [Route("logout")]
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout()
     {
-        Response.Cookies.Delete(".AspNetCore.Identity.Application");
+        await _signInManager.SignOutAsync();
 
-        return LocalRedirect("/");
+        return Redirect("/");
     }
 }
 
 public class LoginModel
 {
     [Required] public string Username { get; set; } = "";
-    public string Password { get; set; } = "";
+    [Required] public string Password { get; set; } = "";
 }

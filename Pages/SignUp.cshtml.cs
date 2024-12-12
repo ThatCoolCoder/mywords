@@ -53,8 +53,10 @@ public class SignUpModel : PageModel
         public string ConfirmPassword { get; set; }
     }
 
-    public async Task OnGetAsync(string returnUrl = null)
+    public async Task<IActionResult> OnGetAsync(string returnUrl = null)
     {
+        if (HttpContext.User.Identity.IsAuthenticated) return Redirect("/");
+
         if (!string.IsNullOrEmpty(ErrorMessage))
         {
             ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -66,6 +68,8 @@ public class SignUpModel : PageModel
         await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
         ReturnUrl = returnUrl;
+
+        return Page();
     }
 
     public async Task<IActionResult> OnPostAsync(string returnUrl = null)

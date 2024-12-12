@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Data;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Pages;
 public class LoginModel : PageModel
@@ -50,8 +51,10 @@ public class LoginModel : PageModel
         public bool StayLoggedIn { get; set; } = true;
     }
 
-    public async Task OnGetAsync(string returnUrl = null)
+    public async Task<IActionResult> OnGetAsync(string returnUrl = null)
     {
+        if (HttpContext.User.Identity.IsAuthenticated) return Redirect("/");
+
         if (!string.IsNullOrEmpty(ErrorMessage))
         {
             ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -63,6 +66,8 @@ public class LoginModel : PageModel
         await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
         ReturnUrl = returnUrl;
+
+        return Page();
     }
 
     public async Task<IActionResult> OnPostAsync(string returnUrl = null)

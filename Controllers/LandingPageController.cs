@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Data;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Controllers;
 
@@ -15,9 +16,9 @@ public class LandingPageController : Controller
     }
 
     [Route("/")]
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        if (! User.Claims.Any()) return View("Views/LandingPage.cshtml");
+        if (!User.Claims.Any()) return View("Views/LandingPage.cshtml");
         else
         {
             SetSpaHeaders(HttpContext);
