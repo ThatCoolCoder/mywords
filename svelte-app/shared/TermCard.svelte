@@ -144,13 +144,15 @@
                             <div class="vr"></div>
                         {/if}
                         {#if showLabels}
-                            <div class="d-flex flex-row gap-2" on:click={openEditLabelsModal} >
+                            <div class="d-flex flex-row gap-2 flex-wrap" on:click={openEditLabelsModal} on:keypress={(e) => e.key == "Enter" && openEditLabelsModal() }>
                                 {#each sortedTermLabels as label}
                                     <LabelBadge {label} />
                                 {:else}
                                     <span class="text-secondary">No labels</span>
                                 {/each}
-                                <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1"><i class={sortedTermLabels.length == 0 ? "bi-plus-lg" : "bi-pencil"}/></button>
+                                <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1 h-100 btn-block" title="Delete term">
+                                    <i class={sortedTermLabels.length == 0 ? "bi-plus-lg" : "bi-pencil"}/>
+                                </button>
                             </div>
                         {/if}
                         {#if syncWithApi}
@@ -169,32 +171,32 @@
     {:else}
         <!-- svelte-ignore a11y-click-events-have-key-events a11y-interactive-supports-focus -->
         <div class="row flex-grow-1" role="button" on:click={tryEdit}>
-            <div class={previewTextSizings[widthMode]}>
-                <span class="fw-bold">{term.value}</span>
-            </div>
-            <div class={previewTextSizings[widthMode]}>
-                <span class={term.definition.length == 0 ? "text-secondary" : ""}>{term.definition.length == 0 ? "(No definition)" : term.definition}</span>
-            </div>
-
-            <div class={"d-flex gap-2 justify-content-start align-items-center flex-wrap " + previewLabelsSizings[widthMode]}>
-                {#if showTermList || (showLabels && sortedTermLabels.length > 0)}
-                    <div class="vr"></div>
-                {/if}
-                {#if showTermList}
-                    <span class="badge rounded-pill h-auto bg-secondary w-auto">
-                        {TermListDisplayNames[term.termList]}
-                    </span>
-                    {#if showLabels && sortedTermLabels.length > 0}
-                        <div class="vr"></div>
-                    {/if}
-                {/if}
-                {#if showLabels}
-                    {#each sortedTermLabels as label}
-                        <LabelBadge {label} />
-                    {/each}
-                {/if}
+            <div class="d-flex">
+                <div class="d-flex gap-2 flex-wrap">
+                    <div class="d-flex gap-2">
+                    <!-- <div class={previewTextSizings[widthMode]}> -->
+                        <span class="fw-bold">{term.value}</span>
+                    <!-- </div>
+                    <div class={previewTextSizings[widthMode]}> -->
+                        <span class={term.definition.length == 0 ? "text-secondary" : ""}>{term.definition.length == 0 ? "(No definition)" : term.definition}</span>
+                    <!-- </div> -->
+                
+                    </div>
+                    <div class={"d-flex gap-2 justify-content-start align-items-center flex-wrap "}>
+                        {#if showTermList}
+                            <span class="badge rounded-pill h-auto bg-secondary w-auto">
+                                {TermListDisplayNames[term.termList]}
+                            </span>
+                        {/if}
+                        {#if showLabels}
+                            {#each sortedTermLabels as label}
+                                <LabelBadge {label} />
+                            {/each}
+                        {/if}
+                    </div>
+                </div>
                 {#if syncWithApi}
-                    <button class="btn btn-outline-danger px-1 py-0 my-0 ms-auto delete-button"
+                    <button class="btn btn-outline-danger px-1 py-0 ms-auto my-auto delete-button"
                         data-visible={hovering}
                         on:click={askDeleteTerm}><i class="bi-trash mb-0"/></button>
                 {/if}

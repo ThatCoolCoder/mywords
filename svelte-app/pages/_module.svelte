@@ -44,7 +44,8 @@
                             { ($user?.givenName ?? "") } { ($user?.familyName ?? "") }
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><button class="dropdown-item" on:click={() => util.navigate('/')}>Collections</button></li>
+                            <li><button class="dropdown-item" on:click={() => util.navigate('/')}>Home</button></li>
+                            <li><button class="dropdown-item" on:click={() => util.navigate('/collections')}>Collections</button></li>
                             <li><button class="dropdown-item" on:click={() => util.navigate('/account')}>Account</button></li>
                             <li><button class="dropdown-item" on:click={() => util.navigateBackend('/api/identity/logout')}>Logout</button></li>
                         </ul>

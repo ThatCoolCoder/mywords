@@ -127,7 +127,7 @@
                 <div class="d-flex flex-column gap-2 px-4 py-4">
                     <h2>Setup practice - {$collection.name}</h2>
                     <ApiDependent ready={settings != null}>
-                        <PracticeSettingsEditor {settings}/>
+                        <PracticeSettingsEditor {settings} {collectionId} />
                     </ApiDependent>
                 </div>
                 <div class="mt-auto d-flex flex-row bg-light border-top p-3">

@@ -22,6 +22,7 @@
     import EditTermLabels from "shared/EditTermLabels.svelte";
     import LabelBadge from "shared/LabelBadge.svelte";
     import HelpButton from "shared/misc/HelpButton.svelte";
+    import BackButton from "shared/misc/BackButton.svelte";
 
     export let collectionId;
     export let collection;
@@ -97,6 +98,9 @@
 <title>Add Terms | MyWords</title>
 
 <ApiDependent ready={collection != null}>
+
+    <BackButton text="Back to collection" href="/collections/{collectionId}" />
+
     <div class="d-flex flex-column gap-2" style="max-width: 1500px">
         <h2>Add terms - {$collection.name}</h2>
 
@@ -138,6 +142,6 @@
         <hr />
 
         <h3>Recently added</h3>
-        <TermList termsStore={terms} showTermLists={true} sortFunc={(a, b) => new Date(b.createdUtc) - new Date(a.createdUtc)} />
+        <TermList termsStore={recentTerms} baseTermsWritable={terms} showTermLists={true} sortFunc={(a, b) => new Date(b.createdUtc) - new Date(a.createdUtc)} noTermsText="Nothing added recently" />
     </div>
 </ApiDependent>

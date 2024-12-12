@@ -18,6 +18,8 @@
     export let dragAndDropEnabled = false;
     export let filterFunc = null;
     export let sortFunc = null;
+    
+    export let noTermsText = "No terms yet";
 
     function onTermDeleted(term) {
         targetStore.update(terms => terms.deleteItem(term));
@@ -73,7 +75,7 @@
         <TermCard {term} showTermList={showTermLists} {syncWithApi} onDeleted={onTermDeleted} {widthMode} {dragAndDropEnabled}
             on:dragstart={() => onDragStart(term.termList)} on:dragend={onDragEnd} />
     {:else}
-        <p class="lead mb-1">No terms yet</p>
+        <p class="lead mb-1">{noTermsText}</p>
     {/each}
     {#if $dragging && $draggingFromList !== termList}
         <!-- give space for it to drag in to -->

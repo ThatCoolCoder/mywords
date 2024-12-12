@@ -59,12 +59,12 @@
 </div>
 
 {#if changed}
-    <div class="d-flex justify-content-center gap-3" in:fly={{y:20}} >
+    <div class="d-flex justify-content-center gap-2" in:fly={{y:20}} >
         <button class="btn btn-secondary" on:click={cancel}>Cancel</button>
         <button class="btn btn-primary" on:click={saveChanges}>Save changes</button>
     </div>
 {:else}
-<div style="d-flex justify-content-center gap-3">
+<div style="d-flex justify-content-center gap-2">
     <button class="btn invisible">a</button>
     <button class="btn invisible">b</button>
 </div>

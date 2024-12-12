@@ -1,4 +1,5 @@
 export function isCorrect(answer, definition) {
+    // todo: no clue what this does
     let clean = x => x.replace(/[^\p{Letter}\p{Mark}\s']/gu, "").trim().toLowerCase();
 
     let remainingAnswerSections = answer.split(',').map(clean);

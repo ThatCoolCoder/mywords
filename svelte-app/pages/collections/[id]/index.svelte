@@ -9,6 +9,7 @@
     import LabelList from 'shared/LabelList.svelte';
     import TermList from 'shared/TermList.svelte';
     import { WidthMode } from 'shared/TermCard.svelte';
+    import BackButton from 'shared/misc/BackButton.svelte';
 
     export let collectionId;
     export let collection;
@@ -26,29 +27,35 @@
 
 <title>{$collection?.name ?? 'Collection'} | MyWords</title>
 
+<BackButton text="Back to collections" href="/collections" />
+
 <div class="d-flex gap-4">
     <div>
         <ApiDependent ready={$collection != null}>
             <h2>{ $collection.name }</h2>
-            <p>{ $collection.description }</p>
+            <p class="text-large-1">{ $collection.description }</p>
         </ApiDependent>
     </div>
     <button class="btn align-self-end" aria-label="Edit details" on:click={openEditCollectionInfo}><i class="bi-pencil" /></button>
 </div>
 
-<!-- <hr /> -->
-
-<h4>Labels</h4>
-<ApiDependent ready={$labels != null}>
-    <LabelList labelsWritable={labels} collectionId={collectionId} />
-</ApiDependent>
-
 <button class="btn btn-primary" on:click={() => navigate(`/collections/${collectionId}/practice`)}>Lazy button for practice</button>
 
 <hr />
 
-<h4>Terms</h4>
-<button class="btn btn-primary mt-2" on:click={() => navigate(`/collections/${collectionId}/addterms`)}><i class="bi-plus-lg" />&ensp;Add terms</button>
+<h3>Labels</h3>
+<ApiDependent ready={$labels != null}>
+    <LabelList labelsWritable={labels} collectionId={collectionId} />
+</ApiDependent>
+
+<div class="mb-5"></div>
+
+<div class="d-flex">
+    <h3 class="mb-0 me-5">Terms</h3>
+
+    <button class="btn btn-primary mb-0" on:click={() => navigate(`/collections/${collectionId}/addterms`)}><i class="bi-plus-lg" />&ensp;Add terms</button>
+</div>
+<hr />
 
 <ApiDependent ready={$terms != null}>
     <div class="row mt-2">

@@ -101,7 +101,7 @@ public class CollectionsController : Controller
 
     [HttpGet]
     [Route("{id}/terms")]
-    public IActionResult GetTermsById(long id)
+    public IActionResult GetTermsById(long id, [FromQuery] int? amount)
     {
         var user = _context.GetLoggedInUser(HttpContext);
         var collection = _context.Collection
@@ -112,7 +112,10 @@ public class CollectionsController : Controller
 
         if (collection == null) return NotFound();
 
-        return Json(collection.Terms.Select(TermApiModel.FromTerm));
+
+        return Json(amount == null
+            ? collection.Terms.Select(TermApiModel.FromTerm)
+            : collection.Terms.OrderByDescending(x => x.CreatedUtc).Take(amount ?? 0).Select(TermApiModel.FromTerm)); // linq isn't realising we have a null-guard
     }
 
     [HttpGet]

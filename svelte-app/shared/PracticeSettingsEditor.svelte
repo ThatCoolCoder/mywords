@@ -1,20 +1,50 @@
 <script>
     import HelpButton from "shared/misc/HelpButton.svelte";
 
+    import api from "services/api";
+    import { onMount } from "svelte";
+    import { writable } from "svelte/store";
+    import { navigate } from "pages/utils";
+
     export let settings;
+    export let collectionId;
+    let collections = writable([]);
+    export let allowChangingSet = true;
+
+    onMount(async () => {
+        collections.set(await api.get('collections'));
+    });
 
     let id = randomId();
 </script>
 
+
+
 <div class="d-flex flex-column gap-2">
     <fieldset>
         <legend>General</legend>
+        {#if allowChangingSet}
+            <div class="row align-items-center mb-2">
+                <label class="col-auto" for={id + "list"}>Collection to use</label>
+                <div class="col-auto">
+                    <select class="form-select mb-0" id={id + "list"} on:change={e => navigate(`/collections/${e.target.value}/practice`)}>
+                        {#each $collections
+                            .toSorted((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 0)))
+                            as collection}
+                            <option value={collection.id} selected={collection.id == collectionId}>{collection.name}</option>
+                        {/each}
+                    </select>
+                </div>
+            </div>
+        {/if}
+
         <div class="row align-items-center">
             <label class="col-auto" for={id + "size"}>Amount of terms</label>
             <div class="col-auto">
                 <input class="mb-0 form-control" type="number" size=6 min=3 id={id + "size"} bind:value={settings.roundLength}/>
             </div>
         </div>
+
     </fieldset>
 
     <fieldset>
