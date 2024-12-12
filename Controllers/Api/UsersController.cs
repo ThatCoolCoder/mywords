@@ -47,6 +47,10 @@ public class UsersController : Controller
         user.FamilyName = model.FamilyName;
         // user.Email = model.Email; // todo: for now we're not allowing to change this either
 
+        Console.WriteLine(user.GivenName.Trim().Length);
+
+        if (!user.IsValid()) return BadRequest();
+
         _context.Update(user);
         await _context.SaveChangesAsync();
 

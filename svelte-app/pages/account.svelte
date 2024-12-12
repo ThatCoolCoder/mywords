@@ -1,23 +1,32 @@
 <script>
     import { getContext, onMount } from 'svelte';
+    import { fly, fade } from 'svelte/transition';
     import { get } from 'svelte/store';
 
     import api from 'services/api';
+    import { notBlank } from 'shared/misc/validation';
 
     const user = getContext('user');
     user.subscribe(undo);
 
     let givenName;
     let familyName;
+    let changed = false;
 
     async function undo() {
         let u;
         if ((u = get(user)) == null) return;
-        givenName = u.givenName;
-        familyName = u.familyName;
+        setTimeout(() => {
+            givenName = u.givenName;
+            familyName = u.familyName;
+        }); // stupid routify or something means we get cannot set before init without this fake settimeout
+
+        changed = false;
     }
 
-    async function save() {
+    async function save(event) {
+        event.preventDefault();
+
         var u = get(user);
         u.givenName = givenName;
         u.familyName = familyName;
@@ -30,13 +39,13 @@
 <h2>Your Account</h2>
 <hr />
 
-<div style="max-width: 400px">
+<form style="max-width: 400px" on:submit={save}>
     <div class="row mb-1">
         <div class="col-6">
             <label for="givenName">First name</label>
         </div>
         <div class="col-6">
-            <input bind:value={givenName} class="mw-100 form-control" id="givenName" />
+            <input bind:value={givenName} class="mw-100 form-control" id="givenName" required autocomplete="off" on:input={e => changed = notBlank(e) }/>
         </div>
     </div>
 
@@ -45,14 +54,16 @@
             <label for="FamilyName">Last name</label>
         </div>
         <div class="col-6">
-            <input bind:value={familyName} class="mw-100 form-control" id="familyName" />
+            <input bind:value={familyName} class="mw-100 form-control" id="familyName" required autocomplete="off" on:input={e => changed = notBlank(e) }/>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12 d-flex justify-content-center gap-3">
-            <button class="btn btn-secondary" on:click={undo}>Undo</button>
-            <button class="btn btn-primary" on:click={save}>Save changes</button>
+    {#if (changed)}
+        <div class="row" in:fly={{y:20}}>
+            <div class="col-12 d-flex justify-content-center gap-2">
+                <button class="btn btn-secondary" type="button" on:click={undo}>Undo</button>
+                <button class="btn btn-primary">Save changes</button>
+            </div>
         </div>
-    </div>
-</div>
+    {/if}
+</form>

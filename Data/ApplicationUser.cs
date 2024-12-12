@@ -10,4 +10,9 @@ public class ApplicationUser : IdentityUser
     public string FamilyName { get; set; } = "";
 
     public ICollection<Collection> Collections { get; set; } = new List<Collection>();
+
+    public bool IsValid()
+    {
+        return GivenName.Trim() != "" && FamilyName.Trim() != "";
+    }
 }
