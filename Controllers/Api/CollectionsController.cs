@@ -99,6 +99,22 @@ public class CollectionsController : Controller
         return Ok();
     }
 
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task<IActionResult> Delete(long id)
+    {
+        var user = _context.GetLoggedInUser(HttpContext);
+        var collection = await _context.Collection.Where(x => x.Id == id).FirstOrDefaultAsync();
+
+        if (collection == null) return NotFound();
+        if (collection.ApplicationUserId != user.Id) return NotFound();
+
+        _context.Remove(collection);
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
+
     [HttpGet]
     [Route("{id}/terms")]
     public IActionResult GetTermsById(long id, [FromQuery] int? amount)

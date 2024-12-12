@@ -56,9 +56,27 @@ export async function put(url, data, failMessage='Failed sending data to server'
     return await post(url, data, failMessage, 'put');
 }
 
+export async function delete_(url, failMessage='Failed deleting resource') {
+    try {
+        let response = await fetch('/api/' + url, {
+            credentials: 'include',
+            method: 'delete'
+        });
+
+        if (! response.ok) {
+            errorService.display(failMessage, `Network error: ${response.statusText}`);
+            return false;
+        }
+    }
+    catch {
+        errorService.display(failMessage, 'Failed creating request json');
+    }
+}
+
 export default {
     get,
     post,
     postJsonResponse,
     put,
+    delete_
 }

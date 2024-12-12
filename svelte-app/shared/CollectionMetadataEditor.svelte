@@ -3,6 +3,7 @@
     import { get } from "svelte/store";
     import api from "services/api";
     import { fly } from "svelte/transition";
+    import { navigate } from "pages/utils";
     export let collectionWritable;
 
     let name = '';
@@ -24,15 +25,24 @@
             return x;
         });
         close();
-        let ts = get(collectionWritable);
-        api.put(`collections/${ts.id}`, ts, 'Failed saving collection changes');
+        let collection = get(collectionWritable);
+        api.put(`collections/${collection.id}`, collection, 'Failed saving collection changes');
     }
     
     function cancel() {
         close();
-        let ts = get(collectionWritable);
-        name = ts.name;
-        description = ts.description;
+        let collection = get(collectionWritable);
+        name = collection.name;
+        description = collection.description;
+    }
+
+    async function tryDelete() {
+        if (confirm("Are you sure that you want to delete this collection? This cannot be undone!")) {
+            let collection = get(collectionWritable);
+            await api.delete_(`collections/${collection.id}`);
+            close();
+            navigate("/collections");
+        }
     }
 </script>
 
@@ -64,8 +74,13 @@
         <button class="btn btn-primary" on:click={saveChanges}>Save changes</button>
     </div>
 {:else}
-<div style="d-flex justify-content-center gap-2">
+<div class="d-flex justify-content-center gap-2">
     <button class="btn invisible">a</button>
     <button class="btn invisible">b</button>
 </div>
 {/if}
+<div class="d-flex justify-content-end">
+    <button class="btn btn-outline-danger ms-auto" on:click={tryDelete}>
+        <i class="bi-trash"></i> Delete
+    </button>
+</div>
