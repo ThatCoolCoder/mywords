@@ -30,6 +30,22 @@ public class CollectionsController : Controller
         return Json(user.Collections.Select(x => new CollectionApiModel(x.Id, x.Name, x.Description)));
     }
 
+    [HttpGet]
+    [Route("recent")]
+    public async Task<IActionResult> GetRecent([FromQuery] int amount = 2)
+    {
+        if (amount > 10) return BadRequest();
+
+        // todo: orderby when we have created dates on these
+
+        var user = _context.GetLoggedInUser(HttpContext);
+        return Json(await _context.Collection
+            .Where(x => x.ApplicationUserId == user.Id)
+            .Take(amount)
+            .Select(x => new CollectionApiModel(x.Id, x.Name, x.Description))
+            .ToListAsync());
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateNew([FromBody] CollectionApiModel model)
     {
@@ -37,17 +53,17 @@ public class CollectionsController : Controller
 
         var user = _context.GetLoggedInUser(HttpContext);
 
-        _context.Collection.Add(new()
+        var collection = new Collection()
         {
             ApplicationUser = user,
             Id = model.Id,
             Name = model.Name,
             Description = model.Description
-        });
+        };
+        _context.Collection.Add(collection);
         await _context.SaveChangesAsync();
 
-
-        return Ok();
+        return Json(new CollectionApiModel(collection.Id, collection.Name, collection.Description));
     }
 
     [HttpGet]
@@ -67,6 +83,7 @@ public class CollectionsController : Controller
     public IActionResult UpdateById(long id, [FromBody] CollectionApiModel model)
     {
         if (!ModelState.IsValid) return BadRequest("Model state invalid");
+
         var user = _context.GetLoggedInUser(HttpContext);
         var collection = _context.Collection
             .Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefault();

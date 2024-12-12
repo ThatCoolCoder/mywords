@@ -2,16 +2,19 @@
     import { getContext } from "svelte";
     import { get } from "svelte/store";
     import api from "services/api";
+    import { fly } from "svelte/transition";
     export let collectionWritable;
 
     let name = '';
     let description = '';
+    let changed = false;
 
     const { close } = getContext('simple-modal');
 
     collectionWritable.subscribe(value => {
         name = value.name;
         description = value.description;
+        changed = false;
     });
 
     function saveChanges() {
@@ -42,7 +45,7 @@
         <label for="collectionName">Name</label>
     </div>
     <div class="col-9">
-        <input bind:value={name} class="mw-100" id="collectionName" />
+        <input bind:value={name} class="mw-100" id="collectionName" on:input={() => changed = true} />
     </div>
 </div>
 
@@ -51,11 +54,18 @@
         <label for="collectionDescription">Description</label>
     </div>
     <div class="col-9">
-        <textarea bind:value={description} class="w-100" id="collectionDescription" />
+        <textarea bind:value={description} class="w-100" id="collectionDescription" on:input={() => changed = true} />
     </div>
 </div>
 
-<div class="d-flex justify-content-center gap-3">
-    <button class="btn btn-secondary" on:click={cancel}>Cancel</button>
-    <button class="btn btn-primary" on:click={saveChanges}>Save changes</button>
+{#if changed}
+    <div class="d-flex justify-content-center gap-3" in:fly={{y:20}} >
+        <button class="btn btn-secondary" on:click={cancel}>Cancel</button>
+        <button class="btn btn-primary" on:click={saveChanges}>Save changes</button>
+    </div>
+{:else}
+<div style="d-flex justify-content-center gap-3">
+    <button class="btn invisible">a</button>
+    <button class="btn invisible">b</button>
 </div>
+{/if}

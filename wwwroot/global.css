@@ -23,6 +23,15 @@ main {
 	font-weight: 500;
 }
 
+
+.text-large-1 {
+	font-size: 1.25em;
+}
+
+.text-large-2 {
+	font-size: 1.5em;
+}
+
 a {
 	/* color: rgb(0,100,200); */
 	color: #333;
@@ -30,13 +39,13 @@ a {
 }
 
 a:hover {
-	text-decoration: underline;
+	/* text-decoration: underline; */
 	color: #444;
 }
 
 a:visited {
 	/* color: rgb(0,80,160); */
-	color: #555;
+	/* color: #555; */
 }
 
 label {
@@ -58,23 +67,7 @@ input:disabled {
 	color: #ccc;
 }
 
-/* button {
-	color: #333;
-	background-color: #f4f4f4;
-	outline: none;
-} */
 
-/* button:disabled {
-	color: #999;
-}
-
-button:not(:disabled):active {
-	background-color: #ddd;
-}
-
-button:focus {
-	border-color: #666;
-} */
 
 .form-box {
     border: 1px solid #888;
