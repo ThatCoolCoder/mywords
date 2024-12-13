@@ -92,8 +92,10 @@
         }
     }
 
-    function askDeleteTerm() {
+    function askDeleteTerm(e) {
         // todo: make it not use confirm
+        e.stopPropagation();
+        
         if (confirm(`Are you sure you want to delete the term ${term.value} (${term.definition.length == 0 ? 'no definition' : term.definition})?`)) {
             api.post(`terms/${term.id}/delete/`);
             if (onDeleted != null) onDeleted(term);
@@ -106,17 +108,6 @@
         e.dataTransfer.dropEffect = "move";
     }
 </script>
-
-<style>
-    .delete-button {
-        opacity: 0%;
-        transition: opacity 0.2s ease-in-out;
-    }
-    
-    .delete-button[data-visible="true"] {
-        opacity: 100%;
-    }
-</style>
 
 <!-- Yes, this has become hideously nested and indented. No, I don't care -->
 <div use:clickOutside on:click_outside={closeEdit}
@@ -196,7 +187,7 @@
                     </div>
                 </div>
                 {#if syncWithApi}
-                    <button class="btn btn-outline-danger px-1 py-0 ms-auto my-auto delete-button"
+                    <button class="btn btn-outline-danger px-1 py-0 ms-auto my-auto hidable-button"
                         data-visible={hovering}
                         on:click={askDeleteTerm}><i class="bi-trash mb-0"/></button>
                 {/if}

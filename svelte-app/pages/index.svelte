@@ -42,12 +42,6 @@
                     <p>{ set.description }</p>
                 </CollectionCard>
             {/each}
-            <CollectionCard click={() => navigate('/collections/new')}>
-                <div class="text-center">
-                    <h1 class="mb-0"><i class="bi-plus-lg" /></h1>
-                    <p>Create a new collection</p>
-                </div>
-            </CollectionCard>
         {:else}
             <CollectionCard click={() => navigate('/collections/new')}>
                 <h5>You have no collections</h5>

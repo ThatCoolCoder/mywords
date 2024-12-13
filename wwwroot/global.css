@@ -138,3 +138,12 @@ fieldset>legend {
 	margin-left: 1rem;
 	color: var(--bs-secondary);
 }
+
+.hidable-button {
+	opacity: 0%;
+	transition: 0.2s ease-in-out;
+}
+
+.hidable-button[data-visible="true"] {
+	opacity: 100%;
+}

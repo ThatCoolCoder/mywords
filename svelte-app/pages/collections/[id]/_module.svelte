@@ -57,6 +57,8 @@
         terms.set(await api.get(`collections/${id}/terms`, 'Failed loading terms'));
         labels.set(await api.get(`collections/${id}/labels`, 'Failed loading labels'));
 
+        await api.post(`collections/${id}/viewed`, 'Failed saving collection viewing stuffs') // push to top of recent
+
         props.set({collectionId, collection, terms, labels});
     });
 </script>

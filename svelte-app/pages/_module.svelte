@@ -40,7 +40,7 @@
                 <ApiDependent ready={$user != null}>
                     <!-- <div slot="loading"></div> -->
                     <div class="dropdown">
-                        <button class="btn btn-secondary mb-0" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-outline-secondary mb-0" data-bs-toggle="dropdown" aria-expanded="false">
                             { ($user?.givenName ?? "") } { ($user?.familyName ?? "") }
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">

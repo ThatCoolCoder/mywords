@@ -55,7 +55,7 @@
         <label for="collectionName">Name</label>
     </div>
     <div class="col-9">
-        <input bind:value={name} class="mw-100" id="collectionName" on:input={() => changed = true} />
+        <input bind:value={name} class="w-100" id="collectionName" on:input={() => changed = true} />
     </div>
 </div>
 
@@ -64,23 +64,31 @@
         <label for="collectionDescription">Description</label>
     </div>
     <div class="col-9">
-        <textarea bind:value={description} class="w-100" id="collectionDescription" on:input={() => changed = true} />
+        <textarea bind:value={description} class="w-100" style="height: 10em" id="collectionDescription" on:input={() => changed = true} />
     </div>
 </div>
 
-{#if changed}
-    <div class="d-flex justify-content-center gap-2" in:fly={{y:20}} >
-        <button class="btn btn-secondary" on:click={cancel}>Cancel</button>
-        <button class="btn btn-primary" on:click={saveChanges}>Save changes</button>
+<div class="row d-flex justify-content-between">
+    <!-- Fake button to make layout center properly -->
+    <div class="col-auto">
+        <button class="btn btn-outline-danger invisible">
+            <i class="bi-trash invisible"></i> Delete
+        </button>
     </div>
-{:else}
-<div class="d-flex justify-content-center gap-2">
-    <button class="btn invisible">a</button>
-    <button class="btn invisible">b</button>
-</div>
-{/if}
-<div class="d-flex justify-content-end">
-    <button class="btn btn-outline-danger ms-auto" on:click={tryDelete}>
-        <i class="bi-trash"></i> Delete
-    </button>
+    {#if changed}
+        <div class="col-auto" in:fly={{y:20}}>
+            <button class="btn btn-outline-secondary me-2" on:click={cancel}>Cancel</button>
+            <button class="btn btn-primary" on:click={saveChanges}>Save changes</button>
+        </div>
+    {:else}
+        <div class="col-auto">
+            <button class="btn invisible">a</button>
+            <button class="btn invisible">b</button>
+        </div>
+    {/if}
+    <div class="col-auto">
+        <button class="btn btn-outline-danger" on:click={tryDelete}>
+            <i class="bi-trash"></i> Delete
+        </button>
+    </div>
 </div>

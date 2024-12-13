@@ -20,30 +20,42 @@ public class CollectionsController : Controller
         _context = context;
     }
 
-    public record CollectionApiModel(long Id, string Name, string Description);
+    public record CollectionApiModel(
+        long Id,
+        string Name,
+        string Description,
+        DateTime? CreatedTimeUtc,
+        DateTime? ViewedTimeUtc
+    )
+    {
+        public static CollectionApiModel FromCollection(Collection x)
+        {
+            return new CollectionApiModel(x.Id, x.Name, x.Description, x.CreatedTimeUtc, x.ViewedTimeUtc);
+        }
+    }
 
     [HttpGet]
-    public IActionResult GetIndex()
+    public IActionResult GetAllForUser()
     {
         var user = _context.GetLoggedInUser(HttpContext);
         _context.Entry(user!).Collection(x => x.Collections).Load(); // todo: make this null ignore not needed
-        return Json(user.Collections.Select(x => new CollectionApiModel(x.Id, x.Name, x.Description)));
+        return Json(user.Collections
+            .Select(CollectionApiModel.FromCollection)
+            .OrderByDescending(x => x.ViewedTimeUtc));
     }
 
     [HttpGet]
     [Route("recent")]
-    public async Task<IActionResult> GetRecent([FromQuery] int amount = 2)
+    public IActionResult GetRecent([FromQuery] int amount = 2)
     {
         if (amount > 10) return BadRequest();
 
-        // todo: orderby when we have created dates on these
-
         var user = _context.GetLoggedInUser(HttpContext);
-        return Json(await _context.Collection
+        return Json(_context.Collection
             .Where(x => x.ApplicationUserId == user.Id)
+            .OrderByDescending(x => x.ViewedTimeUtc)
             .Take(amount)
-            .Select(x => new CollectionApiModel(x.Id, x.Name, x.Description))
-            .ToListAsync());
+            .Select(CollectionApiModel.FromCollection));
     }
 
     [HttpPost]
@@ -58,43 +70,63 @@ public class CollectionsController : Controller
             ApplicationUser = user,
             Id = model.Id,
             Name = model.Name,
-            Description = model.Description
+            Description = model.Description,
+            CreatedTimeUtc = DateTime.UtcNow,
+            ViewedTimeUtc = DateTime.UtcNow,
         };
         _context.Collection.Add(collection);
         await _context.SaveChangesAsync();
 
-        return Json(new CollectionApiModel(collection.Id, collection.Name, collection.Description));
+        return Json(CollectionApiModel.FromCollection(collection));
     }
 
     [HttpGet]
     [Route("{id}")]
-    public IActionResult GetById(long id)
+    public async Task<IActionResult> GetById(long id)
     {
         var user = _context.GetLoggedInUser(HttpContext);
-        var collection = _context.Collection
-            .Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefault();
+        var collection = await _context.Collection
+            .Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefaultAsync();
         if (collection == null) return NotFound();
 
-        return Json(new CollectionApiModel(collection!.Id, collection.Name, collection.Description));
+        return Json(CollectionApiModel.FromCollection(collection));
     }
 
     [HttpPut]
     [Route("{id}")]
-    public IActionResult UpdateById(long id, [FromBody] CollectionApiModel model)
+    public async Task<IActionResult> UpdateById(long id, [FromBody] CollectionApiModel model)
     {
         if (!ModelState.IsValid) return BadRequest("Model state invalid");
 
         var user = _context.GetLoggedInUser(HttpContext);
-        var collection = _context.Collection
-            .Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefault();
+        var collection = await _context.Collection
+            .Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefaultAsync();
 
         if (collection == null) return NotFound();
 
         collection.Name = model.Name;
         collection.Description = model.Description;
+        collection.ViewedTimeUtc = DateTime.UtcNow;
 
         _context.Update(collection);
         _context.SaveChanges();
+
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("{id}/viewed")]
+    public async Task<IActionResult> OnViewed(long id)
+    {
+        var user = _context.GetLoggedInUser(HttpContext);
+        var collection = await _context.Collection
+            .Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefaultAsync();
+
+        if (collection == null) return NotFound();
+
+        collection.ViewedTimeUtc = DateTime.UtcNow;
+        _context.Update(collection);
+        await _context.SaveChangesAsync();
 
         return Ok();
     }
@@ -104,10 +136,9 @@ public class CollectionsController : Controller
     public async Task<IActionResult> Delete(long id)
     {
         var user = _context.GetLoggedInUser(HttpContext);
-        var collection = await _context.Collection.Where(x => x.Id == id).FirstOrDefaultAsync();
+        var collection = await _context.Collection.Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefaultAsync();
 
         if (collection == null) return NotFound();
-        if (collection.ApplicationUserId != user.Id) return NotFound();
 
         _context.Remove(collection);
         await _context.SaveChangesAsync();
@@ -117,14 +148,15 @@ public class CollectionsController : Controller
 
     [HttpGet]
     [Route("{id}/terms")]
-    public IActionResult GetTermsById(long id, [FromQuery] int? amount)
+    public async Task<IActionResult> GetTermsById(long id, [FromQuery] int? amount)
     {
         var user = _context.GetLoggedInUser(HttpContext);
-        var collection = _context.Collection
+        var collection = await _context.Collection
             .Include(x => x.Terms)
                 .ThenInclude(x => x.LabelTerms)
                     .ThenInclude(x => x.Label)
-            .Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefault();
+            .Where(x => x.Id == id && x.ApplicationUserId == user.Id)
+            .FirstOrDefaultAsync();
 
         if (collection == null) return NotFound();
 
@@ -136,12 +168,13 @@ public class CollectionsController : Controller
 
     [HttpGet]
     [Route("{id}/labels")]
-    public IActionResult GetLabelsById(long id)
+    public async Task<IActionResult> GetLabelsById(long id)
     {
         var user = _context.GetLoggedInUser(HttpContext);
-        var collection = _context.Collection
+        var collection = await _context.Collection
             .Include(x => x.Labels)
-            .Where(x => x.Id == id && x.ApplicationUserId == user.Id).FirstOrDefault();
+            .Where(x => x.Id == id && x.ApplicationUserId == user.Id)
+            .FirstOrDefaultAsync();
 
         if (collection == null) return NotFound();
 

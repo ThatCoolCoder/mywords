@@ -6,6 +6,8 @@ public class Collection
     public string Name { get; set; } = "";
     public string Description { get; set; } = "";
     public string ApplicationUserId { get; set; } = "";
+    public DateTime CreatedTimeUtc { get; set; }
+    public DateTime ViewedTimeUtc { get; set; }
 
     public ApplicationUser? ApplicationUser { get; set; }
     public ICollection<Term> Terms { get; set; } = new List<Term>();
