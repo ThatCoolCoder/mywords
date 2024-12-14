@@ -36,7 +36,7 @@ public class PracticeController : Controller
         if (collection == null) return NotFound();
         if (collection.ApplicationUserId != _context.GetLoggedInUser(HttpContext).Id) return Unauthorized();
 
-        var termIds = _termPracticeService.GeneratePracticeRound(collection, settings).Select(t => t.Id);
+        var termIds = _termPracticeService.GeneratePracticeRound(collection, settings).Select(x => x.Id);
 
         return Json(termIds);
     }
