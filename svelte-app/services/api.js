@@ -10,6 +10,10 @@ export class BadResponse extends Error {
         super("Bad response received from server");
         this.response = response;
     }
+
+    async format() {
+        return `Network error: ${this.response.statusText}. ${await this.response.text()}`;
+    }
 }
 
 export async function get(url) {
@@ -17,7 +21,7 @@ export async function get(url) {
         credentials: 'include',
     });
 
-    if (! response.ok) throw BadResponse(response);
+    if (! response.ok) throw new BadResponse(response);
 
     return response;
 }
@@ -54,7 +58,7 @@ export async function post(url, data, failMessage='Failed sending data to server
         return false;
     }
 
-    if (! response.ok) throw BadResponse(response);
+    if (! response.ok) throw new BadResponse(response);
 
     return response;
 }
@@ -87,14 +91,14 @@ export async function delete_(url) {
         method: 'delete'
     });
 
-    if (! response.ok) throw BadResponse(response);
+    if (! response.ok) throw new BadResponse(response);
 }
 
 
 
 async function formatError(e) {
     if (e instanceof BadResponse) {
-        return `Network error: ${e.response.statusText}. ${await e.response.text()}` 
+        return e.format();
     }
     else {
         return e.message;

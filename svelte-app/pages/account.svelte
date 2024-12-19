@@ -65,7 +65,7 @@
     <div class="row mb-1">
         <div class="col-6"></div>
         <div class="col-6">
-            <button class="btn btn-secondary" on:click={() => open(PasswordChange)}>Update password</button>
+            <button class="btn btn-secondary" type="button" on:click={() => open(PasswordChange)}>Update password</button>
         </div>
     </div>
 

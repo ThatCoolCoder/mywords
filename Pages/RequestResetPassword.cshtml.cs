@@ -33,6 +33,7 @@ public class RequestResetPasswordModel : PageModel
     public class InputModel
     {
         [Required(ErrorMessage = "Please enter an email")]
+        [EmailAddress]
         public string Email { get; set; } = "";
     }
 
