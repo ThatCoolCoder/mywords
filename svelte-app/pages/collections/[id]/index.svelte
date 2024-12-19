@@ -62,7 +62,8 @@
         {#each Object.keys(TermLists) as listName}
             <div class="col-xs-1 col-lg-6 col-xl-4 col-xxl-3 mb-2">
                 <h5>{TermListDisplayNames[TermLists[listName]]}</h5>
-                <TermList termsStore={terms} termList={TermLists[listName]} widthMode={WidthMode.Quarter} dragAndDropEnabled={true}/>
+                <TermList termsStore={terms} termList={TermLists[listName]} widthMode={WidthMode.Quarter} dragAndDropEnabled={true}
+                    sortFunc={(a, b) => new Date(b.createdUtc) - new Date(a.createdUtc)} />
             </div>
         {/each}
     </div>
