@@ -43,8 +43,8 @@ public class LabelsController : Controller
         return Ok(created.Id);
     }
 
-    [HttpPost]
-    [Route("{id}/delete")]
+    [HttpDelete]
+    [Route("{id}")]
     public async Task<IActionResult> Delete([FromRoute] long id)
     {
         var loggedInUserId = _context.GetLoggedInUser(HttpContext).Id;

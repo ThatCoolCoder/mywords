@@ -33,7 +33,7 @@
     }
 
     function onItemDelete(label) {
-        if (label.id !== undefined) api.safe.post(`labels/${label.id}/delete`);
+        if (label.id !== undefined) api.safe.delete_(`labels/${label.id}`);
     }
 
     function create() {
