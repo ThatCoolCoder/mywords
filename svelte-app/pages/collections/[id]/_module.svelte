@@ -53,7 +53,7 @@
 
     onMount(async () => {
         collectionId = id;
-        collection = writable(await api.get(`collections/${id}`, 'Failed fetching collection info'));
+        collection = writable(await api.getJson(`collections/${id}`, 'Failed fetching collection info'));
         terms.set(await api.safe.getJson(`collections/${id}/terms`, 'Failed loading terms'));
         labels.set(await api.safe.getJson(`collections/${id}/labels`, 'Failed loading labels'));
 
