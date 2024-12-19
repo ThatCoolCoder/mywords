@@ -15,4 +15,10 @@ public class ApplicationUser : IdentityUser
     {
         return GivenName.Trim() != "" && FamilyName.Trim() != "";
     }
+
+    public void Sanitize()
+    {
+        GivenName = GivenName.Trim();
+        FamilyName = FamilyName.Trim();
+    }
 }

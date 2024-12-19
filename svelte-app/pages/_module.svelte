@@ -21,7 +21,7 @@
     });
     
     onMount(async () => {
-        user.set(await api.get('users/me', 'Failed fetching user data'));
+        user.set(await api.safe.getJson('users/me', 'Failed fetching user data'));
     });
 
     function padIfNoMeta(meta, metaVar, side) {

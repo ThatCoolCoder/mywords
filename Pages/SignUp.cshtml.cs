@@ -85,6 +85,12 @@ public class SignUpModel : PageModel
                 UserName = Input.Email,
                 Email = Input.Email,
             };
+            // todo: check is valid
+            // if (!user.IsValid())
+            // {
+            //     ModelState.AddModelError("error", "Username");
+            //     return Page();
+            // }
             var result = await _userManager.CreateAsync(user, Input.Password);
             await _signInManager.SignInAsync(user, true);
 

@@ -12,7 +12,7 @@
     export let allowChangingSet = true;
 
     onMount(async () => {
-        collections.set(await api.get('collections'));
+        collections.set(await api.safe.getJson('collections'));
     });
 
     let id = randomId();

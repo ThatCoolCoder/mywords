@@ -51,16 +51,12 @@ public class ResetPasswordModel : PageModel
     {
         UserId = userId;
         Token = token;
-        Console.WriteLine($"a{UserId}");
-        Console.WriteLine($"a{Token}");
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
         if (ModelState.IsValid)
         {
-            Console.WriteLine($"b{UserId}");
-            Console.WriteLine($"b{Token}");
             var user = _userManager.Users.FirstOrDefault(x => x.Id == UserId);
 
             var result = await _userManager.ResetPasswordAsync(user, Token, Input.ConfirmPassword);

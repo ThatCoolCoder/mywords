@@ -13,6 +13,8 @@ namespace Controllers.Api;
 [StandardApiController("Identity")]
 public class IdentityController : Controller
 {
+    // This is just for managing the current signed in ness whereas the users thing is more for updating other properties of the user
+
     private readonly ILogger<IdentityController> _logger;
     private readonly ApplicationDbContext _context;
     private readonly SignInManager<ApplicationUser> _signInManager;

@@ -26,7 +26,7 @@
         });
         close();
         let collection = get(collectionWritable);
-        api.put(`collections/${collection.id}`, collection, 'Failed saving collection changes');
+        api.safe.put(`collections/${collection.id}`, collection, 'Failed saving collection changes');
     }
     
     function cancel() {
@@ -39,7 +39,7 @@
     async function tryDelete() {
         if (confirm("Are you sure that you want to delete this collection? This cannot be undone!")) {
             let collection = get(collectionWritable);
-            await api.delete_(`collections/${collection.id}`);
+            await api.safe.delete_(`collections/${collection.id}`);
             close();
             navigate("/collections");
         }

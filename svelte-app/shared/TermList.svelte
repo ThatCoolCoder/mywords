@@ -44,7 +44,7 @@
         if (term.termList != termList) {
             term.termList = termList;
             targetStore.set(get(targetStore));
-            await api.put(`terms/${term.id}`, term, "Failed moving term into list");
+            await api.safe.put(`terms/${term.id}`, term, "Failed moving term into list");
         }
     }
 

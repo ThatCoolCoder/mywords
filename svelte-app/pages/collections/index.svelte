@@ -15,7 +15,7 @@
 
     let collections = null;
     let hovering = {};
-    onMount(async () => collections = await api.get('collections/', 'Failed getting collections'));
+    onMount(async () => collections = await api.safe.getJson('collections/', 'Failed getting collections'));
 
     async function manageCollection(e, collection) {
         e.stopPropagation();

@@ -72,7 +72,7 @@
         }
 
         clearCurrentNewTerm();
-        let newTermData = await api.postJsonResponse(`terms/`, term, "Failed to save term");
+        let newTermData = await api.safe.postJson(`terms/`, term, "Failed to save term");
         terms.update((x) => x.pushed(newTermData));
     }
 

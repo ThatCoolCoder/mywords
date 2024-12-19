@@ -1,10 +1,10 @@
 import { writable } from 'svelte/store';
 
+// Default handler
 let _handler = (message, details) => alert(message + '\n' + details);
 
 export const handler = writable(_handler);
 handler.subscribe(val => {
-    console.log(val);
     _handler = val;
 });
 

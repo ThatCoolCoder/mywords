@@ -48,9 +48,11 @@ public class RequestResetPasswordModel : PageModel
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             // Pretend we are sending an email
-            var query = new QueryBuilder();
-            query.Add("UserId", user.Id);
-            query.Add("Token", token);
+            var query = new QueryBuilder
+            {
+                { "UserId", user.Id },
+                { "Token", token }
+            };
 
             var url = "/ResetPassword" + query.ToString();
             Console.WriteLine($"Password reset token is: {url}");

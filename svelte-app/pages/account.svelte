@@ -6,8 +6,12 @@
     import api from 'services/api';
     import { notBlank } from 'shared/misc/validation';
 
+    import PasswordChange from 'shared/PasswordChange.svelte';
+
     const user = getContext('user');
     user.subscribe(undo);
+
+    const { open, close } = getContext('simple-modal');
 
     let givenName;
     let familyName;
@@ -31,7 +35,7 @@
         u.givenName = givenName;
         u.familyName = familyName;
         user.set(u);
-        await api.put('users/me', u, 'Failed updating account information');
+        await api.safe.put('users/me', u, 'Failed updating account information');
     }
 </script>
 
@@ -55,6 +59,13 @@
         </div>
         <div class="col-6">
             <input bind:value={familyName} class="mw-100 form-control" id="familyName" required autocomplete="off" on:input={e => changed = notBlank(e) }/>
+        </div>
+    </div>
+
+    <div class="row mb-1">
+        <div class="col-6"></div>
+        <div class="col-6">
+            <button class="btn btn-secondary" on:click={() => open(PasswordChange)}>Update password</button>
         </div>
     </div>
 

@@ -44,7 +44,7 @@
                 }
             }
             if (oldLabels.length != term.labels.length) {
-                await api.put(`terms/${id}`, term, 'Failed removing redundant labels from terms');
+                await api.safe.put(`terms/${id}`, term, 'Failed removing redundant labels from terms');
                 someChanged = true;
             }
         }
@@ -54,10 +54,10 @@
     onMount(async () => {
         collectionId = id;
         collection = writable(await api.get(`collections/${id}`, 'Failed fetching collection info'));
-        terms.set(await api.get(`collections/${id}/terms`, 'Failed loading terms'));
-        labels.set(await api.get(`collections/${id}/labels`, 'Failed loading labels'));
+        terms.set(await api.safe.getJson(`collections/${id}/terms`, 'Failed loading terms'));
+        labels.set(await api.safe.getJson(`collections/${id}/labels`, 'Failed loading labels'));
 
-        await api.post(`collections/${id}/viewed`, 'Failed saving collection viewing stuffs') // push to top of recent
+        await api.safe.post(`collections/${id}/viewed`, 'Failed saving collection viewing stuffs') // push to top of recent
 
         props.set({collectionId, collection, terms, labels});
     });

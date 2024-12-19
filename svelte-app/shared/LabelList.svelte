@@ -27,13 +27,13 @@
         label.name = editData.name;
         label.color = editData.color;
 
-        if (label.id === undefined) label.id = Number(await (await api.post(`labels/`, label)).text());
-        else api.put(`labels/${label.id}`, label);
+        if (label.id === undefined) label.id = Number(await (await api.safe.post(`labels/`, label)).text());
+        else api.safe.put(`labels/${label.id}`, label);
         labelsWritable.set(get(labelsWritable));
     }
 
     function onItemDelete(label) {
-        if (label.id !== undefined) api.post(`labels/${label.id}/delete`);
+        if (label.id !== undefined) api.safe.post(`labels/${label.id}/delete`);
     }
 
     function create() {

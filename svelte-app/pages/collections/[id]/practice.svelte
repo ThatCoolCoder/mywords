@@ -35,7 +35,7 @@
     let defaultSettings = null;
     let settings = null;
     onMount(async () => {
-        defaultSettings = await api.get(`practice/settings/default`, "Failed fetching practice settings");
+        defaultSettings = await api.safe.getJson(`practice/settings/default`, "Failed fetching practice settings");
         settings = defaultSettings;
     });
 
@@ -60,7 +60,7 @@
     let currentAnswerResult = null;
 
     async function startRound() {
-        currentRoundTerms = await (await api.post(`practice/newround/${collectionId}`, settings)).json();
+        currentRoundTerms = await api.safe.postJson(`practice/newround/${collectionId}`, settings);
         if (currentRoundTerms.length == 0) display("Error generating round", "for some reason no terms were returned");
         currentTermIndex = -1;
         nextTerm();
@@ -74,14 +74,14 @@
 
         let correct = isCorrect(currentAnswer, currentTerm.definition);
 
-        var response = await (await api.post(`practice/submitanswer/${currentTerm.id}/${correct ? "correct" : "incorrect"}`)).json();
+        var result = await api.safe.postJson(`practice/submitanswer/${currentTerm.id}/${correct ? "correct" : "incorrect"}`);
 
         terms.update(t => {
-            t[t.indexOf(currentTerm)] = response.term;
+            t[t.indexOf(currentTerm)] = result.term;
             return t;
         });
 
-        currentAnswerResult = response.result;
+        currentAnswerResult = result.result;
         if (currentAnswerResult != PracticeAnswerResult.StillInSameList) {
             subState = RoundSubState.ShowingAnswerResult;
         }
@@ -110,7 +110,7 @@
     }
 
     async function saveCurrentTermAndMoveOn() {
-        await api.put(`terms/${currentTerm.id}`, currentTerm, "Failed updating term");
+        await api.safe.put(`terms/${currentTerm.id}`, currentTerm, "Failed updating term");
         nextTerm();
     }
 

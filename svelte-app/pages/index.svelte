@@ -10,7 +10,7 @@
     const user = getContext('user');
 
     let collections = null;
-    onMount(async () => collections = await api.get('collections/recent?amount=3', 'Failed getting collections'));
+    onMount(async () => collections = await api.safe.getJson('collections/recent?amount=3', 'Failed getting collections'));
 
 </script>
 
