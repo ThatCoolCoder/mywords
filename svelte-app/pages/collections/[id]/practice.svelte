@@ -16,6 +16,7 @@
     
     import ApiDependent from "shared/misc/ApiDependent.svelte";
     import PracticeSettingsEditor from "shared/PracticeSettingsEditor.svelte";
+    import BackButton from "shared/misc/BackButton.svelte";
 
     export let collectionId;
     export let collection;
@@ -122,9 +123,11 @@
 <ApiDependent ready={$collection != null && $terms != null && $labels != null}>
     {#if state == State.Setup}
         <!-- todo: save 2 levels of indentation by moving setup and execution into separate files -->
+        
         <div class="row h-100 gx-0">
             <div class="px-0 col-xs-12 col-lg-8 col-xl-8 col-xxl-6 d-flex flex-column gap-2">
-                <div class="d-flex flex-column gap-2 px-4 py-4">
+                <div class="d-flex flex-column gap-2 px-4 py-4 align-items-start">
+                    <BackButton text="Back to {$collection.name}" href="/collections/{collectionId}" />
                     <h2>Setup practice - {$collection.name}</h2>
                     <ApiDependent ready={settings != null}>
                         <PracticeSettingsEditor {settings} {collectionId} />

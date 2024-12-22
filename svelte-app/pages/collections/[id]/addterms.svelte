@@ -99,49 +99,46 @@
 
 <ApiDependent ready={collection != null}>
 
-    <BackButton text="Back to collection" href="/collections/{collectionId}" />
+    <BackButton text="Back to {$collection.name}" href="/collections/{collectionId}" />
 
     <div class="d-flex flex-column gap-2" style="max-width: 1500px">
         <h2>Add terms - {$collection.name}</h2>
 
-        <fieldset class="d-flex flex-column gap-3">
-            <legend>General settings</legend>
-
-            <div class="form-group d-flex gap-2 align-items-center">
-                <label for="listSelect">List to insert terms into</label>
-                <select id="listSelect" class="mb-0 w-auto form-select" bind:value={generalSettings.termListMode} >
-                    {#each Object.keys(TermListModes) as modeName}
-                        <option value={TermListModes[modeName]}>{modeName}</option>
+        <div class="card p-3">
+            <div class="d-flex flex-column gap-3">
+                <div class="form-group d-flex gap-2 align-items-center">
+                    <label for="listSelect">List to insert terms into</label>
+                    <select id="listSelect" class="mb-0 w-auto form-select" bind:value={generalSettings.termListMode} >
+                        {#each Object.keys(TermListModes) as modeName}
+                            <option value={TermListModes[modeName]}>{modeName}</option>
+                        {/each}
+                    </select>
+                    <HelpButton topic="Term lists" text={termListsHelp} />
+                </div>
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <div on:click={openEditLabelsModal} class="form-group d-flex flex-wrap gap-2 justify-content-start align-items-center">
+                    <span>Labels for added terms:</span>
+                    {#each sortedNewTermLabels as label}
+                        <LabelBadge {label} />
+                    {:else}
+                        <span class="text-secondary">(None)</span>
                     {/each}
-                </select>
-                <HelpButton topic="Term lists" text={termListsHelp} />
+                    <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1" aria-label="edit labels">
+                        <i class={sortedNewTermLabels.length == 0 ? "bi-plus-lg" : "bi-pencil"}/>
+                    </button>
+                </div>
             </div>
-
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <div on:click={openEditLabelsModal} class="form-group d-flex flex-wrap gap-2 justify-content-start align-items-center">
-                <span>Labels for added terms:</span>
-                {#each sortedNewTermLabels as label}
-                    <LabelBadge {label} />
-                {:else}
-                    <span class="text-secondary">(None)</span>
-                {/each}
-                <button class="btn btn-outline-secondary btn-sm mb-0 py-0 px-1" aria-label="edit labels">
-                    <i class={sortedNewTermLabels.length == 0 ? "bi-plus-lg" : "bi-pencil"}/>
-                </button>
+            <div class="mt-3">
+                <TermCard bind:term={currentNewTerm} showTermList={false} showLabels={false} forcedEditing={true}>
+                    <button class="btn btn-outline-secondary h-100 add-term-button" slot="right" on:click={addCurrentTerm}><i class="bi-plus-lg" /></button>
+                </TermCard>
             </div>
-        </fieldset>
-
-        <br />
-
-        <div>
-            <TermCard bind:term={currentNewTerm} showTermList={false} showLabels={false} forcedEditing={true}>
-                <button class="btn btn-outline-secondary h-100 add-term-button" slot="right" on:click={addCurrentTerm}><i class="bi-plus-lg" /></button>
-            </TermCard>
         </div>
 
-        <hr />
 
-        <h3>Recently added</h3>
-        <TermList termsStore={recentTerms} baseTermsWritable={terms} showTermLists={true} sortFunc={(a, b) => new Date(b.createdUtc) - new Date(a.createdUtc)} noTermsText="Nothing added recently" />
+        <div class="card p-3">
+            <h3>Recently added</h3>
+            <TermList termsStore={recentTerms} baseTermsWritable={terms} showTermLists={true} sortFunc={(a, b) => new Date(b.createdUtc) - new Date(a.createdUtc)} noTermsText="Nothing added recently" />
+        </div>
     </div>
 </ApiDependent>

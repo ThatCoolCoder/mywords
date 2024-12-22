@@ -152,7 +152,7 @@ export const safe = {
         return await this.post(url, data, failMessage, 'put');
     },
     
-    async put(url, data, failMessage='Failed sending data to server') {
+    async putJson(url, data, failMessage='Failed sending data to server') {
         return await this.postJson(url, data, failMessage, 'put');
     },
 
