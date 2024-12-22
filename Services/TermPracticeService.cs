@@ -40,18 +40,13 @@ public class TermPracticeService
     public class TermPracticeException : Exception { }
     public class PracticingBackLogTerm : TermPracticeException { }
 
-    public IEnumerable<Term> GeneratePracticeRound(Collection collection, PracticeSettings settings)
+    public IEnumerable<Term> GeneratePracticeRound(long collectionId, PracticeSettings settings)
     {
-        // Requires collection labels to be loaded
-
-        var possibleTerms = FilterByLabels(collection, settings);
-
+        var possibleTerms = FilterByLabels(collectionId, settings);
 
         int recentReviewAmount = settings.IncludeRecentReview ? (int)(settings.RoundLength * settings.RecentReviewProportion) : 0;
         int lateReviewAmount = settings.IncludeLateReview ? (int)(settings.RoundLength * settings.LateReviewProportion) : 0;
         int normalTermsAmount = settings.RoundLength - recentReviewAmount - lateReviewAmount;
-
-        Console.WriteLine($"{possibleTerms.Count()} rr: {recentReviewAmount}, lr: {lateReviewAmount}, normal: {normalTermsAmount}");
 
         var resultingTerms = new List<Term>();
         if (settings.IncludeRecentReview)
@@ -63,33 +58,35 @@ public class TermPracticeService
             // terms which have a smaller ratio of total correct answers to total answers will be ordered earlier so more likely to be picked wait that doesn't work
             resultingTerms.AddRange(GetNRandomTerms(possibleTerms, TermList.Learned, lateReviewAmount));
         }
-        resultingTerms.AddRange(GetNRandomTerms(possibleTerms, TermList.Learned, normalTermsAmount));
+        resultingTerms.AddRange(GetNRandomTerms(possibleTerms, TermList.Learning, normalTermsAmount));
+        var avoidedTermIds = resultingTerms.Select(x => x.Id).ToList();
 
         // Try adding more terms if failing to find, in a preferred order
         void AddExtraTermsIfRequired(TermList fromList)
         {
-            Console.WriteLine($"Attempting to add 2 from {fromList}");
             if (resultingTerms.Count < settings.RoundLength)
-                resultingTerms.AddRange(GetNRandomTerms(possibleTerms, fromList, settings.RoundLength - resultingTerms.Count));
+                resultingTerms.AddRange(GetNRandomTerms(possibleTerms, fromList, settings.RoundLength - resultingTerms.Count, avoidedTermIds));
         }
-        // todo: need to filter out stuff
-        // AddExtraTermsIfRequired(TermList.Learning);
-        // AddExtraTermsIfRequired(TermList.RecentlyLearned);
-        // AddExtraTermsIfRequired(TermList.Learned);
+        AddExtraTermsIfRequired(TermList.Learning);
+        AddExtraTermsIfRequired(TermList.RecentlyLearned);
+        AddExtraTermsIfRequired(TermList.Learned);
 
 
         var random = new Random();
         return resultingTerms.OrderBy(x => random.Next());
     }
 
-    private IEnumerable<Term> FilterByLabels(Collection collection, PracticeSettings settings)
+    private IEnumerable<Term> FilterByLabels(long collectionId, PracticeSettings settings)
     {
-        var availableLabelIds = collection.Labels.Select(l => l.Id).ToHashSet();
+        var availableLabelIds = _context.Label
+            .Where(x => x.CollectionId == collectionId)
+            .Select(l => l.Id)
+            .ToHashSet();
         var includeLabelIds = settings.IncludeLabelIds?.Intersect(availableLabelIds).ToHashSet(); // can optimise with using hashset intersect
         var excludeLabelIds = settings.ExcludeLabelIds?.Intersect(availableLabelIds).ToHashSet();
 
         var possibleTerms = _context.Term
-            .Where(t => t.CollectionId == collection.Id);
+            .Where(t => t.CollectionId == collectionId);
 
         if (includeLabelIds != null)
             possibleTerms = possibleTerms
@@ -101,7 +98,7 @@ public class TermPracticeService
         return possibleTerms;
     }
 
-    private IEnumerable<Term> GetNRandomTerms(IEnumerable<Term> terms, TermList termList, int count)
+    private IEnumerable<Term> GetNRandomTerms(IEnumerable<Term> terms, TermList termList, int termsToPick, List<long>? termIdsToAvoid = null)
     {
         // It's hard to do this efficiently. Hopefully ef manages to do a majority of this on the db.
         // It is a bit inefficient in that I believe it hits the db separately for each chosen item, but I don't believe it needs to download all the items
@@ -114,14 +111,19 @@ public class TermPracticeService
         var random = new Random();
 
         var availableSortedPool = terms
-            .Where(x => x.TermList == termList)
-            .OrderBy(t => t.Id);
+            .Where(x => x.TermList == termList);
 
-        var availableCount = terms.Count();
-        count = Math.Min(count, availableCount);
+        if (termIdsToAvoid != null)
+            availableSortedPool = availableSortedPool
+                .Where(t => !termIdsToAvoid.Contains(t.Id));
+
+        availableSortedPool = availableSortedPool.OrderBy(t => t.Id);
+
+        var availableCount = availableSortedPool.Count();
+        termsToPick = Math.Min(termsToPick, availableCount);
 
         var indexes = new HashSet<int>();
-        while (indexes.Count < count)
+        while (indexes.Count < termsToPick)
         {
             var index = random.Next(availableCount);
             if (indexes.Add(index))

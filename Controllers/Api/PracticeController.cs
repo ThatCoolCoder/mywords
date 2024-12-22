@@ -30,13 +30,12 @@ public class PracticeController : Controller
     {
         var collection = _context.Collection
             .Where(c => c.Id == collectionId)
-            .Include(c => c.Labels)
             .FirstOrDefault();
 
         if (collection == null) return NotFound();
         if (collection.ApplicationUserId != _context.GetLoggedInUser(HttpContext).Id) return Unauthorized();
 
-        var termIds = _termPracticeService.GeneratePracticeRound(collection, settings).Select(x => x.Id);
+        var termIds = _termPracticeService.GeneratePracticeRound(collection.Id, settings).Select(x => x.Id);
 
         return Json(termIds);
     }
