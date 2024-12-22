@@ -147,7 +147,7 @@
                     <span class="text-secondary">Term {currentTermIndex + 1} / {currentRoundTerms.length}</span>
                     <h3>{currentTerm.value}</h3>
                     <div class="form-floating mt-auto">
-                        <input class="form-control" id={id + "answer"} bind:value={currentAnswer} use:enterNotifier on:enter_pressed={submit}/>
+                        <input class="form-control" id={id + "answer"} bind:value={currentAnswer} use:enterNotifier on:enter_pressed={submit} autofocus/>
                         <label for={id + "answer"}>Enter definition</label>
                     </div> 
                     <div class="d-flex justify-content-end gap-2">
@@ -157,7 +157,7 @@
                 {:else if subState == RoundSubState.ShowingSkip}
                     <h3>Term skipped</h3>
                     <p class="mt-4 lead ">Definition: {currentTerm.definition}</p>
-                    <button class="btn btn-primary mt-auto align-self-end" on:click={nextTerm}>Continue</button>
+                    <button class="btn btn-primary mt-auto align-self-end" on:click={nextTerm} autofocus>Continue</button>
                 {:else if subState == RoundSubState.ShowingAnswerResult}
                     {#if currentAnswerResult == PracticeAnswerResult.CanReturnToLearning}
                         <h3>Oops, that's not the right answer!</h3>
@@ -188,7 +188,7 @@
                     <p class="mt-4 lead">Term: {currentTerm.value}</p>
                     <p class="mt-2 lead">You answered: {currentAnswer}</p>
                     <p class="mt-2 lead">Correct answer: {currentTerm.definition}</p>
-                    <button class="btn btn-primary mt-auto align-self-end" on:click={nextTerm}>Continue</button>
+                    <button class="btn btn-primary mt-auto align-self-end" on:click={nextTerm} autofocus>Continue</button>
                 {/if}
             </div>
         </div>
