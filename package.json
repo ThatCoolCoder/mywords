@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "rollup-plugin-includepaths": "^0.2.4",
+    "@roxi/routify": "^3.0.0-next.201",
     "spnr": "^1.8.1",
     "svelte-simple-modal": "1.5.1"
   }
