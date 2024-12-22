@@ -83,7 +83,7 @@ export default {
 				{ find: 'data', replacement: './svelte-app/data' },
 			]
 		}),
-		includePaths({ paths: ["./"] })
+		includePaths({ paths: ["./"] }),
 	],
 	watch: {
 		clearScreen: false

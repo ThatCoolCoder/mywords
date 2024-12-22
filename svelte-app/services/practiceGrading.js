@@ -1,4 +1,8 @@
 export function isCorrect(answer, definition) {
+    // Basic operating principle:
+    // split the answer and definition by ,
+    // check that all of the sections within the provided answer are present in the correct answer
+
     // todo: wtf is this regex
     let clean = x => x.replace(/[^\p{Letter}\p{Mark}\s']/gu, "").trim().toLowerCase();
 
@@ -15,6 +19,6 @@ export function isCorrect(answer, definition) {
 export function generateHint(definition) {
     return definition
         .trim()
-        .replace(/[^\p{Letter}]+/gu, "") // remove non-letters from start of line
-        .replace(/^[\p{Letter}]/gu, "_") // replace all other letters with _
+        .replace(/^[^\p{Letter}]+/gu, "") // remove non-letters from start of line
+        .replace(/(?!^)[\p{Letter}]/gu, "_") // replace all other letters with _
 }

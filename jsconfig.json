@@ -8,6 +8,9 @@
             "pages/*": ["./pages/*"],
             "shared/*": ["./shared/*"],
             "data/*": ["./data/*"],
-        },
-    }
+        }       
+    },
+    "exclude": [
+        "**/*.test.js",
+    ] 
 }
