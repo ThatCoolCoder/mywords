@@ -16,8 +16,8 @@
 
 <title>Home | MyWords</title>
 
-<ApiDependent ready={user != undefined}>
-    <h2 class="mb-4">Welcome back, {$user?.firstName}</h2>
+<ApiDependent ready={$user != undefined}>
+    <h2 class="mb-4">Welcome back, {$user.givenName}</h2>
 </ApiDependent>
 
 <!-- <h3>Recent collections</h3>
