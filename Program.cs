@@ -88,7 +88,6 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseRouting();
 app.MapRazorPages();
-// app.Use(Middleware.LandingPageHandler.Main);
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -99,7 +98,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
     // endpoints.MapRazorPages();
     // endpoints.MapFallbackToFile("host.html").AllowAnonymous();
-    endpoints.MapFallback(Middleware.LandingPageRedirector.Main);
+    endpoints.MapFallback(Middleware.LandingPageRedirector.RedirectIfNeeded);
 });
 
 app.Run();

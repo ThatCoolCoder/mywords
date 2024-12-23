@@ -5,7 +5,7 @@ namespace Middleware;
 
 public class LandingPageRedirector
 {
-    public static async Task Main(HttpContext context)
+    public static async Task RedirectIfNeeded(HttpContext context)
     {
         // if logged out - redirect to / which has a controller with a landing page (but obviously don't do anything if already there)
         // if logged in - just serve the spa when not found
