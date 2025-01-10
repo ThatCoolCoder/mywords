@@ -40,6 +40,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public virtual DbSet<Term> Term { get; set; } = null!;
     public virtual DbSet<Label> Label { get; set; } = null!;
     public virtual DbSet<LabelTerm> LabelTerm { get; set; } = null!;
+    public virtual DbSet<Friendship> Friendship { get; set; } = null!;
+    public virtual DbSet<FriendshipLink> FriendshipLink { get; set; } = null!;
 
     public ApplicationUser GetLoggedInUser(HttpContext context)
     {

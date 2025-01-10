@@ -2,16 +2,15 @@ using System;
 
 namespace Data;
 
-// public enum Friendship
-
 public class Friendship
 {
     // User 1 is always the one that initiates, user 2 has to accept/reject
 
-    public string ApplicationUser1Id = "";
-    public string ApplicationUser2Id = "";
-    public bool Accepted = false;
+    public long Id { get; set; }
+    public string ApplicationUser1Id { get; set; } = "";
+    public string ApplicationUser2Id { get; set; } = "";
+    public bool Accepted { get; set; } = false;
 
-    public ApplicationUser? ApplicationUser1;
-    public ApplicationUser? ApplicationUser2;
+    public ApplicationUser ApplicationUser1 { get; set; } = null!;
+    public ApplicationUser ApplicationUser2 { get; set; } = null!;
 }

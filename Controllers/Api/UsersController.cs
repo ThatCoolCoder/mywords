@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 using Data;
 using Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Controllers.Api;
 
@@ -98,5 +99,18 @@ public class UsersController : Controller
 
         if (result.Succeeded) return Ok();
         else return Unauthorized();
+    }
+
+    [HttpGet]
+    [Route("{id}")]
+    public async Task<IActionResult> GetUser(string id)
+    {
+        var user = await _context.Users
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync();
+
+        if (user == null) return NotFound();
+
+        return Json(user);
     }
 }

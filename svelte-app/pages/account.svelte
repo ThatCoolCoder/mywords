@@ -7,6 +7,8 @@
     import { notBlank } from 'shared/misc/validation';
 
     import PasswordChange from 'shared/PasswordChange.svelte';
+    import AddFriendsPopup from 'shared/AddFriendsPopup.svelte';
+    import { navigate } from 'pages/utils';
 
     const user = getContext('user');
     user.subscribe(undo);
@@ -36,6 +38,10 @@
         u.familyName = familyName;
         user.set(u);
         await api.safe.put('users/me', u, 'Failed updating account information');
+    }
+
+    async function openAddFriendsPopup() {
+        open(AddFriendsPopup);
     }
 </script>
 
@@ -78,3 +84,21 @@
         </div>
     {/if}
 </form>
+
+<h3 class="mt-3">Friends</h3>
+<div class="d-flex flex-column gap-2" style="max-width: 500px">
+    <div class="card p-3 text-large-1 text-center" role="button"
+        on:click={openAddFriendsPopup} on:keydown={e => e.key == 'Enter' && openAddFriendsPopup()}
+        tabindex="0">
+        <span>
+            <i class="bi-plus-lg me-3"></i>
+            Add friends
+        </span>
+    </div>
+    <!-- {#each $friends as friend}
+        <div class="card p-3" role="link" 
+            on:click={() => navigate(`/`)}>
+
+        </div>
+    {/each} -->
+</div>
