@@ -84,6 +84,7 @@ public class SignUpModel : PageModel
                 FamilyName = Input.FamilyName,
                 UserName = Input.Email,
                 Email = Input.Email,
+                JoinDate = DateTime.UtcNow
             };
             // todo: check is valid
             // if (!user.IsValid())
@@ -101,7 +102,7 @@ public class SignUpModel : PageModel
             }
             else
             {
-                ModelState.AddModelError("error", String.Join("\n", result.Errors.Select(x => x.Description)));
+                ModelState.AddModelError("error", string.Join("\n", result.Errors.Select(x => x.Description)));
                 return Page();
             }
         }

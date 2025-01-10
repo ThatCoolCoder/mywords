@@ -25,7 +25,7 @@ public class UsersController : Controller
         _signInManager = signInManager;
     }
 
-    public record UserApiModel(string Id, string GivenName, string FamilyName, string Email);
+    public record UserApiModel(string Id, string GivenName, string FamilyName, string Email, DateTime? JoinDate);
 
     [HttpGet]
     [Route("me")]
@@ -34,7 +34,7 @@ public class UsersController : Controller
         var user = _userManager.GetLoggedInUser(HttpContext);
         if (user == null) return NotFound();
 
-        return Json(new UserApiModel(user.Id, user.GivenName, user.FamilyName, user.Email ?? ""));
+        return Json(new UserApiModel(user.Id, user.GivenName, user.FamilyName, user.Email ?? "", user.JoinDate));
     }
 
     [HttpPut]
@@ -110,7 +110,11 @@ public class UsersController : Controller
             .FirstOrDefaultAsync();
 
         if (user == null) return NotFound();
+        if (user.Id != _context.GetLoggedInUser(HttpContext).Id)
+        {
+            user.Email = "";
+        }
 
-        return Json(user);
+        return Json(new UserApiModel(user.Id, user.GivenName, user.FamilyName, user.Email ?? "", user.JoinDate));
     }
 }

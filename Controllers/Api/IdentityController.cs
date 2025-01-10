@@ -29,6 +29,7 @@ public class IdentityController : Controller
     [HttpPost]
     public async Task<IActionResult> Login([Bind] LoginModel model)
     {
+        // todo: is this even used, I thought the only way to login was through razor pages one
         if (ModelState.IsValid)
         {
             var user = _context.ApplicationUser.Where(x => x.UserName == model.Username).First();

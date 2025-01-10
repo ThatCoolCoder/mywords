@@ -46,7 +46,12 @@
 </script>
 
 <title>Account | MyWords</title>
-<h2>Your Account</h2>
+<div class="d-flex align-items-end">
+    <h3 class="mb-0">Your Account</h3>
+    <a class="btn text-secondary p-0 ms-5 text-large-1 mb-0" href="/u/{$user?.id}">
+        View public profile <i class="bi-chevron-right"></i>
+    </a>
+</div>
 <hr />
 
 <form style="max-width: 400px" on:submit={save}>
@@ -71,7 +76,7 @@
     <div class="row mb-1">
         <div class="col-6"></div>
         <div class="col-6">
-            <button class="btn btn-secondary" type="button" on:click={() => open(PasswordChange)}>Update password</button>
+            <button class="btn btn-secondary" type="button" on:click={() => open(PasswordChange)}>Change password</button>
         </div>
     </div>
 
